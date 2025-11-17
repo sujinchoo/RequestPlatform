@@ -116,19 +116,7 @@
           </p>
         </form>
         
-        <script>
-          document.getElementById("request-form").addEventListener("submit", function (e) {
-            e.preventDefault();
-            const company = document.getElementById("company").value || "택배사 미선택";
-            const branch = document.getElementById("branch").value || "영업소 미입력";
-            const region = document.getElementById("region").value || "지역 미입력";
         
-            alert(
-              "요청이 접수된 것처럼 표시합니다.\n\n" +
-              company + " · " + branch + " · " + region
-            );
-          });
-        </script>
 
       </section>
 
@@ -169,13 +157,23 @@
     </footer>
   </div>
 
+  
+
   <script>
     document.getElementById("request-form").addEventListener("submit", function (e) {
       e.preventDefault();
       const company = document.getElementById("company").value || "택배사 미선택";
       const branch = document.getElementById("branch").value || "영업소 미입력";
-      alert("요청이 접수된 것처럼 표시합니다.\n\n" + company + " · " + branch);
+      const region = document.getElementById("region").value || "지역 미입력";
+
+      alert(
+        "요청이 접수된 것처럼 표시합니다.\n\n" +
+        company + " · " + branch + " · " + region
+      );
     });
   </script>
+</body>
+</html>
+
 </body>
 </html>
