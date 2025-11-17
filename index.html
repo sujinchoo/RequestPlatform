@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>물류 배차·대차·인력 요청 플랫폼 RFP</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="description" content="물류 대리점의 차량·대차·인력 요청을 디지털화하고, 본사에서 요청→승인→배차/출고→완료까지 관리하는 플랫폼 RFP 소개 페이지입니다.">
+
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #111827;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.14);
+      --text: #e5e7eb;
+      --text-sub: #9ca3af;
+      --border-soft: #1f2937;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", system-ui, sans-serif;
+      background: radial-gradient(circle at top, #1d2640 0, var(--bg) 55%, #020617 100%);
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .page {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      backdrop-filter: blur(12px);
+      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.7), transparent);
+      padding: 10px 0 6px;
+    }
+
+    .nav-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: #e5e7eb;
+    }
+
+    .nav-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.25);
+    }
+
+    main {
+      margin-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .hero-card {
+      background: linear-gradient(135deg, #111827, #020617);
+      border-radius: 16px;
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      padding: 20px 18px 18px;
+      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
+    }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      color: var(--text-sub);
+      margin-bottom: 10px;
+    }
+
+    .hero-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .hero-sub {
+      font-size: 13px;
+      color: var(--text-sub);
+      margin-bottom: 12px;
+    }
+
+    .hero-flow {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+      font-size: 11px;
+      color: var(--text-sub);
+    }
+
+    .flow-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.35);
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    .flow-arrow {
+      font-size: 13px;
+      color: #64748b;
+    }
+
+    .tagline {
+      font-size: 12px;
+      color: #cbd5f5;
+      margin-top: 4px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      margin-top: 6px;
+    }
+
+    @media (min-width: 720px) {
+      .grid {
+        grid-template-columns: 1.2fr 1fr;
+      }
+    }
+
+    .card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px 14px 16px;
+      border: 1px solid var(--border-soft);
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.5);
+    }
+
+    .card h2 {
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .card p {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-bottom: 8px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+    }
+
+    .chip {
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      color: #e5e7eb;
+    }
+
+    .section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    .list {
+      list-style: none;
+      font-size: 12px;
+      color: var(--text-sub);
+    }
+
+    .list li {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 5px;
+    }
+
+    .list-bullet {
+      width: 4px;
+      margin-top: 7px;
+      height: 4px;
+      border-radius: 999px;
+      background: #64748b;
+      flex-shrink: 0;
+    }
+
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 14px;
+      padding: 14px 14px 14px;
+      border: 1px solid var(--border-soft);
+    }
+
+    .flow-diagram {
+      display: flex;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 6px;
+      padding: 6px 0 2px;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .flow-step {
+      min-width: 80px;
+      text-align: center;
+      font-size: 11px;
+      padding: 6px 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      background: rgba(15, 23, 42, 0.95);
+      white-space: nowrap;
+    }
+
+    .flow-diagram-arrow {
+      align-self: center;
+      font-size: 13px;
+      color: #6b7280;
+    }
+
+    .pill-note {
+      font-size: 11px;
+      margin-top: 6px;
+      padding: 6px 8px;
+      border-radius: 8px;
+      background: rgba(15, 23, 42, 0.9);
+      border: 1px dashed rgba(148, 163, 184, 0.5);
+      color: var(--text-sub);
+    }
+
+    footer {
+      margin-top: 18px;
+      font-size: 10px;
+      color: #6b7280;
+      text-align: center;
+      padding-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- 상단 고정 헤더 -->
+    <header>
+      <div class="nav-title">
+        <span class="nav-dot"></span>
+        물류 배차·대차·인력 요청 플랫폼 RFP
+      </div>
+    </header>
+
+    <main>
+
+      <!-- HERO -->
+      <section class="hero-card">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          RFP 요약 · 비즈니스 관점
+        </div>
+        <h1 class="hero-title">물류 대리점 요청 업무의 디지털 전환</h1>
+        <p class="hero-sub">
+          대리점에서 <strong>차량·대차·인력</strong>을 요청하고, 본사에서
+          <strong>요청 → 승인 → 배차/출고 → 완료</strong>까지 한 화면에서 관리하기 위한
+          플랫폼 구축 제안요청서(RFP) 요약 페이지입니다.
+        </p>
+
+        <div class="hero-flow">
+          <span class="flow-pill">요청</span>
+          <span class="flow-arrow">➜</span>
+          <span class="flow-pill">승인</span>
+          <span class="flow-arrow">➜</span>
+          <span class="flow-pill">배차·출고</span>
+          <span class="flow-arrow">➜</span>
+          <span class="flow-pill">완료</span>
+        </div>
+
+        <p class="tagline">
+          전화·카톡·수기 기록을 하나의 플랫폼으로 모아,<br>
+          누락 없이 빠르게 처리하는 업무 환경을 만드는 것이 핵심 목표입니다.
+        </p>
+      </section>
+
+      <!-- GRID : 개요 + 문제점/개선 -->
+      <section class="grid">
+
+        <!-- 개요 카드 -->
+        <article class="card">
+          <h2>1. 사업 개요</h2>
+          <p>
+            물류 대리점이 필요할 때마다 차량·대차·인력을 <strong>쉽게 요청</strong>하고,<br>
+            본사에서는 이를 <strong>실시간으로 확인·승인·배차</strong>할 수 있는
+            단순한 운영 플랫폼 구축을 목표로 합니다.
+          </p>
+          <div class="chip-row">
+            <span class="chip">대리점 요청 간편화</span>
+            <span class="chip">본사 배차 통합 관리</span>
+            <span class="chip">요청 이력 자동 저장</span>
+          </div>
+        </article>
+
+        <!-- 문제점 / 개선 방향 -->
+        <article class="card">
+          <h2>2. 현재 문제 & 개선 방향</h2>
+          <p><strong>현재 문제</strong></p>
+          <ul class="list">
+            <li><span class="list-bullet"></span><span>전화·카톡·종이 메모로 요청이 분산</span></li>
+            <li><span class="list-bullet"></span><span>요청 내용 누락, 중복 배차, 잘못된 전달</span></li>
+            <li><span class="list-bullet"></span><span>진행 상태를 대리점이 알기 어려움</span></li>
+          </ul>
+          <p><strong>개선 방향</strong></p>
+          <ul class="list">
+            <li><span class="list-bullet"></span><span>요청–승인–배차–출고–완료를 한 플랫폼에서 처리</span></li>
+            <li><span class="list-bullet"></span><span>단계별 상태를 실시간으로 공유</span></li>
+            <li><span class="list-bullet"></span><span>모든 이력을 데이터로 자동 기록</span></li>
+          </ul>
+        </article>
+
+      </section>
+
+      <!-- 업무 흐름 섹션 -->
+      <section class="section-card">
+        <div class="section-title">3. 핵심 업무 흐름</div>
+
+        <div class="flow-diagram">
+          <div class="flow-step">대리점<br>요청 등록</div>
+          <div class="flow-diagram-arrow">➜</div>
+          <div class="flow-step">본사<br>요청 확인</div>
+          <div class="flow-diagram-arrow">➜</div>
+          <div class="flow-step">승인 / 반려</div>
+          <div class="flow-diagram-arrow">➜</div>
+          <div class="flow-step">배차·출고<br>처리</div>
+          <div class="flow-diagram-arrow">➜</div>
+          <div class="flow-step">작업<br>완료 기록</div>
+        </div>
+
+        <div class="pill-note">
+          이 흐름을 기준으로 화면을 구성하며,<br>
+          각 단계에서 “누가 무엇을 확인하고, 무엇을 눌러서 다음 단계로 넘기는지”가
+          한눈에 보이도록 설계하는 것이 목표입니다.
+        </div>
+      </section>
+
+      <!-- 주요 기능 -->
+      <section class="section-card">
+        <div class="section-title">4. 주요 기능 (업무 관점)</div>
+
+        <p style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">
+          기술 용어보다는 실제 쓰는 사람 입장에서 정리한 기능 목록입니다.
+        </p>
+
+        <p style="font-size:12px; margin-bottom:4px;"><strong>① 대리점 화면</strong></p>
+        <ul class="list">
+          <li><span class="list-bullet"></span><span>차량 / 대차 / 인력 중 필요한 항목 선택 후 요청 등록</span></li>
+          <li><span class="list-bullet"></span><span>일자, 시간, 주소, 수량·인원 간단 입력</span></li>
+          <li><span class="list-bullet"></span><span>요청 상태(접수, 승인, 배차, 완료)를 실시간으로 확인</span></li>
+          <li><span class="list-bullet"></span><span>승인/반려 결과 알림 받기</span></li>
+        </ul>
+
+        <p style="font-size:12px; margin:6px 0 4px;"><strong>② 본사 운영 화면</strong></p>
+        <ul class="list">
+          <li><span class="list-bullet"></span><span>대리점에서 올라온 모든 요청을 리스트로 확인</span></li>
+          <li><span class="list-bullet"></span><span>요청 상세 내용 확인 후 승인 또는 반려</span></li>
+          <li><span class="list-bullet"></span><span>승인된 요청에 대해 차량·자원 배정 및 출고 처리</span></li>
+          <li><span class="list-bullet"></span><span>완료된 요청 이력을 저장하고 검색</span></li>
+        </ul>
+
+        <p style="font-size:12px; margin:6px 0 4px;"><strong>③ 관리자 기능</strong></p>
+        <ul class="list">
+          <li><span class="list-bullet"></span><span>대리점별 계정 관리</span></li>
+          <li><span class="list-bullet"></span><span>차량·대차 등의 기준정보 관리</span></li>
+          <li><span class="list-bullet"></span><span>요청 건수, 승인율, 완료율 등의 간단한 운영 리포트</span></li>
+        </ul>
+      </section>
+
+      <!-- 기대 효과 -->
+      <section class="section-card">
+        <div class="section-title">5. 기대 효과</div>
+        <ul class="list">
+          <li><span class="list-bullet"></span><span>전화·메신저에 의존하던 요청을 시스템으로 통합</span></li>
+          <li><span class="list-bullet"></span><span>요청 누락, 중복 배차 등의 운영 리스크 감소</span></li>
+          <li><span class="list-bullet"></span><span>요청부터 완료까지 전체 흐름이 눈에 보이는 구조</span></li>
+          <li><span class="list-bullet"></span><span>월별·분기별 운영 데이터를 기반으로 한 의사결정 가능</span></li>
+        </ul>
+      </section>
+
+      <!-- 제안 시 포함 내용 -->
+      <section class="section-card">
+        <div class="section-title">6. 제안 시 포함하면 좋은 내용</div>
+        <ul class="list">
+          <li><span class="list-bullet"></span><span>이 업무 흐름(요청 → 승인 → 배차/출고 → 완료)을 어떻게 화면으로 풀어낼지</span></li>
+          <li><span class="list-bullet"></span><span>대리점·본사 각각의 실제 사용 시나리오 예시</span></li>
+          <li><span class="list-bullet"></span><span>단계별 구축 일정(간단 버전이면 더 좋음)</span></li>
+          <li><span class="list-bullet"></span><span>초기 구축 비용 + 최소 유지보수 방안</span></li>
+        </ul>
+      </section>
+
+    </main>
+
+    <footer>
+      ※ 이 페이지는 물류 배차·대차·인력 요청 플랫폼 구축을 위한 RFP 내용을  
+      모바일에서 보기 쉽도록 요약한 샘플 화면입니다.
+    </footer>
+
+  </div>
+</body>
+</html>
