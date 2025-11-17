@@ -2,15 +2,11 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>물류 요청 Admin 뷰 (요청 상세)</title>
+  <title>대리점 인력 요청 등록</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
@@ -97,13 +93,11 @@
       gap: 14px;
     }
 
-    /* HERO 카드 - 대시보드와 톤 통일 */
     .hero-card {
-      background: radial-gradient(circle at top left, rgba(56,189,248,0.28), #020617);
+      background: #020617;
       border-radius: 14px;
-      padding: 14px 14px 12px;
+      padding: 14px;
       border: 1px solid #1f2937;
-      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
     }
 
     .hero-title {
@@ -114,267 +108,101 @@
 
     .hero-sub {
       font-size: 12px;
-      color: #cbd5f5;
+      color: #9ca3af;
+    }
+
+    .form-card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 14px;
+      border: 1px solid #1f2937;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
       margin-bottom: 10px;
     }
 
-    .flow-chips {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      font-size: 11px;
-      align-items: center;
-    }
-
-    .chip {
-      padding: 4px 8px;
-      border-radius: 999px;
-      border: 1px solid #1f2937;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-    }
-
-    .chip-arrow {
-      color: #9ca3af;
-      font-size: 14px;
-    }
-
-    .layout {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 12px;
-      margin-top: 4px;
-    }
-
-    @media (min-width: 720px) {
-      .layout {
-        grid-template-columns: 1.05fr 1.2fr;
-      }
-    }
-
-    .card {
-      background: radial-gradient(circle at top left, rgba(148,163,184,0.16), #020617);
-      border-radius: 14px;
-      padding: 12px 12px 12px;
-      border: 1px solid #1f2937;
-      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.8);
-    }
-
-    .card-title-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      gap: 8px;
-    }
-
-    .card-title {
-      font-size: 13px;
-      font-weight: 600;
-    }
-
-    .card-sub {
-      font-size: 10px;
-      color: #9ca3af;
-    }
-
-    .badge {
-      font-size: 10px;
-      padding: 3px 7px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      color: #bfdbfe;
-      border: 1px solid #1d4ed8;
-      white-space: nowrap;
-    }
-
-    .req-list {
+    .field {
+      flex: 1;
+      min-width: 130px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
-      margin-top: 4px;
+      gap: 3px;
     }
 
-    .req-item {
-      padding: 8px 9px;
-      border-radius: 10px;
-      border: 1px solid #1f2937;
-      background: rgba(15, 23, 42, 0.9);
-      cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.08s;
-    }
-
-    .req-item:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.9);
-    }
-
-    .req-item.active {
-      border-color: #2563eb;
-      background: radial-gradient(circle at top left, rgba(37,99,235,0.4), #020617);
-      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
-    }
-
-    .req-main {
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 2px;
-      color: #e5e7eb;
-    }
-
-    .req-meta {
+    label {
       font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .req-status-tag {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      border: 1px solid #1f2937;
-      background: rgba(15, 23, 42, 0.85);
-      margin-top: 4px;
       color: #cbd5f5;
     }
 
-    .detail-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-    }
-
-    .detail-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    .detail-meta {
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .detail-body {
+    input, select, textarea {
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      padding: 7px 8px;
       font-size: 12px;
       color: #e5e7eb;
-      margin-bottom: 8px;
+      outline: none;
     }
 
-    .stepper {
-      display: flex;
-      justify-content: space-between;
-      gap: 4px;
-      margin: 4px 0 6px;
-      font-size: 11px;
-    }
-
-    .step {
-      flex: 1;
-      text-align: center;
-      padding: 4px 2px 5px;
-      border-radius: 999px;
-      border: 1px solid #1f2937;
-      background: rgba(15, 23, 42, 0.9);
-      color: #9ca3af;
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .step-label {
-      font-weight: 500;
-    }
-
-    .step-desc {
-      font-size: 10px;
-    }
-
-    .step-current {
+    input:focus, select:focus, textarea:focus {
       border-color: #2563eb;
-      background: rgba(37, 99, 235, 0.2);
-      color: #bfdbfe;
+      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
     }
 
-    .step-done {
-      border-color: #16a34a;
-      background: rgba(22, 163, 74, 0.22);
-      color: #bbf7d0;
-    }
-
-    .status-pill-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin: 4px 0 8px;
-    }
-
-    .status-pill {
-      border-radius: 999px;
-      padding: 3px 8px;
-      border: 1px solid #1f2937;
-      font-size: 11px;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      cursor: pointer;
-    }
-
-    .status-pill.active {
-      border-color: #2563eb;
-      background: rgba(37, 99, 235, 0.2);
-      color: #bfdbfe;
-      font-weight: 500;
-      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.5);
-    }
-
-    .btn-row {
-      display: flex;
-      gap: 8px;
-      margin-top: 4px;
-      flex-wrap: wrap;
+    textarea {
+      min-height: 60px;
+      resize: vertical;
     }
 
     .btn-main {
-      flex: 1;
-      min-width: 120px;
+      width: 100%;
+      margin-top: 6px;
       border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 12px;
+      padding: 9px 12px;
       border: none;
       background: #2563eb;
-      color: white;
+      color: #fff;
+      font-size: 13px;
       font-weight: 500;
       cursor: pointer;
       box-shadow: 0 8px 18px rgba(37, 99, 235, 0.5);
     }
 
-    .btn-sub {
-      flex: 0 0 auto;
-      border-radius: 999px;
-      padding: 7px 10px;
-      font-size: 12px;
-      border: 1px solid #1f2937;
-      background: rgba(15, 23, 42, 0.9);
-      color: #e5e7eb;
-      cursor: pointer;
-    }
-
-    .btn-main:disabled {
-      opacity: 0.6;
-      box-shadow: none;
-      cursor: default;
+    .btn-main:active {
+      transform: translateY(1px);
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
     }
 
     .hint {
-      font-size: 10px;
+      font-size: 11px;
       color: #9ca3af;
       margin-top: 6px;
     }
 
+    .recent-card {
+      background: #020617;
+      border-radius: 14px;
+      padding: 12px;
+      border: 1px solid #1f2937;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    .recent-item {
+      padding: 4px 0;
+      border-bottom: 1px dashed #1f2937;
+    }
+
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+
     footer {
-      margin-top: 10px;
+      margin-top: 14px;
       font-size: 10px;
       color: #6b7280;
       text-align: center;
@@ -387,11 +215,11 @@
     <div class="header-inner">
       <div class="logo-wrap">
         <div class="logo-dot"></div>
-        <div class="logo-text">물류 요청 Admin 뷰 (요청 상세)</div>
+        <div class="logo-text">대리점 인력 요청 등록</div>
       </div>
       <nav class="nav">
-        <a href="dashboard.html" class="nav-link">대시보드</a>
-        <a href="index.html" class="nav-link active">요청 상세(Admin)</a>
+        <a href="dashboard.html" class="nav-link">요청 현황(본사)</a>
+        <a href="index.html" class="nav-link active">요청 등록(대리점)</a>
       </nav>
     </div>
   </header>
@@ -399,249 +227,113 @@
   <div class="page">
     <main>
 
-      <!-- 상단 요약 카드 -->
       <section class="hero-card">
-        <div class="hero-title">요청 단위 상세 처리 화면 (Admin)</div>
+        <div class="hero-title">전국 택배 대리점 인력 요청</div>
         <p class="hero-sub">
-          이 화면은 선택한 요청에 대해 <strong>요청 → 승인 → 배차/출고 → 완료</strong> 단계를  
-          Admin이 직접 조정해보는 샘플입니다.  
-          대시보드에서는 전체 현황을 보고, 여기에서는 개별 요청을 단계별로 관리합니다.
+          CJ·롯데·한진·로젠·쿠팡 등 전국 택배 대리점에서  
+          필요한 인원을 간단히 등록하는 화면입니다.
         </p>
-        <div class="flow-chips">
-          <span class="chip">요청 등록</span>
-          <span class="chip-arrow">➜</span>
-          <span class="chip">승인</span>
-          <span class="chip-arrow">➜</span>
-          <span class="chip">배차·출고</span>
-          <span class="chip-arrow">➜</span>
-          <span class="chip">완료</span>
-        </div>
       </section>
 
-      <!-- 좌: 요청 목록 / 우: 요청 상세 + 흐름 -->
-      <section class="layout">
-
-        <!-- 요청 목록 -->
-        <article class="card">
-          <div class="card-title-row">
-            <div>
-              <div class="card-title">대리점 요청 목록 (샘플)</div>
-              <div class="card-sub">요청을 선택하면 오른쪽에서 상세와 진행 상태를 확인할 수 있습니다.</div>
-            </div>
-            <span class="badge">본사 Admin</span>
-          </div>
-
-          <div class="req-list">
-            <div class="req-item active" data-request-id="1">
-              <div class="req-main">[A-001] 냉동 1톤 차량 + 인력 1명</div>
-              <div class="req-meta">서울 A대리점 · 금일 오전 배송</div>
-              <div class="req-status-tag" id="status-tag-1">현재 상태: 요청 접수</div>
+      <section class="form-card">
+        <form id="request-form">
+          <div class="form-row">
+            <div class="field">
+              <label for="company">택배사</label>
+              <select id="company" required>
+                <option value="">선택하세요</option>
+                <option value="CJ대한통운">CJ대한통운</option>
+                <option value="롯데택배">롯데택배</option>
+                <option value="한진택배">한진택배</option>
+                <option value="로젠택배">로젠택배</option>
+                <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
+                <option value="기타">기타</option>
+              </select>
             </div>
 
-            <div class="req-item" data-request-id="2">
-              <div class="req-main">[B-102] 1톤 일반 차량만 요청</div>
-              <div class="req-meta">부산 B대리점 · 내일 새벽 상차</div>
-              <div class="req-status-tag" id="status-tag-2">현재 상태: 승인 완료</div>
-            </div>
-
-            <div class="req-item" data-request-id="3">
-              <div class="req-main">[C-210] 대차 4대 + 창고 상하차 지원</div>
-              <div class="req-meta">인천 C대리점 · 주말 야간 작업</div>
-              <div class="req-status-tag" id="status-tag-3">현재 상태: 배차/출고 진행 중</div>
+            <div class="field">
+              <label for="branch">영업소 / 대리점명</label>
+              <input id="branch" type="text" placeholder="예: 인천 계양영업소" required />
             </div>
           </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="region">지역(시/군/구)</label>
+              <input id="region" type="text" placeholder="예: 인천 계양구" required />
+            </div>
+            <div class="field">
+              <label for="unit-price">단가 (원/건)</label>
+              <input id="unit-price" type="number" min="0" step="10" placeholder="예: 1300" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="volume">월 물량 (건)</label>
+              <input id="volume" type="number" min="0" step="100" placeholder="예: 20000" required />
+            </div>
+            <div class="field">
+              <label for="headcount">필요 인원 (명)</label>
+              <input id="headcount" type="number" min="1" step="1" placeholder="예: 2" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field" style="flex: 1 1 100%;">
+              <label for="conditions">우대 / 제한 조건</label>
+              <textarea id="conditions" placeholder="예: 여성, 외국인 안 됨 / 새벽·야간 가능자 우대 등"></textarea>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="contact">담당자 이름</label>
+              <input id="contact" type="text" placeholder="예: 홍길동" />
+            </div>
+            <div class="field">
+              <label for="phone">연락처</label>
+              <input id="phone" type="tel" placeholder="예: 010-1234-5678" />
+            </div>
+          </div>
+
+          <button type="submit" class="btn-main">인력 요청 등록 (샘플)</button>
 
           <p class="hint">
-            ※ 실제 운영 시 이 영역이 “요청 리스트”가 되며, 상태별 필터/검색/긴급 표시 등을 추가할 수 있습니다.
+            ※ 실제 저장 기능은 없는 데모 화면입니다. 입력 후 버튼을 누르면 “등록된 것처럼” 메시지만 보여줍니다.
           </p>
-        </article>
+        </form>
+      </section>
 
-        <!-- 요청 상세 + 상태 흐름 -->
-        <article class="card" id="detail-card">
-          <div class="detail-top">
-            <div>
-              <div class="detail-title" id="detail-title">[A-001] 냉동 1톤 차량 + 인력 1명</div>
-              <div class="detail-meta" id="detail-meta">서울 A대리점 · 금일 오전 배송</div>
-            </div>
-            <span class="badge" id="detail-badge">현재: 요청 접수</span>
-          </div>
-
-          <div class="detail-body" id="detail-body">
-            대리점에서 냉동 1톤 차량과 도착지 하역 지원 인력 1명을 요청한 사례입니다.
-            여기에서 승인 여부를 결정하고, 배차 및 출고 진행까지 단계별로 처리합니다.
-          </div>
-
-          <!-- 단계 표시 -->
-          <div class="stepper" id="stepper">
-            <div class="step" data-step-index="0">
-              <span class="step-label">요청</span>
-              <span class="step-desc">대리점 접수</span>
-            </div>
-            <div class="step" data-step-index="1">
-              <span class="step-label">승인</span>
-              <span class="step-desc">본사 승인</span>
-            </div>
-            <div class="step" data-step-index="2">
-              <span class="step-label">배차/출고</span>
-              <span class="step-desc">차량·자원 배정</span>
-            </div>
-            <div class="step" data-step-index="3">
-              <span class="step-label">완료</span>
-              <span class="step-desc">작업 완료</span>
-            </div>
-          </div>
-
-          <!-- 단계 직접 선택 -->
-          <div class="status-pill-row">
-            <span class="status-pill active" data-step-target="0">요청 단계로</span>
-            <span class="status-pill" data-step-target="1">승인 단계로</span>
-            <span class="status-pill" data-step-target="2">배차/출고 단계로</span>
-            <span class="status-pill" data-step-target="3">완료 단계로</span>
-          </div>
-
-          <!-- 버튼들 -->
-          <div class="btn-row">
-            <button type="button" class="btn-main" id="btn-next">
-              다음 단계로 진행
-            </button>
-            <button type="button" class="btn-sub" id="btn-reset">
-              처리 초기화
-            </button>
-          </div>
-
-          <p class="hint">
-            · “다음 단계로 진행”을 누르면 <strong>요청 → 승인 → 배차/출고 → 완료</strong> 순서로 상태가 바뀝니다.<br>
-            · 위의 작은 버튼으로 특정 단계로 건너뛰는 상황도 시뮬레이션할 수 있습니다.
-          </p>
-        </article>
-
+      <section class="recent-card">
+        <div style="margin-bottom:4px; color:#e5e7eb;">최근 등록 예시</div>
+        <div class="recent-item">
+          한진택배 인천 계양영업소 · 단가 1,300원 · 월 20,000건 · 인원 2명 필요 ·
+          조건: 여성, 외국인 안 됨
+        </div>
+        <div class="recent-item">
+          CJ대한통운 서울 강서영업소 · 단가 1,200원 · 월 15,000건 · 인원 1명 필요
+        </div>
+        <div class="recent-item">
+          롯데택배 부산 해운대대리점 · 단가 1,100원 · 월 18,000건 · 인원 3명 필요
+        </div>
       </section>
 
     </main>
 
     <footer>
-      이 Admin 샘플 화면은 요청 단위의 단계를 테스트하기 위한 데모입니다. 데이터는 실제 저장되지 않습니다.
+      이 화면은 택배 대리점 인력 요청을 위한 샘플 폼입니다.  
+      실제 저장/전송 기능은 구현되지 않았습니다.
     </footer>
   </div>
 
   <script>
-    const steps = ["요청 접수", "승인 완료", "배차/출고 진행 중", "작업 완료"];
-    const stepLabelsForBadge = ["요청 접수", "승인 완료", "배차/출고", "완료"];
-
-    const state = {
-      1: 0,
-      2: 1,
-      3: 2
-    };
-
-    let currentRequestId = 1;
-
-    const reqItems = document.querySelectorAll(".req-item");
-    const statusTags = {
-      1: document.getElementById("status-tag-1"),
-      2: document.getElementById("status-tag-2"),
-      3: document.getElementById("status-tag-3")
-    };
-
-    const detailTitle = document.getElementById("detail-title");
-    const detailMeta = document.getElementById("detail-meta");
-    const detailBody = document.getElementById("detail-body");
-    const detailBadge = document.getElementById("detail-badge");
-    const stepper = document.getElementById("stepper");
-    const statusPills = document.querySelectorAll(".status-pill");
-    const btnNext = document.getElementById("btn-next");
-    const btnReset = document.getElementById("btn-reset");
-
-    const requestData = {
-      1: {
-        title: "[A-001] 냉동 1톤 차량 + 인력 1명",
-        meta: "서울 A대리점 · 금일 오전 배송",
-        body: "냉동 1톤 차량과 도착지 하역 지원 인력 1명을 요청한 사례입니다. 본사에서 승인 후 배차·출고까지 진행하는 기본 시나리오입니다."
-      },
-      2: {
-        title: "[B-102] 1톤 일반 차량만 요청",
-        meta: "부산 B대리점 · 내일 새벽 상차",
-        body: "차량만 필요한 요청 예시입니다. 이미 승인된 상태에서 배차·출고 단계로 넘어가는 상황을 시뮬레이션할 수 있습니다."
-      },
-      3: {
-        title: "[C-210] 대차 4대 + 창고 상하차 지원",
-        meta: "인천 C대리점 · 주말 야간 작업",
-        body: "대차와 상하차 지원이 함께 필요한 케이스입니다. 현재 배차/출고 진행 중 상태에서 완료 단계로 넘어가는 흐름을 테스트할 수 있습니다."
-      }
-    };
-
-    function updateUI() {
-      const stepIndex = state[currentRequestId];
-      const data = requestData[currentRequestId];
-
-      detailTitle.textContent = data.title;
-      detailMeta.textContent = data.meta;
-      detailBody.textContent = data.body;
-
-      detailBadge.textContent = "현재: " + stepLabelsForBadge[stepIndex];
-
-      const stepElements = stepper.querySelectorAll(".step");
-      stepElements.forEach((el) => {
-        const idx = Number(el.dataset.stepIndex);
-        el.classList.remove("step-current", "step-done");
-        if (idx < stepIndex) {
-          el.classList.add("step-done");
-        } else if (idx === stepIndex) {
-          el.classList.add("step-current");
-        }
-      });
-
-      Object.keys(state).forEach((id) => {
-        if (statusTags[id]) {
-          statusTags[id].textContent = "현재 상태: " + steps[state[id]];
-        }
-      });
-
-      statusPills.forEach((pill) => {
-        const target = Number(pill.dataset.stepTarget);
-        pill.classList.toggle("active", target === stepIndex);
-      });
-
-      if (stepIndex >= 3) {
-        btnNext.textContent = "더 이상 진행할 단계 없음";
-        btnNext.disabled = true;
-      } else {
-        btnNext.textContent = "다음 단계로 진행";
-        btnNext.disabled = false;
-      }
-    }
-
-    reqItems.forEach((item) => {
-      item.addEventListener("click", () => {
-        reqItems.forEach((el) => el.classList.remove("active"));
-        item.classList.add("active");
-        currentRequestId = Number(item.dataset.requestId);
-        updateUI();
-      });
+    document.getElementById("request-form").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const company = document.getElementById("company").value || "택배사 미선택";
+      const branch = document.getElementById("branch").value || "영업소 미입력";
+      alert("요청이 접수된 것처럼 표시합니다.\n\n" + company + " · " + branch);
     });
-
-    btnNext.addEventListener("click", () => {
-      const currentStep = state[currentRequestId];
-      if (currentStep < 3) {
-        state[currentRequestId] = currentStep + 1;
-        updateUI();
-      }
-    });
-
-    btnReset.addEventListener("click", () => {
-      state[currentRequestId] = 0;
-      updateUI();
-    });
-
-    statusPills.forEach((pill) => {
-      pill.addEventListener("click", () => {
-        const target = Number(pill.dataset.stepTarget);
-        state[currentRequestId] = target;
-        updateUI();
-      });
-    });
-
-    updateUI();
   </script>
 </body>
 </html>
