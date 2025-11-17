@@ -4,217 +4,14 @@
   <meta charset="UTF-8" />
   <title>대리점 인력 요청 등록</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: #0f172a;
-      color: #e5e7eb;
-      line-height: 1.6;
-    }
-
-    .page {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 16px 14px 40px;
-    }
-
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      background: rgba(15, 23, 42, 0.92);
-      backdrop-filter: blur(10px);
-      border-bottom: 1px solid #1f2937;
-      padding: 10px 0 8px;
-      margin: 0 -14px 10px;
-    }
-
-    .header-inner {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 0 14px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
-    }
-
-    .logo-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .logo-dot {
-      width: 11px;
-      height: 11px;
-      border-radius: 999px;
-      background: #2563eb;
-      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.34);
-    }
-
-    .logo-text {
-      font-size: 14px;
-      font-weight: 600;
-      color: #e5e7eb;
-    }
-
-    .nav {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .nav-link {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid #1f2937;
-      background: #020617;
-      color: #cbd5f5;
-      text-decoration: none;
-      white-space: nowrap;
-    }
-
-    .nav-link.active {
-      background: #f9fafb;
-      color: #0f172a;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.7);
-    }
-
-    main {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
-    }
-
-    .hero-card {
-      background: #020617;
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid #1f2937;
-    }
-
-    .hero-title {
-      font-size: 17px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .hero-sub {
-      font-size: 12px;
-      color: #9ca3af;
-    }
-
-    .form-card {
-      background: #020617;
-      border-radius: 14px;
-      padding: 14px;
-      border: 1px solid #1f2937;
-    }
-
-    .form-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 10px;
-    }
-
-    .field {
-      flex: 1;
-      min-width: 130px;
-      display: flex;
-      flex-direction: column;
-      gap: 3px;
-    }
-
-    label {
-      font-size: 11px;
-      color: #cbd5f5;
-    }
-
-    input, select, textarea {
-      background: #020617;
-      border-radius: 8px;
-      border: 1px solid #1f2937;
-      padding: 7px 8px;
-      font-size: 12px;
-      color: #e5e7eb;
-      outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
-    }
-
-    textarea {
-      min-height: 60px;
-      resize: vertical;
-    }
-
-    .btn-main {
-      width: 100%;
-      margin-top: 6px;
-      border-radius: 999px;
-      padding: 9px 12px;
-      border: none;
-      background: #2563eb;
-      color: #fff;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.5);
-    }
-
-    .btn-main:active {
-      transform: translateY(1px);
-      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.5);
-    }
-
-    .hint {
-      font-size: 11px;
-      color: #9ca3af;
-      margin-top: 6px;
-    }
-
-    .recent-card {
-      background: #020617;
-      border-radius: 14px;
-      padding: 12px;
-      border: 1px solid #1f2937;
-      font-size: 11px;
-      color: #9ca3af;
-    }
-
-    .recent-item {
-      padding: 4px 0;
-      border-bottom: 1px dashed #1f2937;
-    }
-
-    .recent-item:last-child {
-      border-bottom: none;
-    }
-
-    footer {
-      margin-top: 14px;
-      font-size: 10px;
-      color: #6b7280;
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 
 <body>
-  <header>
+  <header class="top-header">
     <div class="header-inner">
       <div class="logo-wrap">
-        <div class="logo-dot"></div>
+        <div class="logo-square"></div>
         <div class="logo-text">대리점 인력 요청 등록</div>
       </div>
       <nav class="nav">
@@ -225,9 +22,9 @@
   </header>
 
   <div class="page">
-    <main>
+    <main class="main">
 
-      <section class="hero-card">
+      <section class="sheet sheet-hero">
         <div class="hero-title">전국 택배 대리점 인력 요청</div>
         <p class="hero-sub">
           CJ·롯데·한진·로젠·쿠팡 등 전국 택배 대리점에서  
@@ -235,9 +32,9 @@
         </p>
       </section>
 
-      <section class="form-card">
+      <section class="sheet">
         <form id="request-form">
-          <div class="form-row">
+          <div class="grid-row">
             <div class="field">
               <label for="company">택배사</label>
               <select id="company" required>
@@ -257,7 +54,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="grid-row">
             <div class="field">
               <label for="region">지역(시/군/구)</label>
               <input id="region" type="text" placeholder="예: 인천 계양구" required />
@@ -268,7 +65,7 @@
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="grid-row">
             <div class="field">
               <label for="volume">월 물량 (건)</label>
               <input id="volume" type="number" min="0" step="100" placeholder="예: 20000" required />
@@ -279,14 +76,14 @@
             </div>
           </div>
 
-          <div class="form-row">
-            <div class="field" style="flex: 1 1 100%;">
+          <div class="grid-row">
+            <div class="field field-full">
               <label for="conditions">우대 / 제한 조건</label>
               <textarea id="conditions" placeholder="예: 여성, 외국인 안 됨 / 새벽·야간 가능자 우대 등"></textarea>
             </div>
           </div>
 
-          <div class="form-row">
+          <div class="grid-row">
             <div class="field">
               <label for="contact">담당자 이름</label>
               <input id="contact" type="text" placeholder="예: 홍길동" />
@@ -297,7 +94,7 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-main">인력 요청 등록 (샘플)</button>
+          <button type="submit" class="btn-primary">인력 요청 등록 (샘플)</button>
 
           <p class="hint">
             ※ 실제 저장 기능은 없는 데모 화면입니다. 입력 후 버튼을 누르면 “등록된 것처럼” 메시지만 보여줍니다.
@@ -305,23 +102,38 @@
         </form>
       </section>
 
-      <section class="recent-card">
-        <div style="margin-bottom:4px; color:#e5e7eb;">최근 등록 예시</div>
-        <div class="recent-item">
-          한진택배 인천 계양영업소 · 단가 1,300원 · 월 20,000건 · 인원 2명 필요 ·
-          조건: 여성, 외국인 안 됨
+      <section class="sheet">
+        <div class="sheet-title-row">
+          <div class="sheet-title">최근 등록 예시</div>
         </div>
-        <div class="recent-item">
-          CJ대한통운 서울 강서영업소 · 단가 1,200원 · 월 15,000건 · 인원 1명 필요
-        </div>
-        <div class="recent-item">
-          롯데택배 부산 해운대대리점 · 단가 1,100원 · 월 18,000건 · 인원 3명 필요
+        <div class="recent-list">
+          <div class="recent-row">
+            <span>한진택배 인천 계양영업소</span>
+            <span>단가 1,300원</span>
+            <span>월 20,000건</span>
+            <span>인원 2명</span>
+            <span>조건: 여성, 외국인 안 됨</span>
+          </div>
+          <div class="recent-row">
+            <span>CJ대한통운 서울 강서영업소</span>
+            <span>단가 1,200원</span>
+            <span>월 15,000건</span>
+            <span>인원 1명</span>
+            <span>조건: 경력자 우대</span>
+          </div>
+          <div class="recent-row">
+            <span>롯데택배 부산 해운대대리점</span>
+            <span>단가 1,100원</span>
+            <span>월 18,000건</span>
+            <span>인원 3명</span>
+            <span>조건: 야간 가능자</span>
+          </div>
         </div>
       </section>
 
     </main>
 
-    <footer>
+    <footer class="footer">
       이 화면은 택배 대리점 인력 요청을 위한 샘플 폼입니다.  
       실제 저장/전송 기능은 구현되지 않았습니다.
     </footer>
