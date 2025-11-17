@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>물류 배차·대차·인력 요청 Admin 뷰</title>
+  <title>물류 요청 Admin 뷰 (요청 상세)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
   <style>
@@ -14,8 +14,8 @@
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-      background: #f3f4f6;
-      color: #111827;
+      background: #0f172a;
+      color: #e5e7eb;
       line-height: 1.6;
     }
 
@@ -29,9 +29,9 @@
       position: sticky;
       top: 0;
       z-index: 10;
-      background: rgba(249, 250, 251, 0.98);
+      background: rgba(15, 23, 42, 0.92);
       backdrop-filter: blur(10px);
-      border-bottom: 1px solid #e5e7eb;
+      border-bottom: 1px solid #1f2937;
       padding: 10px 0 8px;
       margin: 0 -14px 10px;
     }
@@ -53,17 +53,17 @@
     }
 
     .logo-dot {
-      width: 12px;
-      height: 12px;
+      width: 11px;
+      height: 11px;
       border-radius: 999px;
       background: #2563eb;
-      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.34);
     }
 
     .logo-text {
       font-size: 14px;
       font-weight: 600;
-      color: #111827;
+      color: #e5e7eb;
     }
 
     .nav {
@@ -77,19 +77,18 @@
       font-size: 11px;
       padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      color: #6b7280;
+      border: 1px solid #1f2937;
+      background: #020617;
+      color: #cbd5f5;
       text-decoration: none;
       white-space: nowrap;
     }
 
     .nav-link.active {
-      background: #2563eb;
-      border-color: #2563eb;
-      color: #ffffff;
-      font-weight: 500;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
+      background: #f9fafb;
+      color: #0f172a;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.7);
     }
 
     main {
@@ -98,23 +97,24 @@
       gap: 14px;
     }
 
+    /* HERO 카드 - 대시보드와 톤 통일 */
     .hero-card {
-      background: white;
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.28), #020617);
       border-radius: 14px;
       padding: 14px 14px 12px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.03);
+      border: 1px solid #1f2937;
+      box-shadow: 0 12px 26px rgba(15, 23, 42, 0.9);
     }
 
     .hero-title {
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 700;
       margin-bottom: 4px;
     }
 
     .hero-sub {
       font-size: 12px;
-      color: #6b7280;
+      color: #cbd5f5;
       margin-bottom: 10px;
     }
 
@@ -129,9 +129,9 @@
     .chip {
       padding: 4px 8px;
       border-radius: 999px;
-      border: 1px solid #d1d5db;
-      background: #f9fafb;
-      color: #374151;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
     }
 
     .chip-arrow {
@@ -143,6 +143,7 @@
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
+      margin-top: 4px;
     }
 
     @media (min-width: 720px) {
@@ -152,11 +153,11 @@
     }
 
     .card {
-      background: white;
+      background: radial-gradient(circle at top left, rgba(148,163,184,0.16), #020617);
       border-radius: 14px;
       padding: 12px 12px 12px;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.03);
+      border: 1px solid #1f2937;
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.8);
     }
 
     .card-title-row {
@@ -164,15 +165,16 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 6px;
+      gap: 8px;
     }
 
     .card-title {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
     }
 
     .card-sub {
-      font-size: 11px;
+      font-size: 10px;
       color: #9ca3af;
     }
 
@@ -180,9 +182,9 @@
       font-size: 10px;
       padding: 3px 7px;
       border-radius: 999px;
-      background: #eff6ff;
-      color: #1d4ed8;
-      border: 1px solid #bfdbfe;
+      background: rgba(15, 23, 42, 0.9);
+      color: #bfdbfe;
+      border: 1px solid #1d4ed8;
       white-space: nowrap;
     }
 
@@ -196,27 +198,33 @@
     .req-item {
       padding: 8px 9px;
       border-radius: 10px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.9);
       cursor: pointer;
-      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s, transform 0.08s;
+    }
+
+    .req-item:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.9);
     }
 
     .req-item.active {
       border-color: #2563eb;
-      background: #eff6ff;
-      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
+      background: radial-gradient(circle at top left, rgba(37,99,235,0.4), #020617);
+      box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
     }
 
     .req-main {
       font-size: 13px;
       font-weight: 500;
       margin-bottom: 2px;
+      color: #e5e7eb;
     }
 
     .req-meta {
       font-size: 11px;
-      color: #6b7280;
+      color: #9ca3af;
     }
 
     .req-status-tag {
@@ -224,10 +232,10 @@
       font-size: 10px;
       padding: 2px 6px;
       border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #f3f4f6;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.85);
       margin-top: 4px;
-      color: #4b5563;
+      color: #cbd5f5;
     }
 
     .detail-top {
@@ -241,16 +249,17 @@
     .detail-title {
       font-size: 14px;
       font-weight: 600;
+      color: #e5e7eb;
     }
 
     .detail-meta {
       font-size: 11px;
-      color: #6b7280;
+      color: #9ca3af;
     }
 
     .detail-body {
       font-size: 12px;
-      color: #4b5563;
+      color: #e5e7eb;
       margin-bottom: 8px;
     }
 
@@ -267,9 +276,9 @@
       text-align: center;
       padding: 4px 2px 5px;
       border-radius: 999px;
-      border: 1px solid #e5e7eb;
-      background: #f9fafb;
-      color: #6b7280;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.9);
+      color: #9ca3af;
       display: flex;
       flex-direction: column;
       gap: 1px;
@@ -285,14 +294,14 @@
 
     .step-current {
       border-color: #2563eb;
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: rgba(37, 99, 235, 0.2);
+      color: #bfdbfe;
     }
 
     .step-done {
       border-color: #16a34a;
-      background: #ecfdf3;
-      color: #15803d;
+      background: rgba(22, 163, 74, 0.22);
+      color: #bbf7d0;
     }
 
     .status-pill-row {
@@ -305,18 +314,19 @@
     .status-pill {
       border-radius: 999px;
       padding: 3px 8px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid #1f2937;
       font-size: 11px;
-      background: #f9fafb;
-      color: #374151;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
       cursor: pointer;
     }
 
     .status-pill.active {
       border-color: #2563eb;
-      background: #eff6ff;
-      color: #1d4ed8;
+      background: rgba(37, 99, 235, 0.2);
+      color: #bfdbfe;
       font-weight: 500;
+      box-shadow: 0 3px 10px rgba(37, 99, 235, 0.5);
     }
 
     .btn-row {
@@ -337,7 +347,7 @@
       color: white;
       font-weight: 500;
       cursor: pointer;
-      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.5);
     }
 
     .btn-sub {
@@ -345,14 +355,20 @@
       border-radius: 999px;
       padding: 7px 10px;
       font-size: 12px;
-      border: 1px solid #d1d5db;
-      background: white;
-      color: #374151;
+      border: 1px solid #1f2937;
+      background: rgba(15, 23, 42, 0.9);
+      color: #e5e7eb;
       cursor: pointer;
     }
 
+    .btn-main:disabled {
+      opacity: 0.6;
+      box-shadow: none;
+      cursor: default;
+    }
+
     .hint {
-      font-size: 11px;
+      font-size: 10px;
       color: #9ca3af;
       margin-top: 6px;
     }
@@ -360,7 +376,7 @@
     footer {
       margin-top: 10px;
       font-size: 10px;
-      color: #9ca3af;
+      color: #6b7280;
       text-align: center;
     }
   </style>
@@ -371,7 +387,7 @@
     <div class="header-inner">
       <div class="logo-wrap">
         <div class="logo-dot"></div>
-        <div class="logo-text">물류 요청 Admin 뷰(요청 상세)</div>
+        <div class="logo-text">물류 요청 Admin 뷰 (요청 상세)</div>
       </div>
       <nav class="nav">
         <a href="dashboard.html" class="nav-link">대시보드</a>
@@ -388,8 +404,8 @@
         <div class="hero-title">요청 단위 상세 처리 화면 (Admin)</div>
         <p class="hero-sub">
           이 화면은 선택한 요청에 대해 <strong>요청 → 승인 → 배차/출고 → 완료</strong> 단계를  
-          Admin이 직접 조정해보는 샘플입니다. 대시보드에서는 전체 현황을 보고,  
-          여기에서는 개별 요청을 단계별로 관리합니다.
+          Admin이 직접 조정해보는 샘플입니다.  
+          대시보드에서는 전체 현황을 보고, 여기에서는 개별 요청을 단계별로 관리합니다.
         </p>
         <div class="flow-chips">
           <span class="chip">요청 등록</span>
@@ -589,13 +605,9 @@
       if (stepIndex >= 3) {
         btnNext.textContent = "더 이상 진행할 단계 없음";
         btnNext.disabled = true;
-        btnNext.style.opacity = 0.6;
-        btnNext.style.boxShadow = "none";
       } else {
         btnNext.textContent = "다음 단계로 진행";
         btnNext.disabled = false;
-        btnNext.style.opacity = 1;
-        btnNext.style.boxShadow = "0 8px 18px rgba(37, 99, 235, 0.3)";
       }
     }
 
