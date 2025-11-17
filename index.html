@@ -2,21 +2,10 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>물류 배차·대차·인력 요청 플랫폼 RFP</title>
+  <title>물류 배차·대차·인력 요청 Admin 뷰</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="description" content="물류 대리점의 차량·대차·인력 요청을 디지털화하고, 본사에서 요청→승인→배차/출고→완료까지 관리하는 플랫폼 RFP 소개 페이지입니다.">
 
   <style>
-    :root {
-      --bg: #0f172a;
-      --card-bg: #111827;
-      --accent: #38bdf8;
-      --accent-soft: rgba(56, 189, 248, 0.14);
-      --text: #e5e7eb;
-      --text-sub: #9ca3af;
-      --border-soft: #1f2937;
-    }
-
     * {
       box-sizing: border-box;
       margin: 0;
@@ -24,413 +13,623 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", system-ui, sans-serif;
-      background: radial-gradient(circle at top, #1d2640 0, var(--bg) 55%, #020617 100%);
-      color: var(--text);
-      line-height: 1.7;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      background: #f3f4f6;
+      color: #111827;
+      line-height: 1.6;
     }
 
     .page {
       max-width: 960px;
       margin: 0 auto;
-      padding: 20px 16px 40px;
+      padding: 16px 14px 40px;
     }
 
     header {
       position: sticky;
       top: 0;
       z-index: 10;
-      backdrop-filter: blur(12px);
-      background: linear-gradient(to bottom, rgba(15, 23, 42, 0.92), rgba(15, 23, 42, 0.7), transparent);
-      padding: 10px 0 6px;
+      background: rgba(249, 250, 251, 0.98);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid #e5e7eb;
+      padding: 10px 0 8px;
+      margin: 0 -14px 10px;
     }
 
-    .nav-title {
-      font-size: 16px;
-      font-weight: 600;
-      letter-spacing: 0.03em;
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 0 14px;
       display: flex;
       align-items: center;
-      gap: 6px;
-      color: #e5e7eb;
+      justify-content: space-between;
+      gap: 12px;
     }
 
-    .nav-dot {
-      width: 10px;
-      height: 10px;
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo-dot {
+      width: 12px;
+      height: 12px;
       border-radius: 999px;
-      background: var(--accent);
-      box-shadow: 0 0 0 6px rgba(56, 189, 248, 0.25);
+      background: #2563eb;
+      box-shadow: 0 0 0 6px rgba(37, 99, 235, 0.2);
+    }
+
+    .logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #6b7280;
+      text-decoration: none;
+      white-space: nowrap;
+    }
+
+    .nav-link.active {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: #ffffff;
+      font-weight: 500;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.3);
     }
 
     main {
-      margin-top: 12px;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 14px;
     }
 
     .hero-card {
-      background: linear-gradient(135deg, #111827, #020617);
-      border-radius: 16px;
-      border: 1px solid rgba(148, 163, 184, 0.25);
-      padding: 20px 18px 18px;
-      box-shadow: 0 18px 45px rgba(15, 23, 42, 0.7);
-    }
-
-    .hero-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 11px;
-      padding: 4px 9px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      color: var(--text-sub);
-      margin-bottom: 10px;
-    }
-
-    .hero-badge-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: var(--accent);
+      background: white;
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 8px 16px rgba(15, 23, 42, 0.03);
     }
 
     .hero-title {
-      font-size: 22px;
+      font-size: 18px;
       font-weight: 700;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .hero-sub {
-      font-size: 13px;
-      color: var(--text-sub);
-      margin-bottom: 12px;
+      font-size: 12px;
+      color: #6b7280;
+      margin-bottom: 10px;
     }
 
-    .hero-flow {
+    .flow-chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
+      gap: 6px;
       font-size: 11px;
-      color: var(--text-sub);
-    }
-
-    .flow-pill {
-      padding: 4px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.35);
-      display: inline-flex;
       align-items: center;
-      gap: 4px;
-      background: rgba(15, 23, 42, 0.9);
     }
 
-    .flow-arrow {
-      font-size: 13px;
-      color: #64748b;
+    .chip {
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      background: #f9fafb;
+      color: #374151;
     }
 
-    .tagline {
-      font-size: 12px;
-      color: #cbd5f5;
-      margin-top: 4px;
+    .chip-arrow {
+      color: #9ca3af;
+      font-size: 14px;
     }
 
-    .grid {
+    .layout {
       display: grid;
       grid-template-columns: 1fr;
       gap: 12px;
-      margin-top: 6px;
     }
 
     @media (min-width: 720px) {
-      .grid {
-        grid-template-columns: 1.2fr 1fr;
+      .layout {
+        grid-template-columns: 1.05fr 1.2fr;
       }
     }
 
     .card {
-      background: var(--card-bg);
+      background: white;
       border-radius: 14px;
-      padding: 14px 14px 16px;
-      border: 1px solid var(--border-soft);
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.5);
+      padding: 12px 12px 12px;
+      border: 1px solid #e5e7eb;
+      box-shadow: 0 6px 14px rgba(15, 23, 42, 0.03);
     }
 
-    .card h2 {
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .card p {
-      font-size: 12px;
-      color: var(--text-sub);
-      margin-bottom: 8px;
-    }
-
-    .chip-row {
+    .card-title-row {
       display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 4px;
-    }
-
-    .chip {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      color: #e5e7eb;
-    }
-
-    .section-title {
-      font-size: 14px;
-      font-weight: 600;
+      justify-content: space-between;
+      align-items: center;
       margin-bottom: 6px;
     }
 
-    .list {
-      list-style: none;
-      font-size: 12px;
-      color: var(--text-sub);
+    .card-title {
+      font-size: 14px;
+      font-weight: 600;
     }
 
-    .list li {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 5px;
-    }
-
-    .list-bullet {
-      width: 4px;
-      margin-top: 7px;
-      height: 4px;
-      border-radius: 999px;
-      background: #64748b;
-      flex-shrink: 0;
-    }
-
-    .section-card {
-      background: var(--card-bg);
-      border-radius: 14px;
-      padding: 14px 14px 14px;
-      border: 1px solid var(--border-soft);
-    }
-
-    .flow-diagram {
-      display: flex;
-      flex-wrap: nowrap;
-      overflow-x: auto;
-      gap: 6px;
-      padding: 6px 0 2px;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .flow-step {
-      min-width: 80px;
-      text-align: center;
+    .card-sub {
       font-size: 11px;
-      padding: 6px 4px;
-      border-radius: 10px;
-      border: 1px solid rgba(148, 163, 184, 0.45);
-      background: rgba(15, 23, 42, 0.95);
+      color: #9ca3af;
+    }
+
+    .badge {
+      font-size: 10px;
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      border: 1px solid #bfdbfe;
       white-space: nowrap;
     }
 
-    .flow-diagram-arrow {
-      align-self: center;
+    .req-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 4px;
+    }
+
+    .req-item {
+      padding: 8px 9px;
+      border-radius: 10px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .req-item.active {
+      border-color: #2563eb;
+      background: #eff6ff;
+      box-shadow: 0 4px 10px rgba(37, 99, 235, 0.12);
+    }
+
+    .req-main {
       font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 2px;
+    }
+
+    .req-meta {
+      font-size: 11px;
       color: #6b7280;
     }
 
-    .pill-note {
+    .req-status-tag {
+      display: inline-block;
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f3f4f6;
+      margin-top: 4px;
+      color: #4b5563;
+    }
+
+    .detail-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+
+    .detail-title {
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .detail-meta {
       font-size: 11px;
+      color: #6b7280;
+    }
+
+    .detail-body {
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+
+    .stepper {
+      display: flex;
+      justify-content: space-between;
+      gap: 4px;
+      margin: 4px 0 6px;
+      font-size: 11px;
+    }
+
+    .step {
+      flex: 1;
+      text-align: center;
+      padding: 4px 2px 5px;
+      border-radius: 999px;
+      border: 1px solid #e5e7eb;
+      background: #f9fafb;
+      color: #6b7280;
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .step-label {
+      font-weight: 500;
+    }
+
+    .step-desc {
+      font-size: 10px;
+    }
+
+    .step-current {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+    }
+
+    .step-done {
+      border-color: #16a34a;
+      background: #ecfdf3;
+      color: #15803d;
+    }
+
+    .status-pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 4px 0 8px;
+    }
+
+    .status-pill {
+      border-radius: 999px;
+      padding: 3px 8px;
+      border: 1px solid #e5e7eb;
+      font-size: 11px;
+      background: #f9fafb;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .status-pill.active {
+      border-color: #2563eb;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 500;
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+
+    .btn-main {
+      flex: 1;
+      min-width: 120px;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      border: none;
+      background: #2563eb;
+      color: white;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(37, 99, 235, 0.3);
+    }
+
+    .btn-sub {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 7px 10px;
+      font-size: 12px;
+      border: 1px solid #d1d5db;
+      background: white;
+      color: #374151;
+      cursor: pointer;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: #9ca3af;
       margin-top: 6px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      background: rgba(15, 23, 42, 0.9);
-      border: 1px dashed rgba(148, 163, 184, 0.5);
-      color: var(--text-sub);
     }
 
     footer {
-      margin-top: 18px;
+      margin-top: 10px;
       font-size: 10px;
-      color: #6b7280;
+      color: #9ca3af;
       text-align: center;
-      padding-top: 8px;
     }
   </style>
 </head>
 
 <body>
-  <div class="page">
-
-    <!-- 상단 고정 헤더 -->
-    <header>
-      <div class="nav-title">
-        <span class="nav-dot"></span>
-        물류 배차·대차·인력 요청 플랫폼 RFP
+  <header>
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-dot"></div>
+        <div class="logo-text">물류 요청 Admin 뷰(요청 상세)</div>
       </div>
-    </header>
+      <nav class="nav">
+        <a href="dashboard.html" class="nav-link">대시보드</a>
+        <a href="index.html" class="nav-link active">요청 상세(Admin)</a>
+      </nav>
+    </div>
+  </header>
 
+  <div class="page">
     <main>
 
-      <!-- HERO -->
+      <!-- 상단 요약 카드 -->
       <section class="hero-card">
-        <div class="hero-badge">
-          <span class="hero-badge-dot"></span>
-          RFP 요약 · 비즈니스 관점
-        </div>
-        <h1 class="hero-title">물류 대리점 요청 업무의 디지털 전환</h1>
+        <div class="hero-title">요청 단위 상세 처리 화면 (Admin)</div>
         <p class="hero-sub">
-          대리점에서 <strong>차량·대차·인력</strong>을 요청하고, 본사에서
-          <strong>요청 → 승인 → 배차/출고 → 완료</strong>까지 한 화면에서 관리하기 위한
-          플랫폼 구축 제안요청서(RFP) 요약 페이지입니다.
+          이 화면은 선택한 요청에 대해 <strong>요청 → 승인 → 배차/출고 → 완료</strong> 단계를  
+          Admin이 직접 조정해보는 샘플입니다. 대시보드에서는 전체 현황을 보고,  
+          여기에서는 개별 요청을 단계별로 관리합니다.
         </p>
-
-        <div class="hero-flow">
-          <span class="flow-pill">요청</span>
-          <span class="flow-arrow">➜</span>
-          <span class="flow-pill">승인</span>
-          <span class="flow-arrow">➜</span>
-          <span class="flow-pill">배차·출고</span>
-          <span class="flow-arrow">➜</span>
-          <span class="flow-pill">완료</span>
+        <div class="flow-chips">
+          <span class="chip">요청 등록</span>
+          <span class="chip-arrow">➜</span>
+          <span class="chip">승인</span>
+          <span class="chip-arrow">➜</span>
+          <span class="chip">배차·출고</span>
+          <span class="chip-arrow">➜</span>
+          <span class="chip">완료</span>
         </div>
-
-        <p class="tagline">
-          전화·카톡·수기 기록을 하나의 플랫폼으로 모아,<br>
-          누락 없이 빠르게 처리하는 업무 환경을 만드는 것이 핵심 목표입니다.
-        </p>
       </section>
 
-      <!-- GRID : 개요 + 문제점/개선 -->
-      <section class="grid">
+      <!-- 좌: 요청 목록 / 우: 요청 상세 + 흐름 -->
+      <section class="layout">
 
-        <!-- 개요 카드 -->
+        <!-- 요청 목록 -->
         <article class="card">
-          <h2>1. 사업 개요</h2>
-          <p>
-            물류 대리점이 필요할 때마다 차량·대차·인력을 <strong>쉽게 요청</strong>하고,<br>
-            본사에서는 이를 <strong>실시간으로 확인·승인·배차</strong>할 수 있는
-            단순한 운영 플랫폼 구축을 목표로 합니다.
-          </p>
-          <div class="chip-row">
-            <span class="chip">대리점 요청 간편화</span>
-            <span class="chip">본사 배차 통합 관리</span>
-            <span class="chip">요청 이력 자동 저장</span>
+          <div class="card-title-row">
+            <div>
+              <div class="card-title">대리점 요청 목록 (샘플)</div>
+              <div class="card-sub">요청을 선택하면 오른쪽에서 상세와 진행 상태를 확인할 수 있습니다.</div>
+            </div>
+            <span class="badge">본사 Admin</span>
           </div>
+
+          <div class="req-list">
+            <div class="req-item active" data-request-id="1">
+              <div class="req-main">[A-001] 냉동 1톤 차량 + 인력 1명</div>
+              <div class="req-meta">서울 A대리점 · 금일 오전 배송</div>
+              <div class="req-status-tag" id="status-tag-1">현재 상태: 요청 접수</div>
+            </div>
+
+            <div class="req-item" data-request-id="2">
+              <div class="req-main">[B-102] 1톤 일반 차량만 요청</div>
+              <div class="req-meta">부산 B대리점 · 내일 새벽 상차</div>
+              <div class="req-status-tag" id="status-tag-2">현재 상태: 승인 완료</div>
+            </div>
+
+            <div class="req-item" data-request-id="3">
+              <div class="req-main">[C-210] 대차 4대 + 창고 상하차 지원</div>
+              <div class="req-meta">인천 C대리점 · 주말 야간 작업</div>
+              <div class="req-status-tag" id="status-tag-3">현재 상태: 배차/출고 진행 중</div>
+            </div>
+          </div>
+
+          <p class="hint">
+            ※ 실제 운영 시 이 영역이 “요청 리스트”가 되며, 상태별 필터/검색/긴급 표시 등을 추가할 수 있습니다.
+          </p>
         </article>
 
-        <!-- 문제점 / 개선 방향 -->
-        <article class="card">
-          <h2>2. 현재 문제 & 개선 방향</h2>
-          <p><strong>현재 문제</strong></p>
-          <ul class="list">
-            <li><span class="list-bullet"></span><span>전화·카톡·종이 메모로 요청이 분산</span></li>
-            <li><span class="list-bullet"></span><span>요청 내용 누락, 중복 배차, 잘못된 전달</span></li>
-            <li><span class="list-bullet"></span><span>진행 상태를 대리점이 알기 어려움</span></li>
-          </ul>
-          <p><strong>개선 방향</strong></p>
-          <ul class="list">
-            <li><span class="list-bullet"></span><span>요청–승인–배차–출고–완료를 한 플랫폼에서 처리</span></li>
-            <li><span class="list-bullet"></span><span>단계별 상태를 실시간으로 공유</span></li>
-            <li><span class="list-bullet"></span><span>모든 이력을 데이터로 자동 기록</span></li>
-          </ul>
+        <!-- 요청 상세 + 상태 흐름 -->
+        <article class="card" id="detail-card">
+          <div class="detail-top">
+            <div>
+              <div class="detail-title" id="detail-title">[A-001] 냉동 1톤 차량 + 인력 1명</div>
+              <div class="detail-meta" id="detail-meta">서울 A대리점 · 금일 오전 배송</div>
+            </div>
+            <span class="badge" id="detail-badge">현재: 요청 접수</span>
+          </div>
+
+          <div class="detail-body" id="detail-body">
+            대리점에서 냉동 1톤 차량과 도착지 하역 지원 인력 1명을 요청한 사례입니다.
+            여기에서 승인 여부를 결정하고, 배차 및 출고 진행까지 단계별로 처리합니다.
+          </div>
+
+          <!-- 단계 표시 -->
+          <div class="stepper" id="stepper">
+            <div class="step" data-step-index="0">
+              <span class="step-label">요청</span>
+              <span class="step-desc">대리점 접수</span>
+            </div>
+            <div class="step" data-step-index="1">
+              <span class="step-label">승인</span>
+              <span class="step-desc">본사 승인</span>
+            </div>
+            <div class="step" data-step-index="2">
+              <span class="step-label">배차/출고</span>
+              <span class="step-desc">차량·자원 배정</span>
+            </div>
+            <div class="step" data-step-index="3">
+              <span class="step-label">완료</span>
+              <span class="step-desc">작업 완료</span>
+            </div>
+          </div>
+
+          <!-- 단계 직접 선택 -->
+          <div class="status-pill-row">
+            <span class="status-pill active" data-step-target="0">요청 단계로</span>
+            <span class="status-pill" data-step-target="1">승인 단계로</span>
+            <span class="status-pill" data-step-target="2">배차/출고 단계로</span>
+            <span class="status-pill" data-step-target="3">완료 단계로</span>
+          </div>
+
+          <!-- 버튼들 -->
+          <div class="btn-row">
+            <button type="button" class="btn-main" id="btn-next">
+              다음 단계로 진행
+            </button>
+            <button type="button" class="btn-sub" id="btn-reset">
+              처리 초기화
+            </button>
+          </div>
+
+          <p class="hint">
+            · “다음 단계로 진행”을 누르면 <strong>요청 → 승인 → 배차/출고 → 완료</strong> 순서로 상태가 바뀝니다.<br>
+            · 위의 작은 버튼으로 특정 단계로 건너뛰는 상황도 시뮬레이션할 수 있습니다.
+          </p>
         </article>
 
-      </section>
-
-      <!-- 업무 흐름 섹션 -->
-      <section class="section-card">
-        <div class="section-title">3. 핵심 업무 흐름</div>
-
-        <div class="flow-diagram">
-          <div class="flow-step">대리점<br>요청 등록</div>
-          <div class="flow-diagram-arrow">➜</div>
-          <div class="flow-step">본사<br>요청 확인</div>
-          <div class="flow-diagram-arrow">➜</div>
-          <div class="flow-step">승인 / 반려</div>
-          <div class="flow-diagram-arrow">➜</div>
-          <div class="flow-step">배차·출고<br>처리</div>
-          <div class="flow-diagram-arrow">➜</div>
-          <div class="flow-step">작업<br>완료 기록</div>
-        </div>
-
-        <div class="pill-note">
-          이 흐름을 기준으로 화면을 구성하며,<br>
-          각 단계에서 “누가 무엇을 확인하고, 무엇을 눌러서 다음 단계로 넘기는지”가
-          한눈에 보이도록 설계하는 것이 목표입니다.
-        </div>
-      </section>
-
-      <!-- 주요 기능 -->
-      <section class="section-card">
-        <div class="section-title">4. 주요 기능 (업무 관점)</div>
-
-        <p style="font-size:12px; color:var(--text-sub); margin-bottom:6px;">
-          기술 용어보다는 실제 쓰는 사람 입장에서 정리한 기능 목록입니다.
-        </p>
-
-        <p style="font-size:12px; margin-bottom:4px;"><strong>① 대리점 화면</strong></p>
-        <ul class="list">
-          <li><span class="list-bullet"></span><span>차량 / 대차 / 인력 중 필요한 항목 선택 후 요청 등록</span></li>
-          <li><span class="list-bullet"></span><span>일자, 시간, 주소, 수량·인원 간단 입력</span></li>
-          <li><span class="list-bullet"></span><span>요청 상태(접수, 승인, 배차, 완료)를 실시간으로 확인</span></li>
-          <li><span class="list-bullet"></span><span>승인/반려 결과 알림 받기</span></li>
-        </ul>
-
-        <p style="font-size:12px; margin:6px 0 4px;"><strong>② 본사 운영 화면</strong></p>
-        <ul class="list">
-          <li><span class="list-bullet"></span><span>대리점에서 올라온 모든 요청을 리스트로 확인</span></li>
-          <li><span class="list-bullet"></span><span>요청 상세 내용 확인 후 승인 또는 반려</span></li>
-          <li><span class="list-bullet"></span><span>승인된 요청에 대해 차량·자원 배정 및 출고 처리</span></li>
-          <li><span class="list-bullet"></span><span>완료된 요청 이력을 저장하고 검색</span></li>
-        </ul>
-
-        <p style="font-size:12px; margin:6px 0 4px;"><strong>③ 관리자 기능</strong></p>
-        <ul class="list">
-          <li><span class="list-bullet"></span><span>대리점별 계정 관리</span></li>
-          <li><span class="list-bullet"></span><span>차량·대차 등의 기준정보 관리</span></li>
-          <li><span class="list-bullet"></span><span>요청 건수, 승인율, 완료율 등의 간단한 운영 리포트</span></li>
-        </ul>
-      </section>
-
-      <!-- 기대 효과 -->
-      <section class="section-card">
-        <div class="section-title">5. 기대 효과</div>
-        <ul class="list">
-          <li><span class="list-bullet"></span><span>전화·메신저에 의존하던 요청을 시스템으로 통합</span></li>
-          <li><span class="list-bullet"></span><span>요청 누락, 중복 배차 등의 운영 리스크 감소</span></li>
-          <li><span class="list-bullet"></span><span>요청부터 완료까지 전체 흐름이 눈에 보이는 구조</span></li>
-          <li><span class="list-bullet"></span><span>월별·분기별 운영 데이터를 기반으로 한 의사결정 가능</span></li>
-        </ul>
-      </section>
-
-      <!-- 제안 시 포함 내용 -->
-      <section class="section-card">
-        <div class="section-title">6. 제안 시 포함하면 좋은 내용</div>
-        <ul class="list">
-          <li><span class="list-bullet"></span><span>이 업무 흐름(요청 → 승인 → 배차/출고 → 완료)을 어떻게 화면으로 풀어낼지</span></li>
-          <li><span class="list-bullet"></span><span>대리점·본사 각각의 실제 사용 시나리오 예시</span></li>
-          <li><span class="list-bullet"></span><span>단계별 구축 일정(간단 버전이면 더 좋음)</span></li>
-          <li><span class="list-bullet"></span><span>초기 구축 비용 + 최소 유지보수 방안</span></li>
-        </ul>
       </section>
 
     </main>
 
     <footer>
-      ※ 이 페이지는 물류 배차·대차·인력 요청 플랫폼 구축을 위한 RFP 내용을  
-      모바일에서 보기 쉽도록 요약한 샘플 화면입니다.
+      이 Admin 샘플 화면은 요청 단위의 단계를 테스트하기 위한 데모입니다. 데이터는 실제 저장되지 않습니다.
     </footer>
-
   </div>
+
+  <script>
+    const steps = ["요청 접수", "승인 완료", "배차/출고 진행 중", "작업 완료"];
+    const stepLabelsForBadge = ["요청 접수", "승인 완료", "배차/출고", "완료"];
+
+    const state = {
+      1: 0,
+      2: 1,
+      3: 2
+    };
+
+    let currentRequestId = 1;
+
+    const reqItems = document.querySelectorAll(".req-item");
+    const statusTags = {
+      1: document.getElementById("status-tag-1"),
+      2: document.getElementById("status-tag-2"),
+      3: document.getElementById("status-tag-3")
+    };
+
+    const detailTitle = document.getElementById("detail-title");
+    const detailMeta = document.getElementById("detail-meta");
+    const detailBody = document.getElementById("detail-body");
+    const detailBadge = document.getElementById("detail-badge");
+    const stepper = document.getElementById("stepper");
+    const statusPills = document.querySelectorAll(".status-pill");
+    const btnNext = document.getElementById("btn-next");
+    const btnReset = document.getElementById("btn-reset");
+
+    const requestData = {
+      1: {
+        title: "[A-001] 냉동 1톤 차량 + 인력 1명",
+        meta: "서울 A대리점 · 금일 오전 배송",
+        body: "냉동 1톤 차량과 도착지 하역 지원 인력 1명을 요청한 사례입니다. 본사에서 승인 후 배차·출고까지 진행하는 기본 시나리오입니다."
+      },
+      2: {
+        title: "[B-102] 1톤 일반 차량만 요청",
+        meta: "부산 B대리점 · 내일 새벽 상차",
+        body: "차량만 필요한 요청 예시입니다. 이미 승인된 상태에서 배차·출고 단계로 넘어가는 상황을 시뮬레이션할 수 있습니다."
+      },
+      3: {
+        title: "[C-210] 대차 4대 + 창고 상하차 지원",
+        meta: "인천 C대리점 · 주말 야간 작업",
+        body: "대차와 상하차 지원이 함께 필요한 케이스입니다. 현재 배차/출고 진행 중 상태에서 완료 단계로 넘어가는 흐름을 테스트할 수 있습니다."
+      }
+    };
+
+    function updateUI() {
+      const stepIndex = state[currentRequestId];
+      const data = requestData[currentRequestId];
+
+      detailTitle.textContent = data.title;
+      detailMeta.textContent = data.meta;
+      detailBody.textContent = data.body;
+
+      detailBadge.textContent = "현재: " + stepLabelsForBadge[stepIndex];
+
+      const stepElements = stepper.querySelectorAll(".step");
+      stepElements.forEach((el) => {
+        const idx = Number(el.dataset.stepIndex);
+        el.classList.remove("step-current", "step-done");
+        if (idx < stepIndex) {
+          el.classList.add("step-done");
+        } else if (idx === stepIndex) {
+          el.classList.add("step-current");
+        }
+      });
+
+      Object.keys(state).forEach((id) => {
+        if (statusTags[id]) {
+          statusTags[id].textContent = "현재 상태: " + steps[state[id]];
+        }
+      });
+
+      statusPills.forEach((pill) => {
+        const target = Number(pill.dataset.stepTarget);
+        pill.classList.toggle("active", target === stepIndex);
+      });
+
+      if (stepIndex >= 3) {
+        btnNext.textContent = "더 이상 진행할 단계 없음";
+        btnNext.disabled = true;
+        btnNext.style.opacity = 0.6;
+        btnNext.style.boxShadow = "none";
+      } else {
+        btnNext.textContent = "다음 단계로 진행";
+        btnNext.disabled = false;
+        btnNext.style.opacity = 1;
+        btnNext.style.boxShadow = "0 8px 18px rgba(37, 99, 235, 0.3)";
+      }
+    }
+
+    reqItems.forEach((item) => {
+      item.addEventListener("click", () => {
+        reqItems.forEach((el) => el.classList.remove("active"));
+        item.classList.add("active");
+        currentRequestId = Number(item.dataset.requestId);
+        updateUI();
+      });
+    });
+
+    btnNext.addEventListener("click", () => {
+      const currentStep = state[currentRequestId];
+      if (currentStep < 3) {
+        state[currentRequestId] = currentStep + 1;
+        updateUI();
+      }
+    });
+
+    btnReset.addEventListener("click", () => {
+      state[currentRequestId] = 0;
+      updateUI();
+    });
+
+    statusPills.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        const target = Number(pill.dataset.stepTarget);
+        state[currentRequestId] = target;
+        updateUI();
+      });
+    });
+
+    updateUI();
+  </script>
 </body>
 </html>
