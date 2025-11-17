@@ -1,0 +1,342 @@
+/* ===== 기본 공통 ===== */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+  background: #e5e7eb; /* 엑셀 배경처럼 연한 회색 */
+  color: #111827;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 16px 14px 40px;
+}
+
+/* ===== 상단 헤더 (엑셀 리본 상단 느낌) ===== */
+.top-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f3f4f6;
+  border-bottom: 1px solid #d4d4d8;
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 8px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.logo-square {
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 0 0 1px #15803d;
+}
+
+.logo-square-green {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  box-shadow: 0 0 0 1px #1d4ed8;
+}
+
+.logo-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.nav {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.nav-link {
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d8;
+  background: #ffffff;
+  color: #4b5563;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav-link.active {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  font-weight: 600;
+}
+
+/* ===== 메인 / 시트 ===== */
+
+.main {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+/* 엑셀 시트 같은 흰 바탕 박스 */
+.sheet {
+  background: #ffffff;
+  border-radius: 4px;
+  border: 1px solid #d4d4d8;
+  padding: 12px 12px 10px;
+  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+}
+
+.sheet-hero {
+  border-left: 4px solid #2563eb;
+}
+
+.hero-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.hero-sub {
+  font-size: 12px;
+  color: #4b5563;
+}
+
+.sheet-title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sheet-title {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.sheet-sub {
+  font-size: 11px;
+  color: #6b7280;
+}
+
+/* ===== 폼 / 그리드 ===== */
+
+.grid-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+@media (max-width: 640px) {
+  .grid-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.field-full {
+  grid-column: 1 / -1;
+}
+
+label {
+  font-size: 11px;
+  color: #4b5563;
+}
+
+input,
+select,
+textarea {
+  border-radius: 3px;
+  border: 1px solid #d4d4d8;
+  padding: 6px 7px;
+  font-size: 12px;
+  color: #111827;
+  background: #ffffff;
+  outline: none;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+}
+
+textarea {
+  min-height: 60px;
+  resize: vertical;
+}
+
+/* 엑셀 셀 느낌의 간단 인풋/셀 */
+.cell-input,
+.cell-select {
+  width: 100%;
+  padding: 4px 6px;
+  font-size: 11px;
+  border-radius: 2px;
+  border: 1px solid #d4d4d8;
+  background: #ffffff;
+}
+
+/* 버튼 */
+.btn-primary {
+  width: 100%;
+  margin-top: 6px;
+  border-radius: 3px;
+  padding: 8px;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-primary:active {
+  transform: translateY(1px);
+}
+
+/* 힌트 텍스트 */
+.hint {
+  font-size: 11px;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* ===== 최근 등록 리스트 (index 아래쪽) ===== */
+
+.recent-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 11px;
+}
+
+.recent-row {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 4px;
+  padding: 4px 6px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+}
+
+@media (max-width: 768px) {
+  .recent-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===== 테이블 (엑셀 시트 느낌) ===== */
+
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+
+thead {
+  background: #f3f4f6;
+  border-bottom: 2px solid #d4d4d8;
+}
+
+th,
+td {
+  border: 1px solid #d4d4d8;
+  padding: 5px 6px;
+  text-align: left;
+  vertical-align: middle;
+}
+
+th {
+  font-weight: 500;
+  color: #374151;
+}
+
+tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* 브랜치 / 상태 태그 */
+.badge-branch {
+  display: inline-block;
+  margin-top: 2px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d8;
+  background: #f9fafb;
+  font-size: 10px;
+  color: #4b5563;
+}
+
+.tag-status {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 999px;
+  border: 1px solid #d4d4d8;
+  font-size: 10px;
+}
+
+/* 상태별 색상 (살짝만 강조, 엑셀 조건부서식 느낌) */
+.tag-모집중 {
+  background: #ffffff;
+  color: #111827;
+}
+
+.tag-선탑진행중 {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.tag-면접예정 {
+  background: #fef9c3;
+  color: #b45309;
+  border-color: #fde68a;
+}
+
+.tag-배차완료 {
+  background: #dcfce7;
+  color: #166534;
+  border-color: #bbf7d0;
+}
+
+/* ===== 푸터 ===== */
+
+.footer {
+  margin-top: 16px;
+  font-size: 10px;
+  color: #6b7280;
+  text-align: center;
+}
