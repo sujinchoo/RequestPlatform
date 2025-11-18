@@ -1,47 +1,238 @@
-# 물류 배차·대차·인력 요청 플랫폼 RFP 샘플 페이지
+좋아! 이제 폴더 구조도 정리되었고 배포도 거의 준비 완료니까
+프로젝트용 **README.md**도 깔끔하고 실용적으로 만들어줄게.
 
-본 저장소는 **물류 대리점의 차량·대차·인력 요청 업무를 디지털화**하기 위한  
-RFP(Request For Proposal)를 **모바일 최적화 단일 HTML 페이지**로 구성한 예시 프로젝트입니다.
+이 README는 다음 목적에 최적화됨:
 
-해당 HTML 파일은  
-
-- GitHub Pages에서 그대로 웹 페이지로 사용하거나  
-- Android WebView / iOS WebView로 감싸 **앱 형태**로 활용  
-- 향후 본 서비스 개발 시, 기획·업무 흐름 설명용 자료로 활용  
-
-할 수 있습니다.
+* GitHub Repo 설명
+* Render 배포 방식
+* Flask + PostgreSQL 구조 안내
+* 개발자/협력업체에게 전달 가능한 문서
 
 ---
 
-## 📱 주요 목적
+# 📄 **README.md (완성본)**
 
-- 물류 대리점에서 **차량 / 대차 / 인력 요청**을 쉽게 등록
-- 본사에서 **요청 → 승인 → 배차/출고 → 완료**까지 실시간 관리
-- 기존 전화·카카오톡·수기 기록 기반의 업무를 **하나의 플랫폼으로 통합**
+아래 내용 그대로 `README.md` 파일로 저장하면 돼.
 
 ---
 
-## 📄 포함된 파일
-
-### ✔ `index.html`
-모바일 최적화된 **원페이지 RFP 샘플 화면**입니다.
-
-구성 내용:
-
-- 사업 개요  
-- 문제점 및 개선 방향  
-- 핵심 업무 흐름  
-- 주요 기능(업무 관점)  
-- 기대 효과  
-- 제안 시 필요한 요소  
-- 카테고리 별 카드 UI  
-- 요청 → 승인 → 배차/출고 → 완료 흐름 다이어그램  
+```markdown
+# 📦 전국 택배 대리점 인력 요청 관리 시스템  
+Flask + Render PostgreSQL 기반 인력 요청/배차 관리 플랫폼
 
 ---
 
-## 🧱 프로젝트 구조
+## 📌 프로젝트 소개
+
+본 시스템은 **전국 택배 대리점(CJ·롯데·한진·로젠·쿠팡 등)**에서  
+필요한 인력을 간단히 등록하고, **본사에서 일괄 조회 및 상태 관리**할 수 있도록 만든  
+웹 기반 인력 요청 관리 플랫폼입니다.
+
+주요 기능:
+
+- 대리점 로그인 (ID/PW)
+- 대리점 인력 요청 등록
+- 요청 데이터 PostgreSQL 저장
+- 본사 관리자(admin) 로그인
+- 대시보드(엑셀 시트 스타일)
+- 상태 변경(모집중 → 선탑진행중 → 면접예정 → 배차완료)
+- 면접일 입력 기능
+- 모바일/태블릿 대응 UI
+
+전국 대리점의 요청을 하나의 화면에서 빠르게 파악하여  
+인력 모집·선탑·면접·배차까지 전체 과정을 효율적으로 관리할 수 있습니다.
+
+---
+
+## 🏗️ 기술 스택
+
+| 구성 | 기술 |
+|------|------|
+| Backend | Python Flask |
+| Frontend | HTML5, CSS, Jinja2 Templates |
+| Database | Render PostgreSQL |
+| ORM | SQLAlchemy |
+| Deployment | Render Web Service |
+| Server Gateway | Gunicorn |
+| Session/보안 | Flask SECRET_KEY 사용 |
+
+---
+
+## 📁 디렉토리 구조
+
+```
+
+project/
+├─ app.py
+├─ models.py
+├─ config.py
+├─ requirements.txt
+├─ runtime.txt
+├─ templates/
+│   ├─ base.html
+│   ├─ login.html
+│   ├─ request.html
+│   └─ dashboard.html
+└─ static/
+└─ styles.css
+
+````
+
+---
+
+## ⚙️ 설치 및 실행 (로컬)
+
+### 1. 가상환경 생성
 
 ```bash
-/ (root)
- ├── index.html
- └── README.md
+python3 -m venv venv
+source venv/bin/activate
+````
+
+### 2. 패키지 설치
+
+```bash
+pip install -r requirements.txt
+```
+
+### 3. 환경변수 설정 (.env)
+
+```
+DATABASE_URL=postgresql://user:pass@host:5432/dbname
+SECRET_KEY=your-secret-key
+```
+
+### 4. DB 테이블 생성
+
+```bash
+flask --app app shell
+>>> from models import db
+>>> db.create_all()
+```
+
+### 5. 관리자 계정 생성
+
+```bash
+flask --app app create-admin
+```
+
+### 6. 실행
+
+```bash
+flask run
+```
+
+---
+
+## 🚀 Render 배포 방법
+
+### 1. Render New Web Service 생성
+
+* **Repository**: 본 프로젝트 GitHub
+* **Environment**: Python 3.11
+* **Build Command**:
+
+  ```
+  pip install -r requirements.txt
+  ```
+* **Start Command**:
+
+  ```
+  gunicorn app:app
+  ```
+
+### 2. 환경변수 추가
+
+Render → Environment → Add Environment Variable:
+
+```
+DATABASE_URL=postgres://...
+SECRET_KEY=your-secret-key
+```
+
+### 3. 최초 배포 후
+
+Render Shell 또는 로컬에서:
+
+```
+flask --app app shell
+>>> from models import db
+>>> db.create_all()
+```
+
+관리자 계정 생성:
+
+```
+flask --app app create-admin
+```
+
+---
+
+## 🔐 사용자 역할
+
+### 🟦 대리점 사용자
+
+* 로그인 후 인력 요청 등록 가능
+* 등록된 요청은 본사에서만 조회 가능
+
+### 🟥 본사 관리자 (Admin)
+
+* `/dashboard` 접근 가능
+* 전체 요청 리스트 조회
+* 상태 변경 가능 (모집중 / 선탑진행중 / 면접예정 / 배차완료)
+* 면접일 입력 가능
+
+---
+
+## 📊 대시보드 기능
+
+* 엑셀 시트처럼 한 페이지에 모든 데이터 표시
+* 지역/대리점명/단가/물량/차종/요청인원/조건/상태/면접일/상태 변경
+* 각 행마다 상태 Update 가능
+* 최신 등록 순으로 상단 출력
+
+---
+
+## 🧩 향후 확장 가능 기능
+
+* 대리점별 요청 히스토리
+* 요청 승인 프로세스 추가
+* Excel / CSV Export
+* 알림톡 / 문자 연동
+* 드라이버 관리 기능 (현재 제외)
+* 앱(WebView → Android/iOS) 패키징
+
+---
+
+## 📞 문의 및 유지보수
+
+본 프로젝트는 실제 물류 대리점 운영을 위한
+업무 효율화 시스템 구축을 목표로 제작되었습니다.
+
+추가 개선 및 API 연동, 모바일 앱 빌드(WebView),
+운영 자동화 등이 필요하면 확장 가능합니다.
+
+---
+
+## 👍 License
+
+private / internal use only.
+
+```
+
+---
+
+# 🚀 준비 완료!
+
+이 README는:
+
+✔ Render 배포 가능  
+✔ 협력업체에게 보여줘도 충분  
+✔ 새 개발자가 들어와도 구조 이해 쉬움  
+✔ 추후 확장 기능 설명도 포함
+
+이제 GitHub에 올리고,  
+대시보드 동작 / 로그인 / DB 저장까지 테스트해보면 거의 완성 단계야.
+
+필요하면 README에 GIF나 스크린샷 추가 버전도 만들어줄게!
+```
