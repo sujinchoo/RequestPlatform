@@ -1,0 +1,63 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <title>{% block title %}Request Platform{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+</head>
+<body>
+  <header class="top-header">
+    <div class="header-inner">
+      <div class="logo-wrap">
+        <div class="logo-square {% block logo_color %}{% endblock %}"></div>
+        <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
+      </div>
+      <nav class="nav">
+        {% if session.get('branch_id') %}
+          {% if session.get('is_admin') %}
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+              요청 현황(본사)
+            </a>
+          {% endif %}
+          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
+            요청 등록(대리점)
+          </a>
+          <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
+            로그인
+          </a>
+        {% endif %}
+      </nav>
+    </div>
+  </header>
+
+  <div class="page">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="sheet" style="margin-top:10px;">
+          {% for category, msg in messages %}
+            <div style="font-size:12px; margin-bottom:4px; color:
+                {% if category == 'error' %}#b91c1c
+                {% elif category == 'success' %}#166534
+                {% else %}#374151{% endif %};
+            ">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <main class="main">
+      {% block content %}{% endblock %}
+    </main>
+
+    <footer class="footer">
+      Request Platform – 샘플 서비스 (Flask + PostgreSQL)
+    </footer>
+  </div>
+</body>
+</html>
