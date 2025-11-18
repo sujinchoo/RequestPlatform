@@ -9,6 +9,42 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, Branch, Request as Req
 
+// 임시 로그인 계정
+# ---------------------------
+# ⚠️ 임시 DB 초기화 + admin 생성 코드
+# ---------------------------
+@app.route("/init-admin")
+def init_admin():
+    from models import db, Branch
+    from werkzeug.security import generate_password_hash
+
+    try:
+        # 테이블 생성
+        db.create_all()
+
+        # admin 계정 존재 여부 확인
+        existing = Branch.query.filter_by(login_id="admin").first()
+        if existing:
+            return "Admin already exists. You can log in now."
+
+        # admin 계정 생성
+        admin = Branch(
+            login_id="admin",
+            password_hash=generate_password_hash("admin1234"),
+            company="본사",
+            branch_name="관리자",
+            region="서울",
+            is_admin=True,
+        )
+        db.session.add(admin)
+        db.session.commit()
+
+        return "Admin created successfully! login_id=admin / password=admin1234"
+
+    except Exception as e:
+        return f"Error: {e}"
+
+
 
 def create_app():
     app = Flask(__name__)
