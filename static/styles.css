@@ -388,3 +388,39 @@ tbody tr:nth-child(even) {
     height: 38px;
   }
 }
+/* 🔹 가로 스크롤 전체 래퍼 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* 🔹 테이블 컴팩트 모드 (행 간격 줄임) */
+.table-compact th,
+.table-compact td {
+  padding: 4px 6px !important;
+  font-size: 12px !important;
+  line-height: 1.2 !important;
+}
+
+.table-compact .badge-branch {
+  display: inline-block;
+  padding: 2px 6px;
+  background: #eef2ff;
+  border-radius: 6px;
+  font-size: 11px;
+  color: #4f46e5;
+}
+
+.table-compact .tag-status {
+  padding: 2px 8px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+.table-compact .cell-input,
+.table-compact .cell-select {
+  padding: 2px 4px;
+  font-size: 11px;
+  height: 26px;
+}
