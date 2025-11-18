@@ -9,7 +9,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, Branch, Request as Req
 
-// 임시 로그인 계정
+
+# 임시 로그인 계정
 # ---------------------------
 # ⚠️ 임시 DB 초기화 + admin 생성 코드
 # ---------------------------
