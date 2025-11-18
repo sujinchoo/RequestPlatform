@@ -1,17 +1,3 @@
-이 README는 다음 목적에 최적화됨:
-
-* GitHub Repo 설명
-* Render 배포 방식
-* Flask + PostgreSQL 구조 안내
-* 개발자/협력업체에게 전달 가능한 문서
-
----
-
-# 📄 **README.md (완성본)**
-
-아래 내용 그대로 `README.md` 파일로 저장하면 돼.
-
----
 
 ```markdown
 # 📦 전국 택배 대리점 인력 요청 관리 시스템  
