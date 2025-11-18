@@ -1,299 +1,85 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <title>인력 요청 현황 대시보드</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
+{% extends "base.html" %}
 
-<body>
-  <header class="top-header">
-    <div class="header-inner">
-      <div class="logo-wrap">
-        <div class="logo-square logo-square-green"></div>
-        <div class="logo-text">인력 요청 현황 대시보드</div>
-      </div>
-      <nav class="nav">
-        <a href="dashboard.html" class="nav-link active">요청 현황(본사)</a>
-        <a href="index.html" class="nav-link">요청 등록(대리점)</a>
-      </nav>
-    </div>
-  </header>
+{% block title %}인력 요청 현황 대시보드{% endblock %}
+{% block header_title %}인력 요청 현황 대시보드{% endblock %}
+{% block logo_color %}logo-square-green{% endblock %}
 
-  <div class="page">
-    <main class="main">
+{% block content %}
+<section class="sheet sheet-hero">
+  <div class="hero-title">전국 택배 대리점 인력 요청 현황</div>
+  <p class="hero-sub">
+    DB에 저장된 요청을 엑셀 시트 형식으로 보여줍니다.
+  </p>
+</section>
 
-      <section class="sheet sheet-hero">
-        <div class="hero-title">전국 택배 대리점 인력 요청 현황</div>
-        <p class="hero-sub">
-          지역·택배사별 인력 요청을 표 형태로 한눈에 보고,  
-          각 요청건의 상태를 <strong>모집중 / 선탑진행중 / 면접예정 / 배차완료</strong>로 관리합니다.
-        </p>
-      </section>
-
-      <!-- 필터 영역 (엑셀 상단 필터 느낌) -->
-      <section class="sheet">
-        <div class="sheet-title-row">
-          <div class="sheet-title">필터</div>
-          <div class="sheet-sub">간단한 조건으로 행을 걸러보는 데모입니다.</div>
-        </div>
-
-        <div class="grid-row">
-          <div class="field">
-            <label for="filter-region">지역</label>
-            <select id="filter-region">
-              <option value="all">전체</option>
-              <option value="서울">서울</option>
-              <option value="인천">인천</option>
-              <option value="부산">부산</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="filter-company">택배사</label>
-            <select id="filter-company">
-              <option value="all">전체</option>
-              <option value="CJ대한통운">CJ대한통운</option>
-              <option value="롯데택배">롯데택배</option>
-              <option value="한진택배">한진택배</option>
-              <option value="로젠택배">로젠택배</option>
-              <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
-            </select>
-          </div>
-          <div class="field">
-            <label for="filter-status">상태</label>
-            <select id="filter-status">
-              <option value="all">전체</option>
-              <option value="모집중">모집중</option>
-              <option value="선탑진행중">선탑진행중</option>
-              <option value="면접예정">면접예정</option>
-              <option value="배차완료">배차완료</option>
-            </select>
-          </div>
-        </div>
-
-        <p class="hint">
-          ※ 실제 서비스에서는 이 필터가 DB 조회 조건으로 연결됩니다.
-        </p>
-      </section>
-
-      <!-- 메인 표 (엑셀 시트 느낌) -->
-      <section class="sheet">
-        <div class="sheet-title-row">
-          <div class="sheet-title">인력 요청 리스트 (샘플 데이터)</div>
-          <div class="sheet-sub">각 요청의 상태를 변경하면 “현재 상태”가 즉시 바뀝니다.</div>
-        </div>
-
-        <div class="table-wrapper">
-          <table id="request-table">
-            <thead>
-              <tr>
-                <th>No</th>
-                <th>지역</th>
-                <th>영업소 / 대리 / 점명</th>
-                <th>단가 (원/건)</th>
-                <th>월 물량 (건)</th>
-                <th>차종</th>
-                <th>필요 인원 (명)</th>
-                <th>기타 사항</th>
-                <th>현재 상태</th>
-                <th>면접일</th>
-                <th>상태 변경</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- 1행 -->
-              <tr data-region="인천" data-company="한진택배" data-status="모집중">
-                <td>1</td>
-                <td>인천</td>
-                <td>
-                  한진택배<br />
-                  <span class="badge-branch">인천 계양영업소</span>
-                </td>
-                <td>1,300</td>
-                <td>20,000</td>
-                <td>1톤 탑차</td>
-                <td>2</td>
-                <td>여성, 외국인 안 됨</td>
-                <td>
-                  <span class="tag-status tag-모집중" data-status-text>모집중</span>
-                </td>
-                <td>
-                  <input type="date" class="cell-input" data-interview-date />
-                </td>
-                <td>
-                  <select class="cell-select status-select">
-                    <option value="모집중">모집중</option>
-                    <option value="선탑진행중">선탑진행중</option>
-                    <option value="면접예정">면접예정</option>
-                    <option value="배차완료">배차완료</option>
-                  </select>
-                </td>
-              </tr>
-          
-              <!-- 2행 -->
-              <tr data-region="서울" data-company="CJ대한통운" data-status="선탑진행중">
-                <td>2</td>
-                <td>서울</td>
-                <td>
-                  CJ대한통운<br />
-                  <span class="badge-branch">서울 강서영업소</span>
-                </td>
-                <td>1,200</td>
-                <td>15,000</td>
-                <td>1톤 카고</td>
-                <td>1</td>
-                <td>경력자 우대</td>
-                <td>
-                  <span class="tag-status tag-선탑진행중" data-status-text>선탑진행중</span>
-                </td>
-                <td>
-                  <input type="date" class="cell-input" data-interview-date />
-                </td>
-                <td>
-                  <select class="cell-select status-select">
-                    <option value="모집중">모집중</option>
-                    <option value="선탑진행중" selected>선탑진행중</option>
-                    <option value="면접예정">면접예정</option>
-                    <option value="배차완료">배차완료</option>
-                  </select>
-                </td>
-              </tr>
-          
-              <!-- 3행 -->
-              <tr data-region="부산" data-company="롯데택배" data-status="면접예정">
-                <td>3</td>
-                <td>부산</td>
-                <td>
-                  롯데택배<br />
-                  <span class="badge-branch">부산 해운대대리점</span>
-                </td>
-                <td>1,100</td>
-                <td>18,000</td>
-                <td>1톤 냉동탑차</td>
-                <td>3</td>
-                <td>야간 가능자</td>
-                <td>
-                  <span class="tag-status tag-면접예정" data-status-text>면접예정</span>
-                </td>
-                <td>
-                  <input type="date" class="cell-input" data-interview-date value="2025-11-20" />
-                </td>
-                <td>
-                  <select class="cell-select status-select">
-                    <option value="모집중">모집중</option>
-                    <option value="선탑진행중">선탑진행중</option>
-                    <option value="면접예정" selected>면접예정</option>
-                    <option value="배차완료">배차완료</option>
-                  </select>
-                </td>
-              </tr>
-          
-              <!-- 4행 -->
-              <tr data-region="서울" data-company="쿠팡로지스틱스" data-status="배차완료">
-                <td>4</td>
-                <td>서울</td>
-                <td>
-                  쿠팡로지스틱스<br />
-                  <span class="badge-branch">서울 송파캠프</span>
-                </td>
-                <td>1,500</td>
-                <td>22,000</td>
-                <td>1톤 카고</td>
-                <td>2</td>
-                <td>주5일, 풀타임</td>
-                <td>
-                  <span class="tag-status tag-배차완료" data-status-text>배차완료</span>
-                </td>
-                <td>
-                  <input type="date" class="cell-input" data-interview-date />
-                </td>
-                <td>
-                  <select class="cell-select status-select">
-                    <option value="모집중">모집중</option>
-                    <option value="선탑진행중">선탑진행중</option>
-                    <option value="면접예정">면접예정</option>
-                    <option value="배차완료" selected>배차완료</option>
-                  </select>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-
-        </div>
-
-        <p class="hint">
-          · “면접예정” 상태일 경우 면접일(날짜)을 입력해 같이 관리합니다.  
-          · 실제 서비스에서는 상태/면접일 변경 내용이 DB에 저장되도록 연동됩니다.
-        </p>
-      </section>
-
-    </main>
-
-    <footer class="footer">
-      이 대시보드는 인력 요청을 엑셀 시트처럼 정리해 보여주는 샘플 화면입니다.  
-      상태 변경은 화면에서만 반영되며 실제 데이터 저장은 되지 않습니다.
-    </footer>
+<section class="sheet">
+  <div class="sheet-title-row">
+    <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
+    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
-  <script>
-    const table = document.getElementById("request-table");
-    const filterRegion = document.getElementById("filter-region");
-    const filterCompany = document.getElementById("filter-company");
-    const filterStatus = document.getElementById("filter-status");
-
-    function applyFilters() {
-      const regionVal = filterRegion.value;
-      const companyVal = filterCompany.value;
-      const statusVal = filterStatus.value;
-
-      const rows = table.querySelectorAll("tbody tr");
-      rows.forEach(row => {
-        const r = row.getAttribute("data-region");
-        const c = row.getAttribute("data-company");
-        const s = row.getAttribute("data-status");
-
-        let visible = true;
-        if (regionVal !== "all" && r !== regionVal) visible = false;
-        if (companyVal !== "all" && c !== companyVal) visible = false;
-        if (statusVal !== "all" && s !== statusVal) visible = false;
-
-        row.style.display = visible ? "" : "none";
-      });
-    }
-
-    [filterRegion, filterCompany, filterStatus].forEach(sel => {
-      sel.addEventListener("change", applyFilters);
-    });
-
-    const statusClassMap = {
-      "모집중": "tag-모집중",
-      "선탑진행중": "tag-선탑진행중",
-      "면접예정": "tag-면접예정",
-      "배차완료": "tag-배차완료"
-    };
-
-    table.querySelectorAll("tbody tr").forEach(row => {
-      const select = row.querySelector(".status-select");
-      const statusSpan = row.querySelector("[data-status-text]");
-
-      select.addEventListener("change", () => {
-        const newStatus = select.value;
-        row.setAttribute("data-status", newStatus);
-
-        statusSpan.textContent = newStatus;
-        statusSpan.className = "tag-status " + (statusClassMap[newStatus] || "");
-
-        const dateInput = row.querySelector("[data-interview-date]");
-        if (newStatus === "면접예정" && !dateInput.value) {
-          dateInput.focus();
-        }
-
-        applyFilters();
-      });
-    });
-
-    applyFilters();
-  </script>
-</body>
-</html>
+  <div class="table-wrapper">
+    <table id="request-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>지역</th>
+          <th>영업소 / 대리 / 점명</th>
+          <th>단가 (원/건)</th>
+          <th>월 물량 (건)</th>
+          <th>차종</th>
+          <th>필요 인원 (명)</th>
+          <th>기타 사항</th>
+          <th>현재 상태</th>
+          <th>면접일</th>
+          <th>상태 변경</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in reqs %}
+        <tr data-region="{{ r.region }}" data-company="{{ r.company }}" data-status="{{ r.status }}">
+          <td>{{ loop.index }}</td>
+          <td>{{ r.region }}</td>
+          <td>
+            {{ r.company }}<br />
+            <span class="badge-branch">{{ r.branch_name }}</span>
+          </td>
+          <td>{{ "{:,}".format(r.unit_price) }}</td>
+          <td>{{ "{:,}".format(r.volume) }}</td>
+          <td>{{ r.vehicle_type or "-" }}</td>
+          <td>{{ r.headcount }}</td>
+          <td>{{ r.etc or "-" }}</td>
+          <td>
+            <span class="tag-status tag-{{ r.status }}" data-status-text>
+              {{ r.status }}
+            </span>
+          </td>
+          <td>
+            <form method="post" action="{{ url_for('update_status') }}">
+              <input type="hidden" name="req_id" value="{{ r.id }}" />
+              <input type="date" class="cell-input" name="interview_date"
+                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}" />
+          </td>
+          <td>
+              <select class="cell-select status-select" name="status">
+                <option value="모집중"      {% if r.status == "모집중" %}selected{% endif %}>모집중</option>
+                <option value="선탑진행중"  {% if r.status == "선탑진행중" %}selected{% endif %}>선탑진행중</option>
+                <option value="면접예정"    {% if r.status == "면접예정" %}selected{% endif %}>면접예정</option>
+                <option value="배차완료"    {% if r.status == "배차완료" %}selected{% endif %}>배차완료</option>
+              </select>
+              <button type="submit" class="btn-primary" style="margin-top:4px; padding:4px 8px; font-size:11px;">
+                저장
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
