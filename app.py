@@ -10,7 +10,40 @@ from config import Config
 from models import db, Branch, Request as Req
 
 
-# 임시 로그인 계정
+
+
+
+def create_app():
+    app = Flask(__name__)
+    app.config.from_object(Config)
+
+    db.init_app(app)
+
+    # ----- 간단한 로그인 체크 데코레이터 -----
+    def login_required(view):
+        from functools import wraps
+
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            if "branch_id" not in session:
+                return redirect(url_for("login"))
+            return view(*args, **kwargs)
+        return wrapped
+
+    def admin_required(view):
+        from functools import wraps
+
+        @wraps(view)
+        def wrapped(*args, **kwargs):
+            if not session.get("is_admin"):
+                flash("접근 권한이 없습니다.", "error")
+                return redirect(url_for("request_page"))
+            return view(*args, **kwargs)
+        return wrapped
+
+
+
+    # 임시 로그인 계정
 # ---------------------------
 # ⚠️ 임시 DB 초기화 + admin 생성 코드
 # ---------------------------
@@ -47,34 +80,7 @@ def init_admin():
 
 
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_object(Config)
-
-    db.init_app(app)
-
-    # ----- 간단한 로그인 체크 데코레이터 -----
-    def login_required(view):
-        from functools import wraps
-
-        @wraps(view)
-        def wrapped(*args, **kwargs):
-            if "branch_id" not in session:
-                return redirect(url_for("login"))
-            return view(*args, **kwargs)
-        return wrapped
-
-    def admin_required(view):
-        from functools import wraps
-
-        @wraps(view)
-        def wrapped(*args, **kwargs):
-            if not session.get("is_admin"):
-                flash("접근 권한이 없습니다.", "error")
-                return redirect(url_for("request_page"))
-            return view(*args, **kwargs)
-        return wrapped
-
+    
     # ----- 초기 테스트용 계정 생성 라우트 (배포 후 주석/삭제 가능) -----
     @app.cli.command("create-admin")
     def create_admin():
