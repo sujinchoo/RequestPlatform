@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}대리점 인력 요청 등록{% endblock %}
+{% block header_title %}대리점 인력 요청 등록{% endblock %}
+{% block logo_color %}{% endblock %}
+
+{% block content %}
+<section class="sheet sheet-hero">
+  <div class="hero-title">전국 택배 대리점 인력 요청</div>
+  <p class="hero-sub">
+    로그인된 대리점 기준으로 인력 요청을 등록합니다.
+  </p>
+</section>
+
+<section class="sheet">
+  <form method="post">
+    <!-- 1행: 택배사 / 영업소 -->
+    <div class="grid-row">
+      <div class="field">
+        <label for="company">택배사</label>
+        <select id="company" name="company" required>
+          <option value="">선택하세요</option>
+          <option value="CJ대한통운">CJ대한통운</option>
+          <option value="롯데택배">롯데택배</option>
+          <option value="한진택배">한진택배</option>
+          <option value="로젠택배">로젠택배</option>
+          <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
+          <option value="기타">기타</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="branch">영업소 / 대리점명</label>
+        <input id="branch" name="branch" type="text"
+               placeholder="예: 인천 계양영업소" required />
+      </div>
+    </div>
+
+    <!-- 2행: 지역 / 단가 -->
+    <div class="grid-row">
+      <div class="field">
+        <label for="region">지역 (시/군/구)</label>
+        <input id="region" name="region" type="text"
+               placeholder="예: 인천 계양구" required />
+      </div>
+      <div class="field">
+        <label for="unit-price">단가 (원/건)</label>
+        <input id="unit-price" name="unit_price" type="number"
+               min="0" step="10" placeholder="예: 1300" required />
+      </div>
+    </div>
+
+    <!-- 3행: 월 물량 / 필요 인원 -->
+    <div class="grid-row">
+      <div class="field">
+        <label for="volume">월 물량 (건)</label>
+        <input id="volume" name="volume" type="number"
+               min="0" step="100" placeholder="예: 20000" required />
+      </div>
+      <div class="field">
+        <label for="headcount">필요 인원 (명)</label>
+        <input id="headcount" name="headcount" type="number"
+               min="1" step="1" placeholder="예: 2" required />
+      </div>
+    </div>
+
+    <!-- 4행: 차종 / 담당자 (담당자/연락처는 DB에는 안 넣어도 되고, 나중에 추가 가능) -->
+    <div class="grid-row">
+      <div class="field">
+        <label for="vehicle-type">차종</label>
+        <input id="vehicle-type" name="vehicle_type" type="text"
+               placeholder="예: 1톤 카고, 1톤 탑차, 1톤 냉동" />
+      </div>
+      <div class="field">
+        <label for="contact">담당자 이름 (옵션)</label>
+        <input id="contact" type="text" placeholder="예: 홍길동" />
+      </div>
+    </div>
+
+    <!-- 5행: 연락처 / 우대·제한·기타사항 -->
+    <div class="grid-row">
+      <div class="field">
+        <label for="phone">연락처 (옵션)</label>
+        <input id="phone" type="tel" placeholder="예: 010-1234-5678" />
+      </div>
+      <div class="field field-full">
+        <label for="etc">
+          우대 / 제한 조건 및 기타사항
+          <span style="font-weight:400; color:#6b7280; font-size:10px;">
+            (예: 군필 우대, 외국인 불가, 추후 집하 가능 등)
+          </span>
+        </label>
+        <textarea id="etc" name="etc"
+          placeholder="예: 군필 우대, 외국인 불가, 추후 집하 가능자, 새벽/야간 근무 가능자 등"></textarea>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-primary">인력 요청 등록</button>
+
+    <p class="hint">
+      저장 후에는 본사 대시보드에서 엑셀 시트처럼 한눈에 확인할 수 있습니다.
+    </p>
+  </form>
+</section>
+{% endblock %}
