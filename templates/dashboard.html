@@ -18,8 +18,11 @@
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
+  <!-- 🔹 가로 스크롤 가능 wrapper 추가 -->
   <div class="table-wrapper">
-    <table id="request-table">
+    
+    <!-- 🔹 table-compact 적용 (행 간격 축소) -->
+    <table id="request-table" class="table-compact">
       <thead>
         <tr>
           <th>No</th>
@@ -80,6 +83,8 @@
         {% endfor %}
       </tbody>
     </table>
-  </div>
+
+  </div> <!-- table-wrapper end -->
+
 </section>
 {% endblock %}
