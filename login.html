@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block title %}로그인{% endblock %}
+{% block header_title %}대리점 / 본사 로그인{% endblock %}
+
+{% block content %}
+<section class="sheet sheet-hero">
+  <div class="hero-title">로그인</div>
+  <p class="hero-sub">
+    대리점 ID와 비밀번호를 입력해 주세요. 본사 계정(admin)은 대시보드 접근이 가능합니다.
+  </p>
+</section>
+
+<section class="sheet">
+  <form method="post">
+    <div class="grid-row">
+      <div class="field">
+        <label for="login_id">대리점 ID</label>
+        <input id="login_id" name="login_id" type="text" placeholder="예: HJ_IC_GY 또는 admin" required />
+      </div>
+      <div class="field">
+        <label for="password">비밀번호</label>
+        <input id="password" name="password" type="password" required />
+      </div>
+    </div>
+    <button type="submit" class="btn-primary">로그인</button>
+  </form>
+</section>
+{% endblock %}
