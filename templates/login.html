@@ -5,6 +5,18 @@
 
 {% block content %}
 <section class="sheet sheet-hero">
+
+  <!-- 🔹 TPR System 배너 -->
+  <div class="tpr-banner">
+    <img src="{{ url_for('static', filename='images/tpr-banner.png') }}"
+         alt="TPR System - Truck People Request System"
+         class="tpr-banner-img" />
+    <div class="tpr-banner-text">
+      <div class="tpr-banner-title">TPR System</div>
+      <div class="tpr-banner-sub">Truck · People · Request</div>
+    </div>
+  </div>
+
   <div class="hero-title">로그인</div>
   <p class="hero-sub">
     대리점 ID와 비밀번호를 입력해 주세요. 본사 계정(admin)은 대시보드 접근이 가능합니다.
@@ -16,7 +28,8 @@
     <div class="grid-row">
       <div class="field">
         <label for="login_id">대리점 ID</label>
-        <input id="login_id" name="login_id" type="text" placeholder="예: HJ_IC_GY 또는 admin" required />
+        <input id="login_id" name="login_id" type="text"
+               placeholder="예: HJ_IC_GY 또는 admin" required />
       </div>
       <div class="field">
         <label for="password">비밀번호</label>
