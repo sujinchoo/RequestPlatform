@@ -15,101 +15,67 @@
 <section class="sheet">
   <div class="sheet-title-row">
     <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
-    <div class="sheet-sub">
-      각 요청의 상태를 변경하면 “현재 상태”가 즉시 바뀝니다.
-    </div>
+    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
-  <!-- 🔹 가로 스크롤용 래퍼 -->
   <div class="table-wrapper">
-    <!-- 🔹 세로 간격 줄이기: table-compact 추가 -->
-    <table class="sheet-table table-compact">
+    <table id="request-table">
       <thead>
         <tr>
-          <th style="min-width:40px;">No</th>
-          <th style="min-width:80px;">지역</th>
-          <th style="min-width:160px;">영업소 / 대리점 / 점명</th>
-          <th style="min-width:90px;">단가 (원/건)</th>
-          <th style="min-width:110px;">월 물량 (건)</th>
-          <th style="min-width:90px;">차종</th>
-          <th style="min-width:90px;">필요 인원 (명)</th>
-          <th style="min-width:150px;">기타 사항</th>
-          <th style="min-width:90px;">현재 상태</th>
-          <th style="min-width:120px;">면접일</th>
-          <th style="min-width:140px;">상태 변경</th>
+          <th>No</th>
+          <th>지역</th>
+          <th>영업소 / 대리 / 점명</th>
+          <th>단가 (원/건)</th>
+          <th>월 물량 (건)</th>
+          <th>차종</th>
+          <th>필요 인원 (명)</th>
+          <th>기타 사항</th>
+          <th>현재 상태</th>
+          <th>면접일</th>
+          <th>상태 변경</th>
         </tr>
       </thead>
-
       <tbody>
-        {% for req in requests %}
-        <tr>
-          <td class="text-center">{{ loop.index }}</td>
-
-          <td class="text-center">
-            {{ req.region }}
-          </td>
-
+        {% for r in reqs %}
+        <tr data-region="{{ r.region }}" data-company="{{ r.company }}" data-status="{{ r.status }}">
+          <td>{{ loop.index }}</td>
+          <td>{{ r.region }}</td>
           <td>
-            <div class="cell-main">{{ req.company }}</div>
-            <div class="cell-sub-pill">
-              {{ req.branch_name }}
-            </div>
+            {{ r.company }}<br />
+            <span class="badge-branch">{{ r.branch_name }}</span>
           </td>
-
-          <td class="text-right">
-            {{ "{:,}".format(req.unit_price or 0) }}
-          </td>
-
-          <td class="text-right">
-            {{ "{:,}".format(req.volume or 0) }}
-          </td>
-
-          <td class="text-center">
-            {{ req.vehicle_type or "-" }}
-          </td>
-
-          <td class="text-center">
-            {{ req.headcount or "-" }}
-          </td>
-
+          <td>{{ "{:,}".format(r.unit_price) }}</td>
+          <td>{{ "{:,}".format(r.volume) }}</td>
+          <td>{{ r.vehicle_type or "-" }}</td>
+          <td>{{ r.headcount }}</td>
+          <td>{{ r.etc or "-" }}</td>
           <td>
-            {{ req.note or "-" }}
-          </td>
-
-          <td class="text-center">
-            <span class="status-pill status-{{ req.status }}">
-              {{ req.status }}
+            <span class="tag-status tag-{{ r.status }}" data-status-text>
+              {{ r.status }}
             </span>
           </td>
-
-          <!-- 🔹 면접일 + 상태 변경을 한 행에 정렬 -->
           <td>
-            <form
-              method="post"
-              action="{{ url_for('update_request', request_id=req.id) }}"
-              class="row-form"
-            >
-              <input
-                type="date"
-                name="interview_date"
-                value="{{ req.interview_date|default('', true) }}"
-                class="input-date"
-              />
+            <form method="post" action="{{ url_for('update_status') }}">
+              <input type="hidden" name="req_id" value="{{ r.id }}" />
+              <input type="date" class="cell-input" name="interview_date"
+                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}" />
           </td>
-
           <td>
-              <div class="status-actions">
-                <select name="status" class="select-status">
-                  {% for code, label in status_choices %}
-                  <option value="{{ code }}" {% if req.status == label %}selected{% endif %}>
-                    {{ label }}
-                  </option>
-                  {% endfor %}
-                </select>
-                <button type="submit" class="btn-primary btn-xs">저장</button>
-              </div>
+              <select class="cell-select status-select" name="status">
+                <option value="모집중"      {% if r.status == "모집중" %}selected{% endif %}>모집중</option>
+                <option value="선탑진행중"  {% if r.status == "선탑진행중" %}selected{% endif %}>선탑진행중</option>
+                <option value="면접예정"    {% if r.status == "면접예정" %}selected{% endif %}>면접예정</option>
+                <option value="배차완료"    {% if r.status == "배차완료" %}selected{% endif %}>배차완료</option>
+              </select>
+              <button type="submit" class="btn-primary" style="margin-top:4px; padding:4px 8px; font-size:11px;">
+                저장
+              </button>
             </form>
           </td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
         </tr>
         {% endfor %}
       </tbody>
