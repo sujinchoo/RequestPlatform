@@ -195,6 +195,11 @@ flask --app app create-admin
 추가 개선 및 API 연동, 모바일 앱 빌드(WebView),
 운영 자동화 등이 필요하면 확장 가능합니다.
 
+Email:
+soojinchoo@gmail.com
+Abiout me
+https://sjc-knowledgebase.onrender.com/
+
 ---
 
 ## 👍 License
