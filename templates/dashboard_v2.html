@@ -8,58 +8,54 @@
 /* 스크롤 없음 + 전체 화면에서 자동 폭 조절 */
 .table-wrapper-v2 {
   width: 100%;
-  overflow-x: hidden;  /* 스크롤 제거 */
+  overflow-x: hidden;  /* 가로 스크롤 제거 */
 }
 
 /* 자동 테이블 레이아웃 */
 .table-v2 {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto;  /* 열 자동 조율 */
+  table-layout: auto;  /* 열 자동 배분 */
   font-size: 12px;
 }
 
-/* 셀 기본 */
+/* 셀 기본 스타일 */
 .table-v2 th,
 .table-v2 td {
   border: 1px solid #d4d4d8;
   padding: 6px 8px;
-  white-space: nowrap;     /* 기본 줄바꿈 X */
+  white-space: nowrap;       /* 기본 줄바꿈 방지 */
   overflow: hidden;
-  text-overflow: ellipsis; /* 넘치면 ... 처리 */
+  text-overflow: ellipsis;   /* 넘치면 ... */
   vertical-align: middle;
 }
 
 /* --------------------------------
-   🔥 주요 컬럼별 최소 너비 설정
-   (텍스트 깨짐 방지 + 폭 균형 유지)
+   🔥 주요 컬럼 최소 너비 설정
 ---------------------------------- */
 
-.table-v2 th:nth-child(1),  /* No */
+.table-v2 th:nth-child(1),
 .table-v2 td:nth-child(1) {
-  width: 40px;
+  width: 40px;  /* No */
 }
 
-.table-v2 th:nth-child(2),  /* 지역 */
+.table-v2 th:nth-child(2),
 .table-v2 td:nth-child(2) {
-  min-width: 70px;
+  min-width: 70px; /* 지역 */
 }
 
-.table-v2 th:nth-child(3), /* 택배사 */
+.table-v2 th:nth-child(3),
 .table-v2 td:nth-child(3) {
-  min-width: 90px;
+  min-width: 90px; /* 택배사 */
 }
 
-.table-v2 th:nth-child(4), /* 영업소/대리점명 */
+.table-v2 th:nth-child(4),
 .table-v2 td:nth-child(4) {
-  min-width: 150px;
+  min-width: 150px; /* 영업소/대리점명 */
 }
 
 .table-v2 th:nth-child(5),
-.table-v2 td:nth-child(5) {
-  min-width: 70px;
-}
-
+.table-v2 td:nth-child(5),
 .table-v2 th:nth-child(6),
 .table-v2 td:nth-child(6) {
   min-width: 70px;
@@ -77,22 +73,21 @@
 
 .table-v2 th:nth-child(9),
 .table-v2 td:nth-child(9) {
-  min-width: 120px;
+  min-width: 120px; /* 기타 사항 */
 }
 
-.table-v2 th:nth-child(10), /* 현재 상태 */
+.table-v2 th:nth-child(10),
 .table-v2 td:nth-child(10) {
-  min-width: 80px;
+  min-width: 80px; /* 현재상태 */
 }
 
-.table-v2 th:nth-child(11), /* 면접일 */
+.table-v2 th:nth-child(11),
 .table-v2 td:nth-child(11) {
-  min-width: 90px;
+  min-width: 90px; /* 면접일 */
 }
 
 /* --------------------------------
-   🔥 마지막 컬럼 (상태 변경 + 저장 버튼)
-   절대 짤리면 안됨 (가장 중요)
+   🔥 마지막 컬럼 (상태 변경 + 저장)
 ---------------------------------- */
 .table-v2 th:nth-child(12),
 .table-v2 td:nth-child(12) {
@@ -111,6 +106,7 @@
 
 </style>
 {% endblock %}
+
 
 
 {% extends "base.html" %}
@@ -132,7 +128,7 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- 🔵 스크롤 없는 버전 wrapper -->
+  <!-- 🔵 스크롤 없는 V2 테이블 wrapper -->
   <div class="table-wrapper-v2">
 
     <table id="request-table" class="table-v2">
@@ -201,4 +197,6 @@
 
   </div>
 </section>
+
 {% endblock %}
+
