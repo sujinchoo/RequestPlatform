@@ -1,46 +1,59 @@
 {% block extra_css %}
 <style>
 
-/* V2 – 스크롤 없음 & 컬럼 폭 고정 스타일 */
-.table-wrapper {
-  overflow-x: hidden !important;
-  width: 100% !important;
+/* 🔵 V2 핵심: 스크롤 없음 + 자동 컬럼 폭 + 버튼 절대 짤림 방지 */
+.table-wrapper-v2 {
+  width: 100%;
+  overflow-x: hidden !important;   /* 스크롤 제거 */
 }
 
-table {
+/* 기본 테이블 */
+.table-v2 {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;   /* 컬럼 폭을 고정시키기 위해 반드시 필요 */
+  table-layout: auto;   /* 자동 폭 배분 */
 }
 
-/* 🔥 컬럼별 정밀 폭 설정 (dashboard.html 비율에 맞춤) */
-th:nth-child(1), td:nth-child(1) { width: 20px; }   /* No */
-th:nth-child(2), td:nth-child(2) { width: 35px; }   /* 지역 */
-th:nth-child(3), td:nth-child(3) { width: 35px; }   /* 택배사 */
-th:nth-child(4), td:nth-child(4) { width: 40px; }  /* 영업소/대리점명 – 가장 넓게 */
-th:nth-child(5), td:nth-child(5) { width: 35px; }   /* 단가 */
-th:nth-child(6), td:nth-child(6) { width: 35px; }   /* 월 물량 */
-th:nth-child(7), td:nth-child(7) { width: 35px; }   /* 차종 */
-th:nth-child(8), td:nth-child(8) { width: 20px; }   /* 필요 인원 */
-th:nth-child(9), td:nth-child(9) { width: 40px; }  /* 기타 사항 */
-th:nth-child(10), td:nth-child(10) { width: 35px; } /* 현재 상태 */
-th:nth-child(11), td:nth-child(11) { width: 35px; }/* 면접일 */
-th:nth-child(12), td:nth-child(12) { width: 40px; }/* 상태 변경 */
-
-/* 🔥 줄바꿈 허용 (모바일에서도 자연스럽게) */
-th, td {
-  white-space: normal !important;
-  word-break: keep-all;
+/* 컬럼 공통 스타일 */
+.table-v2 th,
+.table-v2 td {
+  border: 1px solid #d4d4d8;
+  padding: 6px 8px;
+  font-size: 12px;
+  white-space: nowrap;        
+  text-overflow: ellipsis;
+  overflow: hidden;
   vertical-align: middle;
 }
 
-/* 태그/셀렉트박스 깨짐 방지 */
-.cell-select, .cell-input {
+/* 🔥 최적화된 컬럼 최소 너비 설정 */
+.table-v2 th:nth-child(1), .table-v2 td:nth-child(1) { min-width: 40px; }   /* No */
+.table-v2 th:nth-child(2), .table-v2 td:nth-child(2) { min-width: 70px; }   /* 지역 */
+.table-v2 th:nth-child(3), .table-v2 td:nth-child(3) { min-width: 80px; }   /* 택배사 */
+.table-v2 th:nth-child(4), .table-v2 td:nth-child(4) { min-width: 150px; }  /* 영업소/대리점명 */
+.table-v2 th:nth-child(5), .table-v2 td:nth-child(5) { min-width: 90px; }   /* 단가 */
+.table-v2 th:nth-child(6), .table-v2 td:nth-child(6) { min-width: 100px;}   /* 월 물량 */
+.table-v2 th:nth-child(7), .table-v2 td:nth-child(7) { min-width: 100px;}   /* 차종 */
+.table-v2 th:nth-child(8), .table-v2 td:nth-child(8) { min-width: 60px; }   /* 인원 */
+.table-v2 th:nth-child(9), .table-v2 td:nth-child(9) { min-width: 150px;}   /* 기타 */
+.table-v2 th:nth-child(10), .table-v2 td:nth-child(10) { min-width: 90px;}  /* 상태 */
+.table-v2 th:nth-child(11), .table-v2 td:nth-child(11) { min-width: 110px;} /* 면접일 */
+
+/* 🔥 마지막 저장 버튼 컬럼은 절대 짤리면 안됨 */
+.table-v2 th:nth-child(12), .table-v2 td:nth-child(12) {
+  min-width: 130px;
+  width: 130px;
+}
+
+/* 드롭다운 / input 사이즈 고정 */
+.cell-input,
+.cell-select {
   width: 100%;
+  min-width: 100%;
   font-size: 11px;
 }
 
-/* 상태 태그 크기 고정 */
+/* 상태 태그 안정화 */
 .tag-status {
   display: inline-block;
   padding: 2px 6px;
@@ -50,28 +63,29 @@ th, td {
 </style>
 {% endblock %}
 
-
-
 {% extends "base.html" %}
 
 {% block title %}대시보드 v2 (원본){% endblock %}
-{% block header_title %}대시보드 v2 — 스타일 없는 기본 버전{% endblock %}
+{% block header_title %}대시보드 v2 — 스크롤 없는 반응형 테이블{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
 {% block content %}
+
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청 현황 v2</div>
-  <p class="hero-sub">DB에 저장된 요청을 엑셀 시트 형식으로 보여줌 - 원본 테이블 스타일 (스크롤, 줄바꿈, ellipsis 제거 없음)</p>
+  <p class="hero-sub">스크롤 없이 화면에 맞춰 자동 폭 조절되는 테이블 뷰</p>
 </section>
 
 <section class="sheet">
   <div class="sheet-title-row">
-    <div class="sheet-title">인력 요청 리스트 (원본 스타일)</div>
-    <div class="sheet-sub">최신 요청이 위로 표시됩니다.</div>
+    <div class="sheet-title">인력 요청 리스트 (반응형 스타일 v2)</div>
+    <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <div class="table-wrapper">
-    <table id="request-table">
+  <!-- 🔵 스크롤 없는 버전 wrapper -->
+  <div class="table-wrapper-v2">
+
+    <table id="request-table" class="table-v2">
       <thead>
         <tr>
           <th>No</th>
@@ -81,7 +95,7 @@ th, td {
           <th>단가 (원/건)</th>
           <th>월 물량 (건)</th>
           <th>차종</th>
-          <th>필요 인원 (명)</th>
+          <th>필요 인원</th>
           <th>기타 사항</th>
           <th>현재 상태</th>
           <th>면접일</th>
@@ -109,12 +123,11 @@ th, td {
           </td>
 
           <td>
-            <form method="POST" action="{{ url_for('update_status') }}">
-              <input type="hidden" name="req_id" value="{{ r.id }}" />
-              <input type="date"
-                     class="cell-input"
+            <form method="POST" action="{{ url_for('update_status_v2') }}">
+              <input type="hidden" name="req_id" value="{{ r.id }}">
+              <input type="date" class="cell-input"
                      name="interview_date"
-                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}" />
+                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
           </td>
 
           <td>
@@ -125,9 +138,8 @@ th, td {
                 <option value="배차완료"    {% if r.status == "배차완료" %}selected{% endif %}>배차완료</option>
               </select>
 
-              <button type="submit"
-                      class="btn-primary"
-                      style="margin-top:4px; padding:4px 8px; font-size:11px;">
+              <button type="submit" class="btn-primary"
+                      style="margin-top:4px; padding:5px 8px; font-size:11px;">
                 저장
               </button>
             </form>
@@ -136,6 +148,7 @@ th, td {
         {% endfor %}
       </tbody>
     </table>
+
   </div>
 </section>
 {% endblock %}
