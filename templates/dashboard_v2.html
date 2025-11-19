@@ -4,6 +4,10 @@
 {% block header_title %}대시보드 v2 — 반응형 개선 완료{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stylev2.css') }}">
+{% endblock %}
+
 {% block content %}
 
 <section class="sheet sheet-hero">
