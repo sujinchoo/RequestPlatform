@@ -1,28 +1,41 @@
 /* ===========================================
    Dashboard V2 — Responsive Excel-style Table
    Author: Sujin Choo / ChatGPT
-   File: stylev2.css
+   File: stylev2.css (FINAL)
    =========================================== */
 
-/* 테이블 전체 감싸는 wrapper */
+/* ===========================================
+   기본 Wrapper (필요 시 유지)
+   =========================================== */
+
 .table-responsive-v2 {
   width: 100%;
-  overflow-x: auto;                  /* 모바일 가로 스크롤 허용 */
-  -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+  overflow-x: auto;
+  padding-bottom: 10px;
+  -webkit-overflow-scrolling: touch;
   border: 1px solid #e5e7eb;
   border-radius: 8px;
   background: #ffffff;
 }
 
-/* 기반 테이블 스타일 */
+
+/* ===========================================
+   Table Base (v1 스타일 기반)
+   =========================================== */
+
 .table-v2 {
-  width: 100%;
+  width: max-content;          /* 넓어지면 scroll 허용 */
+  min-width: 100%;             /* sheet보다 좁아지면 안됨 */
   border-collapse: collapse;
-  table-layout: fixed;               /* ⭐ Excel 스타일 레이아웃 */
+  table-layout: fixed;         /* Excel 스타일 */
   font-size: 13px;
 }
 
-/* 기본 셀 스타일 */
+
+/* ===========================================
+   Table Cells — 기본 스타일
+   =========================================== */
+
 .table-v2 th,
 .table-v2 td {
   border: 1px solid #d4d4d8;
@@ -31,17 +44,24 @@
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: center;
-  background-color: #ffffff;
+
+  /* ❗ stripe가 보이도록 투명(background 제거) */
+  background-color: transparent !important;
 }
 
-/* 테이블 헤더 */
+
+/* ===========================================
+   Table Header
+   =========================================== */
+
 .table-v2 thead tr {
-  background: #f3f4f6;
+  background: #f3f4f6 !important;
   font-weight: 700;
 }
 
+
 /* ===========================================
-   Column Widths (모든 컬럼 최소 너비 지정)
+   Column Widths
    =========================================== */
 
 .table-v2 th:nth-child(1),
@@ -96,16 +116,16 @@
   min-width: 100px;
 }
 
-/* ⭐ 가장 중요한 "상태 변경" 칼럼 */
+/* 상태 변경 */
 .table-v2 th:nth-child(12),
 .table-v2 td:nth-child(12) {
   min-width: 160px;
   width: 160px;
-  white-space: nowrap;
 }
 
+
 /* ===========================================
-   Input / Select UI
+   Form Elements (input/select/button)
    =========================================== */
 
 .cell-input,
@@ -118,19 +138,45 @@
   background-color: #ffffff;
 }
 
-/* 버튼 공통 스타일 */
 .table-v2 button {
   cursor: pointer;
   border-radius: 4px;
 }
 
+
 /* ===========================================
-   Hover / Row Effects
+   Stripe Rows (v1 동일)
    =========================================== */
 
-.table-v2 tbody tr:hover {
-  background: #fafafa;
+.table-v2 tbody tr:nth-child(odd) {
+  background-color: #ffffff !important;
 }
+
+.table-v2 tbody tr:nth-child(even) {
+  background-color: #f9fafb !important;
+}
+
+.table-v2 tbody tr:hover {
+  background-color: #eef2ff !important;
+}
+
+
+/* ===========================================
+   Sheet Layout Adjustments
+   =========================================== */
+
+.sheet .table-responsive-v2 {
+  background: #ffffff !important;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+  width: 100% !important;
+}
+
+.sheet {
+  padding: 16px 24px !important;
+}
+
 
 /* ===========================================
    Mobile 대응
@@ -138,62 +184,6 @@
 
 @media (max-width: 768px) {
   .table-v2 {
-    min-width: 1200px; /* 절대 잘리지 않도록 확보 */
+    min-width: 1200px;   /* 절대 잘리지 않도록 */
   }
 }
-
-/* ===========================================
-   🔥 UPDATE: 테이블 영역 전체 커버 + 화면폭 100% 확장
-   =========================================== */
-
-.sheet .table-responsive-v2 {
-  background: #ffffff !important;   /* 시트 회색 배경 가리기 */
-  padding: 20px !important;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.05);
-  width: 100% !important;           /* 화면 폭 꽉 채우기 */
-}
-
-/* 테이블도 100% 강제 */
-.table-v2 {
-  width: 100% !important;
-}
-
-/* sheet 자체의 여백도 균형 있게 보정 */
-.sheet {
-  padding: 16px 24px !important;
-}
-.table-responsive-v2 {
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: 10px;
-    -webkit-overflow-scrolling: touch;
-}
-
-.table-responsive-v2 table {
-    width: max-content;
-    min-width: 100%;
-}
-
-.table-responsive-v2 th,
-.table-responsive-v2 td {
-    white-space: nowrap;
-}
-/* ============================
-   v2 테이블 교차 색상 (v1 동일 스타일)
-   ============================ */
-
-.table-v2 tbody tr:nth-child(odd) {
-  background-color: #ffffff;  /* 흰색 */
-}
-
-.table-v2 tbody tr:nth-child(even) {
-  background-color: #f9fafb;  /* 연한 회색 */
-}
-
-/* Hover 효과(optional, v1 느낌과 동일) */
-.table-v2 tbody tr:hover {
-  background-color: #eef2ff; /* 연한 블루·퍼플 */
-}
-
-
