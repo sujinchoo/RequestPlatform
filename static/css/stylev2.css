@@ -1,21 +1,12 @@
 /* ===========================================
-   Dashboard V2 — Responsive Excel-style Table
-   Author: Sujin Choo / ChatGPT
-   File: stylev2.css (FINAL)
+   Dashboard V2 — Simplified Structure (v1 동일)
    =========================================== */
 
-/* ===========================================
-   기본 Wrapper (필요 시 유지)
-   =========================================== */
-
-.table-responsive-v2 {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #ffffff;
+/* sheet 내부에 있는 table 전체를 scroll 처리 */
+.sheet {
+  overflow-x: auto;                  /* 가로 스크롤 */
+  -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
+  padding: 16px 24px !important;
 }
 
 
@@ -24,10 +15,10 @@
    =========================================== */
 
 .table-v2 {
-  width: max-content;          /* 넓어지면 scroll 허용 */
-  min-width: 100%;             /* sheet보다 좁아지면 안됨 */
+  width: max-content;   /* 내용 많으면 자동 scroll */
+  min-width: 100%;
   border-collapse: collapse;
-  table-layout: fixed;         /* Excel 스타일 */
+  table-layout: fixed;
   font-size: 13px;
 }
 
@@ -45,8 +36,7 @@
   text-overflow: ellipsis;
   text-align: center;
 
-  /* ❗ stripe가 보이도록 투명(background 제거) */
-  background-color: transparent !important;
+  background-color: transparent !important;  /* stripe 보이도록 */
 }
 
 
@@ -57,90 +47,6 @@
 .table-v2 thead tr {
   background: #f3f4f6 !important;
   font-weight: 700;
-}
-
-
-/* ===========================================
-   Column Widths
-   =========================================== */
-
-.table-v2 th:nth-child(1),
-.table-v2 td:nth-child(1) {
-  width: 40px;
-}
-
-.table-v2 th:nth-child(2),
-.table-v2 td:nth-child(2) {
-  min-width: 70px;
-}
-
-.table-v2 th:nth-child(3),
-.table-v2 td:nth-child(3) {
-  min-width: 90px;
-}
-
-.table-v2 th:nth-child(4),
-.table-v2 td:nth-child(4) {
-  min-width: 150px;
-}
-
-.table-v2 th:nth-child(5),
-.table-v2 td:nth-child(5),
-.table-v2 th:nth-child(6),
-.table-v2 td:nth-child(6) {
-  min-width: 70px;
-}
-
-.table-v2 th:nth-child(7),
-.table-v2 td:nth-child(7) {
-  min-width: 80px;
-}
-
-.table-v2 th:nth-child(8),
-.table-v2 td:nth-child(8) {
-  min-width: 55px;
-}
-
-.table-v2 th:nth-child(9),
-.table-v2 td:nth-child(9) {
-  min-width: 120px;
-}
-
-.table-v2 th:nth-child(10),
-.table-v2 td:nth-child(10) {
-  min-width: 100px;
-}
-
-.table-v2 th:nth-child(11),
-.table-v2 td:nth-child(11) {
-  min-width: 100px;
-}
-
-/* 상태 변경 */
-.table-v2 th:nth-child(12),
-.table-v2 td:nth-child(12) {
-  min-width: 160px;
-  width: 160px;
-}
-
-
-/* ===========================================
-   Form Elements (input/select/button)
-   =========================================== */
-
-.cell-input,
-.cell-select {
-  height: 28px;
-  font-size: 12px;
-  padding: 3px 5px;
-  border-radius: 4px;
-  border: 1px solid #cbd5e1;
-  background-color: #ffffff;
-}
-
-.table-v2 button {
-  cursor: pointer;
-  border-radius: 4px;
 }
 
 
@@ -162,28 +68,49 @@
 
 
 /* ===========================================
-   Sheet Layout Adjustments
+   Column Widths
    =========================================== */
 
-.sheet .table-responsive-v2 {
-  background: #ffffff !important;
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.05);
-  width: 100% !important;
+.table-v2 th:nth-child(1), .table-v2 td:nth-child(1) { width: 40px; }
+.table-v2 th:nth-child(2), .table-v2 td:nth-child(2) { min-width: 70px; }
+.table-v2 th:nth-child(3), .table-v2 td:nth-child(3) { min-width: 90px; }
+.table-v2 th:nth-child(4), .table-v2 td:nth-child(4) { min-width: 150px; }
+.table-v2 th:nth-child(5), .table-v2 td:nth-child(5),
+.table-v2 th:nth-child(6), .table-v2 td:nth-child(6) { min-width: 70px; }
+.table-v2 th:nth-child(7), .table-v2 td:nth-child(7) { min-width: 80px; }
+.table-v2 th:nth-child(8), .table-v2 td:nth-child(8) { min-width: 55px; }
+.table-v2 th:nth-child(9), .table-v2 td:nth-child(9) { min-width: 120px; }
+.table-v2 th:nth-child(10), .table-v2 td:nth-child(10) { min-width: 100px; }
+.table-v2 th:nth-child(11), .table-v2 td:nth-child(11) { min-width: 100px; }
+.table-v2 th:nth-child(12), .table-v2 td:nth-child(12) { min-width: 160px; width: 160px; }
+
+
+/* ===========================================
+   Form Elements
+   =========================================== */
+
+.cell-input,
+.cell-select {
+  height: 28px;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
 }
 
-.sheet {
-  padding: 16px 24px !important;
+.table-v2 button {
+  cursor: pointer;
+  border-radius: 4px;
 }
 
 
 /* ===========================================
-   Mobile 대응
+   Mobile (전체 테이블 보여지도록)
    =========================================== */
 
 @media (max-width: 768px) {
   .table-v2 {
-    min-width: 1200px;   /* 절대 잘리지 않도록 */
+    min-width: 1200px; /* 모바일에서 잘리지 않게 */
   }
 }
