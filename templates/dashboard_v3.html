@@ -4,7 +4,10 @@
 {% block header_title %}인력 요청 현황 대시보드 v3 — 카드 리스트{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
-{% block content %}
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stylev3.css') }}">
+{% endblock %}
+
 
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청 현황 v3</div>
