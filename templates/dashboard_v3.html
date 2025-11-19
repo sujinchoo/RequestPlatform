@@ -76,5 +76,71 @@
     {% endfor %}
   </div>
 </section>
+<script>
+function renderData(data) {
+    const area = document.querySelector(".card-list");
+    area.innerHTML = "";
+
+    if (data.length === 0) {
+        area.innerHTML = `
+          <div style="text-align:center; padding:20px;">등록된 요청이 없습니다.</div>
+        `;
+        return;
+    }
+
+    data.forEach(r => {
+        area.innerHTML += `
+        <div class="req-card">
+
+          <div class="req-card-header">
+            <div>
+              <span class="card-region">${r.region}</span>
+              <span class="card-company">${r.company}</span>
+            </div>
+            <span class="tag-status tag-${r.status}">${r.status}</span>
+          </div>
+
+          <div class="req-card-body">
+
+            <div class="row"><span>영업소/대리점</span><div>${r.branch_name}</div></div>
+            <div class="row"><span>단가</span><div>${Number(r.unit_price).toLocaleString()} 원</div></div>
+            <div class="row"><span>월 물량</span><div>${Number(r.volume).toLocaleString()} 건</div></div>
+            <div class="row"><span>차종</span><div>${r.vehicle_type || "-"}</div></div>
+            <div class="row"><span>인원</span><div>${r.headcount} 명</div></div>
+            <div class="row"><span>기타</span><div>${r.etc || "-"}</div></div>
+
+            <div class="row"><span>면접일</span>
+              <div>
+                <form method="POST" action="/update_status">
+                  <input type="hidden" name="req_id" value="${r.id}">
+                  <input type="date" name="interview_date" class="card-input"
+                         value="${r.interview_date || ""}">
+              </div>
+            </div>
+
+            <div class="row"><span>상태 변경</span>
+              <div>
+                <select name="status" class="card-select">
+                  <option value="모집중"      ${r.status === "모집중" ? "selected":""}>모집중</option>
+                  <option value="선탑진행중"  ${r.status === "선탑진행중" ? "selected":""}>선탑진행중</option>
+                  <option value="면접예정"    ${r.status === "면접예정" ? "selected":""}>면접예정</option>
+                  <option value="배차완료"    ${r.status === "배차완료" ? "selected":""}>배차완료</option>
+                </select>
+
+                <button class="btn-primary" style="margin-top:6px;">저장</button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="req-card-footer">
+            등록일: ${r.created_at || ""}
+          </div>
+
+        </div>`;
+    });
+}
+</script>
 
 {% endblock %}
