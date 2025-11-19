@@ -22,7 +22,6 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- ⭐ 래퍼 삭제 → 바로 테이블 표시 -->
   <table id="request-table" class="table-v2">
 
     <thead>
@@ -62,7 +61,7 @@
         <td>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</td>
 
         <td>
-          <form method="POST" action="{{ url_for('update-tatus_v2') }}">
+          <form method="POST" action="{{ url_for('update_status_v2') }}">
             <input type="hidden" name="req_id" value="{{ r.id }}">
 
             <input type="date"
@@ -91,6 +90,9 @@
   </table>
 
 </section>
+
+
+<!-- 🔥 AJAX 렌더링 함수 (필터 적용 시 사용) -->
 <script>
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
@@ -119,7 +121,7 @@ function renderData(data) {
             <td>${r.interview_date || "-"}</td>
 
             <td>
-              <form method="POST" action="/update-status_v2">
+              <form method="POST" action="{{ url_for('update_status_v2') }}">
                 <input type="hidden" name="req_id" value="${r.id}">
                 <input type="date" class="cell-input" name="interview_date" value="${r.interview_date || ""}">
                 <select class="cell-select" name="status" style="margin-top:4px;">
@@ -137,6 +139,5 @@ function renderData(data) {
     });
 }
 </script>
-
 
 {% endblock %}
