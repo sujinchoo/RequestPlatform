@@ -438,3 +438,90 @@ table {
   min-width: 1200px; /* 또는 1400px, 필요하면 조정 */
 }
 
+
+/* ===========================
+   Dashboard v3 — 카드 리스트 UI
+   =========================== */
+
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.req-card {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+}
+
+.req-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.card-region {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+  margin-right: 6px;
+}
+
+.card-company {
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 6px;
+}
+
+/* 카드 본문 row */
+.req-card-body .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.req-card-body .row span {
+  width: 90px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* 입력 박스 */
+.card-input, .card-select {
+  width: 160px;
+  padding: 4px 6px;
+  font-size: 12px;
+  border-radius: 4px;
+  border: 1px solid #d4d4d8;
+}
+
+.req-card-footer {
+  margin-top: 12px;
+  font-size: 11px;
+  color: #6b7280;
+  text-align: right;
+}
+
+/* 모바일 UI */
+@media (max-width: 640px) {
+  .req-card-body .row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .req-card-body .row span {
+    width: 100%;
+  }
+  .card-input, .card-select {
+    width: 100%;
+  }
+}
+
