@@ -6,32 +6,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
-  <!-- ★★★ v2 / v3 커스텀 CSS 로드 가능하도록 블록 추가 ★★★ -->
-  {% block extra_css %}
-  <style>
-    .filter-bar {
-      position: sticky;
-      top: 58px;
-      z-index: 20;
-    }
-    </style>
-  {% endblock %}
-  <!-- ★★★ 끝 ★★★ -->
+  {% block extra_css %}{% endblock %}
 
-  <!-- 🔵 필터 전용 CSS (가벼운 기본 스타일) -->
+  <!-- 🔵 필터 + UI 공통 CSS -->
   <style>
     .filter-bar {
       display: flex;
       gap: 10px;
-      padding: 10px 12px;
+      padding: 12px;
       background: #f4f4f5;
-      border-bottom: 1px solid #e5e7eb;
-      position: sticky;
-      top: 62px; /* 헤더 아래 고정 */
-      z-index: 5;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 16px;
+      width: 100%;
     }
     .filter-select {
-      padding: 6px 10px;
+      padding: 8px 10px;
       font-size: 14px;
       border-radius: 6px;
       border: 1px solid #d4d4d8;
@@ -61,14 +51,13 @@
               class="nav-link {% if request.path == '/dashboard_v3' %}active{% endif %}">
               대시보드 v3
             </a>
+          {% endif %}
 
-        {% endif %}
           <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
             요청 등록(대리점)
           </a>
-              
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
-        
+
         {% else %}
           <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
             로그인
@@ -78,28 +67,9 @@
     </div>
   </header>
 
-
-  <!-- 🔵 필터 UI (v1/v2/v3 모든 페이지에서 공통 적용) -->
-  <div class="filter-bar">
-    <select id="filter-company" class="filter-select">
-      <option value="all">전체 택배사</option>
-      <option value="CJ대한통운">CJ대한통운</option>
-      <option value="한진택배">한진택배</option>
-      <option value="롯데택배">롯데택배</option>
-      <option value="우체국택배">우체국택배</option>
-    </select>
-
-    <select id="filter-status" class="filter-select">
-      <option value="all">전체 상태</option>
-      <option value="접수">접수</option>
-      <option value="진행중">진행중</option>
-      <option value="완료">완료</option>
-    </select>
-  </div>
-  <!-- 🔵 필터 UI 끝 -->
-
-
   <div class="page">
+
+    <!-- Flash 메시지 -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="sheet" style="margin-top:10px;">
@@ -117,14 +87,37 @@
     {% endwith %}
 
     <main class="main">
+
+      <!-- 🔵 ✔ sheet-hero 뒤에 필터 UI 자동 삽입 -->
+      <section class="sheet">
+        <div class="filter-bar">
+          <select id="filter-company" class="filter-select">
+            <option value="all">전체 택배사</option>
+            <option value="CJ대한통운">CJ대한통운</option>
+            <option value="한진택배">한진택배</option>
+            <option value="롯데택배">롯데택배</option>
+            <option value="우체국택배">우체국택배</option>
+          </select>
+
+          <select id="filter-status" class="filter-select">
+            <option value="all">전체 상태</option>
+            <option value="모집중">모집중</option>
+            <option value="선탑진행중">선탑진행중</option>
+            <option value="면접예정">면접예정</option>
+            <option value="배차완료">배차완료</option>
+          </select>
+        </div>
+      </section>
+      <!-- 🔵 필터 UI 끝 -->
+
       {% block content %}{% endblock %}
+
     </main>
 
     <footer class="footer">
       Request Platform – 샘플 서비스 (Flask + PostgreSQL)
     </footer>
   </div>
-
 
   <!-- 🔵 AJAX 필터 스크립트 -->
   <script>
@@ -137,22 +130,19 @@
             status: status
         });
 
-        // URL 업데이트
         history.pushState({}, "", `?${params.toString()}`);
 
         fetch(`/api/requests?${params.toString()}`)
           .then(res => res.json())
           .then(json => {
               const data = json.data;
-              renderData(data); // 🔥 v1, v2, v3에서 이 함수만 구현하면 됨
+              renderData(data); // 🔥 v1, v2, v3에서 페이지별 구현 필요
           });
     }
 
-    // 필터 변경 감지
     document.getElementById("filter-company").addEventListener("change", loadFilteredData);
     document.getElementById("filter-status").addEventListener("change", loadFilteredData);
 
-    // 최초 로드 시 URL 파라미터 반영
     window.onload = function() {
         const urlParams = new URLSearchParams(window.location.search);
 
@@ -162,8 +152,7 @@
         if (company) document.getElementById("filter-company").value = company;
         if (status) document.getElementById("filter-status").value = status;
 
-        // 페이지 로드 시 자동 필터 적용
-        loadFilteredData();
+        loadFilteredData(); // 초기 로딩
     }
   </script>
   <!-- 🔵 끝 -->
