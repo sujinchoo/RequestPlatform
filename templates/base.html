@@ -28,6 +28,11 @@
           <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
             요청 등록(대리점)
           </a>
+          <a href="{{ url_for('dashboard_v3') }}"
+             class="nav-link {% if request.path == '/dashboard_v3' %}active{% endif %}">
+            대시보드 v3
+          </a>
+
         
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
         {% else %}
