@@ -1,0 +1,143 @@
+/* ===========================================
+   Dashboard V2 — Responsive Excel-style Table
+   Author: Sujin Choo / ChatGPT
+   File: stylev2.css
+   =========================================== */
+
+/* 테이블 전체 감싸는 wrapper */
+.table-responsive-v2 {
+  width: 100%;
+  overflow-x: auto;                  /* 모바일 가로 스크롤 허용 */
+  -webkit-overflow-scrolling: touch;  /* 부드러운 스크롤 */
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+/* 기반 테이블 스타일 */
+.table-v2 {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;               /* ⭐ Excel 스타일 레이아웃 */
+  font-size: 13px;
+}
+
+/* 기본 셀 스타일 */
+.table-v2 th,
+.table-v2 td {
+  border: 1px solid #d4d4d8;
+  padding: 6px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  background-color: #ffffff;
+}
+
+/* 테이블 헤더 */
+.table-v2 thead tr {
+  background: #f3f4f6;
+  font-weight: 700;
+}
+
+/* ===========================================
+   Column Widths (모든 컬럼 최소 너비 지정)
+   =========================================== */
+
+.table-v2 th:nth-child(1),
+.table-v2 td:nth-child(1) {
+  width: 40px;
+}
+
+.table-v2 th:nth-child(2),
+.table-v2 td:nth-child(2) {
+  min-width: 70px;
+}
+
+.table-v2 th:nth-child(3),
+.table-v2 td:nth-child(3) {
+  min-width: 90px;
+}
+
+.table-v2 th:nth-child(4),
+.table-v2 td:nth-child(4) {
+  min-width: 150px;
+}
+
+.table-v2 th:nth-child(5),
+.table-v2 td:nth-child(5),
+.table-v2 th:nth-child(6),
+.table-v2 td:nth-child(6) {
+  min-width: 70px;
+}
+
+.table-v2 th:nth-child(7),
+.table-v2 td:nth-child(7) {
+  min-width: 80px;
+}
+
+.table-v2 th:nth-child(8),
+.table-v2 td:nth-child(8) {
+  min-width: 55px;
+}
+
+.table-v2 th:nth-child(9),
+.table-v2 td:nth-child(9) {
+  min-width: 120px;
+}
+
+.table-v2 th:nth-child(10),
+.table-v2 td:nth-child(10) {
+  min-width: 100px;
+}
+
+.table-v2 th:nth-child(11),
+.table-v2 td:nth-child(11) {
+  min-width: 100px;
+}
+
+/* ⭐ 가장 중요한 "상태 변경" 칼럼 */
+.table-v2 th:nth-child(12),
+.table-v2 td:nth-child(12) {
+  min-width: 160px;
+  width: 160px;
+  white-space: nowrap;
+}
+
+/* ===========================================
+   Input / Select UI
+   =========================================== */
+
+.cell-input,
+.cell-select {
+  height: 28px;
+  font-size: 12px;
+  padding: 3px 5px;
+  border-radius: 4px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+}
+
+/* 버튼 공통 스타일 */
+.table-v2 button {
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+/* ===========================================
+   Hover / Row Effects
+   =========================================== */
+
+.table-v2 tbody tr:hover {
+  background: #fafafa;
+}
+
+/* ===========================================
+   Mobile 대응
+   =========================================== */
+
+@media (max-width: 768px) {
+  .table-v2 {
+    min-width: 1200px; /* 절대 잘리지 않도록 확보 */
+  }
+}
