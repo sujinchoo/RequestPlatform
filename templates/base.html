@@ -20,10 +20,15 @@
             <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
               요청 현황(본사)
             </a>
+            <a href="{{ url_for('dashboard_v2') }}"
+               class="nav-link {% if request.endpoint == 'dashboard_v2' %}active{% endif %}">
+              대시보드 v2
+            </a>
           {% endif %}
           <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
             요청 등록(대리점)
           </a>
+        
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
         {% else %}
           <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
