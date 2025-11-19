@@ -424,3 +424,17 @@ tbody tr:nth-child(even) {
   font-size: 11px;
   height: 26px;
 }
+
+
+/*2025.11.19 수정 */
+/* 🔥 글자 잘림 방지 (ellipsis 제거 핵심) */
+th, td {
+  white-space: normal !important;
+  word-break: keep-all;  /* 한국어 단어 깨짐 방지 */
+}
+
+/* 🔥 엑셀처럼 테이블 펼치기 (모바일은 가로 스크롤) */
+table {
+  min-width: 1200px; /* 또는 1400px, 필요하면 조정 */
+}
+
