@@ -87,7 +87,7 @@ function renderData(data) {
             <td>${r.interview_date || "-"}</td>
 
             <td>
-              <form method="POST" action="/update_status">
+              <form method="POST" action="/update-status">
                 <input type="hidden" name="req_id" value="${r.id}">
                 <input type="date"
                        class="cell-input"
