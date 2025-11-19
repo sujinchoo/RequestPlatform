@@ -7,7 +7,15 @@
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
   <!-- ★★★ v2 / v3 커스텀 CSS 로드 가능하도록 블록 추가 ★★★ -->
-  {% block extra_css %}{% endblock %}
+  {% block extra_css %}
+  <style>
+    .filter-bar {
+      position: sticky;
+      top: 58px;
+      z-index: 20;
+    }
+    </style>
+  {% endblock %}
   <!-- ★★★ 끝 ★★★ -->
 
   <!-- 🔵 필터 전용 CSS (가벼운 기본 스타일) -->
