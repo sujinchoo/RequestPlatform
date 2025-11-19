@@ -4,12 +4,19 @@
   <meta charset="UTF-8" />
   <title>{% block title %}Request Platform{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
+  <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
+  <!-- 개별 페이지 추가 CSS -->
   {% block extra_css %}{% endblock %}
 
-  <!-- 🔵 필터 + UI 공통 CSS -->
+  <!-- 🔵 필터 공통 CSS -->
   <style>
+    .filter-section {
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
     .filter-bar {
       display: flex;
       gap: 10px;
@@ -17,8 +24,6 @@
       background: #f4f4f5;
       border-radius: 8px;
       border: 1px solid #e5e7eb;
-      margin-bottom: 16px;
-      width: 100%;
     }
     .filter-select {
       padding: 8px 10px;
@@ -30,6 +35,7 @@
   </style>
 
 </head>
+
 <body>
   <header class="top-header">
     <div class="header-inner">
@@ -37,10 +43,12 @@
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
         <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
       </div>
+
       <nav class="nav">
         {% if session.get('branch_id') %}
           {% if session.get('is_admin') %}
-            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
               요청 현황(본사)
             </a>
             <a href="{{ url_for('dashboard_v2') }}"
@@ -48,18 +56,21 @@
               대시보드 v2
             </a>
             <a href="{{ url_for('dashboard_v3') }}"
-              class="nav-link {% if request.path == '/dashboard_v3' %}active{% endif %}">
+               class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
               대시보드 v3
             </a>
           {% endif %}
 
-          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
+          <a href="{{ url_for('request_page') }}"
+             class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
             요청 등록(대리점)
           </a>
+
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
 
         {% else %}
-          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
+          <a href="{{ url_for('login') }}"
+             class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
             로그인
           </a>
         {% endif %}
@@ -69,15 +80,15 @@
 
   <div class="page">
 
-    <!-- Flash 메시지 -->
+    <!-- flash 메시지 -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="sheet" style="margin-top:10px;">
           {% for category, msg in messages %}
             <div style="font-size:12px; margin-bottom:4px; color:
-                {% if category == 'error' %}#b91c1c
-                {% elif category == 'success' %}#166534
-                {% else %}#374151{% endif %};
+              {% if category == 'error' %}#b91c1c
+              {% elif category == 'success' %}#166534
+              {% else %}#374151{% endif %};
             ">
               {{ msg }}
             </div>
@@ -88,8 +99,9 @@
 
     <main class="main">
 
-      <!-- 🔵 ✔ sheet-hero 뒤에 필터 UI 자동 삽입 -->
-      <section class="sheet">
+      <!-- 🔥 관리자(admin) 페이지에서만 필터 표시 -->
+      {% if session.get('branch_id') and session.get('is_admin') %}
+      <section class="sheet filter-section">
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
             <option value="all">전체 택배사</option>
@@ -108,8 +120,9 @@
           </select>
         </div>
       </section>
-      <!-- 🔵 필터 UI 끝 -->
+      {% endif %}
 
+      <!-- 🔵 실제 페이지 내용 -->
       {% block content %}{% endblock %}
 
     </main>
@@ -119,43 +132,51 @@
     </footer>
   </div>
 
-  <!-- 🔵 AJAX 필터 스크립트 -->
+  <!-- ====================================================== -->
+  <!-- 🔥 AJAX 필터 스크립트 (관리자 전용) -->
+  <!-- ====================================================== -->
+  {% if session.get('branch_id') and session.get('is_admin') %}
+
   <script>
     function loadFilteredData() {
         const company = document.getElementById("filter-company").value;
-        const status = document.getElementById("filter-status").value;
+        const status  = document.getElementById("filter-status").value;
 
-        const params = new URLSearchParams({
-            company: company,
-            status: status
-        });
+        const params = new URLSearchParams({ company, status });
 
+        // URL 반영
         history.pushState({}, "", `?${params.toString()}`);
 
         fetch(`/api/requests?${params.toString()}`)
           .then(res => res.json())
           .then(json => {
-              const data = json.data;
-              renderData(data); // 🔥 v1, v2, v3에서 페이지별 구현 필요
-          });
+              renderData(json.data);  // 각 페이지에서 구현
+          })
+          .catch(err => console.error("API ERROR:", err));
     }
 
-    document.getElementById("filter-company").addEventListener("change", loadFilteredData);
-    document.getElementById("filter-status").addEventListener("change", loadFilteredData);
+    // 이벤트 감지
+    document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
+    document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
-    window.onload = function() {
-        const urlParams = new URLSearchParams(window.location.search);
+    // 페이지 로드 시 자동 적용
+    window.addEventListener("load", () => {
+        if (!document.getElementById("filter-company")) return;  // 관리자 아닐 때
 
-        const company = urlParams.get("company");
-        const status = urlParams.get("status");
+        const params = new URLSearchParams(window.location.search);
 
-        if (company) document.getElementById("filter-company").value = company;
-        if (status) document.getElementById("filter-status").value = status;
+        const c = params.get("company");
+        const s = params.get("status");
 
-        loadFilteredData(); // 초기 로딩
-    }
+        if (c) document.getElementById("filter-company").value = c;
+        if (s) document.getElementById("filter-status").value = s;
+
+        loadFilteredData();
+    });
   </script>
-  <!-- 🔵 끝 -->
+
+  {% endif %}
+  <!-- ====================================================== -->
 
 </body>
 </html>
