@@ -91,5 +91,52 @@
   </table>
 
 </section>
+<script>
+function renderData(data) {
+    const tbody = document.querySelector("#request-table tbody");
+    tbody.innerHTML = "";
+
+    if (data.length === 0) {
+        tbody.innerHTML = `
+          <tr><td colspan="12" style="text-align:center;">등록된 요청이 없습니다.</td></tr>
+        `;
+        return;
+    }
+
+    data.forEach((r, idx) => {
+        tbody.innerHTML += `
+          <tr>
+            <td>${idx + 1}</td>
+            <td>${r.region}</td>
+            <td>${r.company}</td>
+            <td>${r.branch_name}</td>
+            <td>${Number(r.unit_price).toLocaleString()}</td>
+            <td>${Number(r.volume).toLocaleString()}</td>
+            <td>${r.vehicle_type || "-"}</td>
+            <td>${r.headcount}</td>
+            <td>${r.etc || "-"}</td>
+            <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
+            <td>${r.interview_date || "-"}</td>
+
+            <td>
+              <form method="POST" action="/update_status_v2">
+                <input type="hidden" name="req_id" value="${r.id}">
+                <input type="date" class="cell-input" name="interview_date" value="${r.interview_date || ""}">
+                <select class="cell-select" name="status" style="margin-top:4px;">
+                  <option value="모집중"      ${r.status === "모집중" ? "selected":""}>모집중</option>
+                  <option value="선탑진행중"  ${r.status === "선탑진행중" ? "selected":""}>선탑진행중</option>
+                  <option value="면접예정"    ${r.status === "면접예정" ? "selected":""}>면접예정</option>
+                  <option value="배차완료"    ${r.status === "배차완료" ? "selected":""}>배차완료</option>
+                </select>
+
+                <button class="btn-primary" style="margin-top:4px; padding:5px 8px; font-size:11px;">저장</button>
+              </form>
+            </td>
+          </tr>
+        `;
+    });
+}
+</script>
+
 
 {% endblock %}
