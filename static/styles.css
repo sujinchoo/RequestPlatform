@@ -1,0 +1,130 @@
+/* ============================================
+   Global Premium SaaS + Green Neutral v1 Table
+   ============================================ */
+
+/* Sheet 전체 스타일 (v1 공통 박스) */
+.sheet {
+  background: linear-gradient(to bottom, #f7faf7, #ffffff);
+  padding: 24px 28px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+  border: 1px solid #dbe7d6;
+}
+
+/* 테이블 전체 */
+.table-v1 {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: #374151; /* 기본 텍스트 */
+  table-layout: auto;
+}
+
+/* 테이블 헤더 */
+.table-v1 thead th {
+  background: #eef5ee;                 /* 연한 그린-그레이 */
+  color: #374151;
+  font-weight: 600;
+  border-bottom: 1px solid #dbe7d6;
+  padding: 12px 8px;
+}
+
+/* 데이터 셀 */
+.table-v1 td {
+  padding: 10px 8px; /* 기존 높이 유지 */
+  border-bottom: 1px solid #e6efe6;
+  white-space: nowrap;
+}
+
+/* 짝수 행 교차 색상 (Zebra) */
+.table-v1 tbody tr:nth-child(odd) {
+  background: #ffffff;
+}
+
+.table-v1 tbody tr:nth-child(even) {
+  background: #f8fbf8; /* 매우 연한 민트 화이트 */
+}
+
+/* Hover 효과 (SaaS 느낌) */
+.table-v1 tbody tr:hover {
+  background: #ecf8ec;
+  transition: 0.15s ease;
+}
+
+/* 테이블 컨테이너에 radius 적용 */
+.table-container {
+  border-radius: 10px;   /* SaaS 기본 radius */
+  overflow: hidden;
+  border: 1px solid #dbe7d6;
+}
+
+/* ============================================
+   상태 태그 (Premium SaaS 스타일)
+   ============================================ */
+
+.tag-status {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.tag-모집중 {
+  background: #d1fae5;
+  color: #15803d;
+}
+
+.tag-선탑진행중 {
+  background: #fef9c3;
+  color: #b45309;
+}
+
+.tag-면접예정 {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.tag-배차완료 {
+  background: #e6e9ff;
+  color: #4f46e5;
+}
+
+/* ============================================
+   입력/셀렉트/버튼 (상태 변경 영역)
+   ============================================ */
+
+.cell-input,
+.cell-select {
+  border: 1px solid #d7e8d7;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 4px 6px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.btn-primary {
+  width: 100%;
+  background: #15803d;
+  color: #fff;
+  border: none;
+  padding: 7px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #166534;
+}
+
+/* 모바일에서도 스타일 유지 */
+@media (max-width: 768px) {
+  .table-v1 td,
+  .table-v1 th {
+    padding: 8px 6px;
+  }
+}
