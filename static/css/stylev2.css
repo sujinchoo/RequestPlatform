@@ -179,4 +179,21 @@
 .table-responsive-v2 td {
     white-space: nowrap;
 }
+/* ============================
+   v2 테이블 교차 색상 (v1 동일 스타일)
+   ============================ */
+
+.table-v2 tbody tr:nth-child(odd) {
+  background-color: #ffffff;  /* 흰색 */
+}
+
+.table-v2 tbody tr:nth-child(even) {
+  background-color: #f9fafb;  /* 연한 회색 */
+}
+
+/* Hover 효과(optional, v1 느낌과 동일) */
+.table-v2 tbody tr:hover {
+  background-color: #eef2ff; /* 연한 블루·퍼플 */
+}
+
 
