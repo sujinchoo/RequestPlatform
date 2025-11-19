@@ -12,95 +12,83 @@
 
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청 현황 v2</div>
-  <p class="hero-sub">모바일/PC 자동 최적화 · 오른쪽 상태변경 100% 표시</p>
+  <p class="hero-sub">모바일/PC 자동 최적화 · 상태 변경 기능 개선</p>
 </section>
 
 <section class="sheet">
 
   <div class="sheet-title-row">
     <div class="sheet-title">인력 요청 리스트 (v2 개선판)</div>
-    <div class="sheet-sub">최신 요청이 상단에 정렬됩니다.</div>
+    <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- ⭐ 가로 스크롤 Wrapper -->
-  <div class="table-responsive-v2">
+  <!-- ⭐ 래퍼 삭제 → 바로 테이블 표시 -->
+  <table id="request-table" class="table-v2">
 
-    <table id="request-table" class="table-v2">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>지역</th>
+        <th>택배사</th>
+        <th>영업소 / 대리점명</th>
+        <th>단가 (원/건)</th>
+        <th>월 물량 (건)</th>
+        <th>차종</th>
+        <th>필요 인원 (명)</th>
+        <th>기타 사항</th>
+        <th>현재 상태</th>
+        <th>면접일</th>
+        <th>상태 변경</th>
+      </tr>
+    </thead>
 
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>지역</th>
-          <th>택배사</th>
-          <th>영업소 / 대리점명</th>
-          <th>단가 (원/건)</th>
-          <th>월 물량 (건)</th>
-          <th>차종</th>
-          <th>필요 인원 (명)</th>
-          <th>기타 사항</th>
-          <th>현재 상태</th>
-          <th>면접일</th>
-          <th>상태 변경</th>
-        </tr>
-      </thead>
+    <tbody>
+      {% for r in reqs %}
+      <tr>
+        <td>{{ loop.index }}</td>
+        <td>{{ r.region }}</td>
+        <td>{{ r.company }}</td>
+        <td>{{ r.branch_name }}</td>
+        <td>{{ "{:,}".format(r.unit_price) }}</td>
+        <td>{{ "{:,}".format(r.volume) }}</td>
+        <td>{{ r.vehicle_type or "-" }}</td>
+        <td>{{ r.headcount }}</td>
+        <td>{{ r.etc or "-" }}</td>
 
-      <tbody>
-        {% for r in reqs %}
-        <tr>
+        <td>
+          <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+        </td>
 
-          <td>{{ loop.index }}</td>
-          <td>{{ r.region }}</td>
-          <td>{{ r.company }}</td>
-          <td>{{ r.branch_name }}</td>
+        <td>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</td>
 
-          <td>{{ "{:,}".format(r.unit_price) }}</td>
-          <td>{{ "{:,}".format(r.volume) }}</td>
+        <td>
+          <form method="POST" action="{{ url_for('update_status_v2') }}">
+            <input type="hidden" name="req_id" value="{{ r.id }}">
 
-          <td>{{ r.vehicle_type or "-" }}</td>
-          <td>{{ r.headcount }}</td>
+            <input type="date"
+                   class="cell-input"
+                   name="interview_date"
+                   value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
 
-          <td>{{ r.etc or "-" }}</td>
+            <select class="cell-select" name="status" style="margin-top:4px;">
+              <option value="모집중" {% if r.status=="모집중" %}selected{% endif %}>모집중</option>
+              <option value="선탑진행중" {% if r.status=="선탑진행중" %}selected{% endif %}>선탑진행중</option>
+              <option value="면접예정" {% if r.status=="면접예정" %}selected{% endif %}>면접예정</option>
+              <option value="배차완료" {% if r.status=="배차완료" %}selected{% endif %}>배차완료</option>
+            </select>
 
-          <td>
-            <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
-          </td>
+            <button type="submit"
+                    class="btn-primary"
+                    style="margin-top:4px; padding:5px 8px; font-size:11px;">
+              저장
+            </button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
 
-          <td>
-            {{ r.interview_date.isoformat() if r.interview_date else "-" }}
-          </td>
-
-          <!-- ⭐ 상태 변경 + 면접일 변경 폼 -->
-          <td>
-            <form method="POST" action="{{ url_for('update_status_v2') }}">
-              <input type="hidden" name="req_id" value="{{ r.id }}">
-
-              <input type="date"
-                     class="cell-input"
-                     name="interview_date"
-                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
-
-              <select class="cell-select" name="status" style="margin-top:4px;">
-                <option value="모집중" {% if r.status=="모집중" %}selected{% endif %}>모집중</option>
-                <option value="선탑진행중" {% if r.status=="선탑진행중" %}selected{% endif %}>선탑진행중</option>
-                <option value="면접예정" {% if r.status=="면접예정" %}selected{% endif %}>면접예정</option>
-                <option value="배차완료" {% if r.status=="배차완료" %}selected{% endif %}>배차완료</option>
-              </select>
-
-              <button type="submit"
-                      class="btn-primary"
-                      style="margin-top:4px; padding:5px 8px; font-size:11px;">
-                저장
-              </button>
-            </form>
-          </td>
-
-        </tr>
-        {% endfor %}
-      </tbody>
-
-    </table>
-
-  </div> <!-- /table-responsive-v2 -->
+  </table>
 
 </section>
 
