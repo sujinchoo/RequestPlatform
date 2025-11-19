@@ -1,77 +1,55 @@
-/* sheet 전체 구조 개선 */
+/* -------------------------------------------
+   Sheet 구조 (테이블이 sheet 안에 바로 보이도록)
+   ------------------------------------------- */
 .sheet {
   overflow-x: hidden !important;
   padding: 16px 24px !important;
+  -webkit-overflow-scrolling: touch;
 }
 
-/* 테이블이 sheet 안에 꽉 맞게 정렬 */
+
+/* -------------------------------------------
+   Table Base
+   ------------------------------------------- */
 .table-v2 {
   width: 100% !important;
   min-width: 100% !important;
-  table-layout: auto !important;
   border-collapse: collapse;
-}
-
-/* 글자 줄바꿈 허용 */
-.table-v2 th,
-.table-v2 td {
-  white-space: normal !important;
-  word-break: break-word;
-  padding: 8px 10px;
-}
-
-/* sheet 내부에 있는 table 전체를 scroll 처리 */
-.sheet {
-  overflow-x: auto;                  /* 가로 스크롤 */
-  -webkit-overflow-scrolling: touch; /* 부드러운 스크롤 */
-  padding: 16px 24px !important;
+  table-layout: auto !important;      /* 자동 컬럼 너비 */
+  font-size: 90% !important;          /* 전체 10% 축소 */
 }
 
 
-/* ===========================================
-   Table Base (v1 스타일 기반)
-   =========================================== */
-
-.table-v2 {
-  width: max-content;   /* 내용 많으면 자동 scroll */
-  min-width: 100%;
-  border-collapse: collapse;
-  table-layout: fixed;
-  font-size: 13px;
-}
-
-
-/* ===========================================
-   Table Cells — 기본 스타일
-   =========================================== */
-
+/* -------------------------------------------
+   Table Cells
+   ------------------------------------------- */
 .table-v2 th,
 .table-v2 td {
   border: 1px solid #d4d4d8;
-  padding: 6px 8px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  padding: 6px 10px;
   text-align: center;
 
-  background-color: transparent !important;  /* stripe 보이도록 */
+  /* 글자 줄바꿈 */
+  white-space: normal !important;
+  word-break: break-word;
+
+  /* stripe 보이도록 transparent */
+  background-color: transparent !important;
 }
 
 
-/* ===========================================
+/* -------------------------------------------
    Table Header
-   =========================================== */
-
+   ------------------------------------------- */
 .table-v2 thead tr {
   background: #f3f4f6 !important;
   font-weight: 700;
 }
 
 
-/* ===========================================
-   Stripe Rows (v1 동일)
-   =========================================== */
-
+/* -------------------------------------------
+   Stripe 효과 (v1 동일)
+   ------------------------------------------- */
 .table-v2 tbody tr:nth-child(odd) {
   background-color: #ffffff !important;
 }
@@ -85,32 +63,32 @@
 }
 
 
-/* ===========================================
+/* -------------------------------------------
    Column Widths
-   =========================================== */
-
-.table-v2 th:nth-child(1), .table-v2 td:nth-child(1) { width: 40px; }
-.table-v2 th:nth-child(2), .table-v2 td:nth-child(2) { min-width: 70px; }
-.table-v2 th:nth-child(3), .table-v2 td:nth-child(3) { min-width: 90px; }
-.table-v2 th:nth-child(4), .table-v2 td:nth-child(4) { min-width: 150px; }
-.table-v2 th:nth-child(5), .table-v2 td:nth-child(5),
-.table-v2 th:nth-child(6), .table-v2 td:nth-child(6) { min-width: 70px; }
-.table-v2 th:nth-child(7), .table-v2 td:nth-child(7) { min-width: 80px; }
-.table-v2 th:nth-child(8), .table-v2 td:nth-child(8) { min-width: 55px; }
-.table-v2 th:nth-child(9), .table-v2 td:nth-child(9) { min-width: 120px; }
+   ------------------------------------------- */
+.table-v2 th:nth-child(1),  .table-v2 td:nth-child(1)  { width: 40px; }
+.table-v2 th:nth-child(2),  .table-v2 td:nth-child(2)  { min-width: 70px; }
+.table-v2 th:nth-child(3),  .table-v2 td:nth-child(3)  { min-width: 90px; }
+.table-v2 th:nth-child(4),  .table-v2 td:nth-child(4)  { min-width: 150px; }
+.table-v2 th:nth-child(5), 
+.table-v2 td:nth-child(5),
+.table-v2 th:nth-child(6), 
+.table-v2 td:nth-child(6)  { min-width: 70px; }
+.table-v2 th:nth-child(7),  .table-v2 td:nth-child(7)  { min-width: 80px; }
+.table-v2 th:nth-child(8),  .table-v2 td:nth-child(8)  { min-width: 55px; }
+.table-v2 th:nth-child(9),  .table-v2 td:nth-child(9)  { min-width: 120px; }
 .table-v2 th:nth-child(10), .table-v2 td:nth-child(10) { min-width: 100px; }
 .table-v2 th:nth-child(11), .table-v2 td:nth-child(11) { min-width: 100px; }
 .table-v2 th:nth-child(12), .table-v2 td:nth-child(12) { min-width: 160px; width: 160px; }
 
 
-/* ===========================================
-   Form Elements
-   =========================================== */
-
+/* -------------------------------------------
+   Inputs & Buttons (작게 조정)
+   ------------------------------------------- */
 .cell-input,
 .cell-select {
-  height: 28px;
-  font-size: 12px;
+  height: 26px !important;
+  font-size: 90% !important;
   padding: 3px 5px;
   border-radius: 4px;
   border: 1px solid #cbd5e1;
@@ -118,17 +96,22 @@
 }
 
 .table-v2 button {
+  font-size: 90% !important;
+  padding: 4px 6px !important;
   cursor: pointer;
   border-radius: 4px;
 }
 
 
-/* ===========================================
-   Mobile (전체 테이블 보여지도록)
-   =========================================== */
-
+/* -------------------------------------------
+   Mobile 대응
+   ------------------------------------------- */
 @media (max-width: 768px) {
   .table-v2 {
-    min-width: 1200px; /* 모바일에서 잘리지 않게 */
+    min-width: 1200px !important;  /* 모바일 가로 스크롤 방지 */
+  }
+
+  .sheet {
+    overflow-x: auto !important;   /* 모바일에서만 가로 스크롤 허용 */
   }
 }
