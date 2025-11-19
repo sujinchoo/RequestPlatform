@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %}인력 요청 대시보드 v3 (카드형){% endblock %}
+{% block header_title %}인력 요청 현황 대시보드 v3 — 카드 리스트{% endblock %}
+{% block logo_color %}logo-square-green{% endblock %}
+
+{% block content %}
+
+<section class="sheet sheet-hero">
+  <div class="hero-title">전국 택배 대리점 인력 요청 현황 v3</div>
+  <p class="hero-sub">
+    모바일 친화형 카드 UI로 구성된 요청 리스트입니다.
+  </p>
+</section>
+
+<section class="sheet">
+
+  <div class="sheet-title-row">
+    <div class="sheet-title">인력 요청 카드 리스트</div>
+    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
+  </div>
+
+  <div class="card-list">
+    {% for r in reqs %}
+    <div class="req-card">
+
+      <!-- 상단 영역: 지역 / 택배사 / 상태 -->
+      <div class="req-card-header">
+        <div>
+          <span class="card-region">{{ r.region }}</span>
+          <span class="card-company">{{ r.company }}</span>
+        </div>
+        <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+      </div>
+
+      <!-- 본문 -->
+      <div class="req-card-body">
+
+        <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
+        <div class="row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }} 원</div></div>
+        <div class="row"><span>월 물량</span><div>{{ "{:,}".format(r.volume) }} 건</div></div>
+        <div class="row"><span>차종</span><div>{{ r.vehicle_type or "-" }}</div></div>
+        <div class="row"><span>인원</span><div>{{ r.headcount }} 명</div></div>
+        <div class="row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
+
+        <div class="row"><span>면접일</span>
+          <div>
+            <form method="POST" action="{{ url_for('update_status') }}">
+              <input type="hidden" name="req_id" value="{{ r.id }}">
+              <input type="date"
+                     name="interview_date"
+                     class="card-input"
+                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
+          </div>
+        </div>
+
+        <div class="row"><span>상태 변경</span>
+          <div>
+            <select name="status" class="card-select">
+              <option value="모집중"      {% if r.status=="모집중" %}selected{% endif %}>모집중</option>
+              <option value="선탑진행중"  {% if r.status=="선탑진행중" %}selected{% endif %}>선탑진행중</option>
+              <option value="면접예정"    {% if r.status=="면접예정" %}selected{% endif %}>면접예정</option>
+              <option value="배차완료"    {% if r.status=="배차완료" %}selected{% endif %}>배차완료</option>
+            </select>
+
+            <button class="btn-primary" style="margin-top:6px;">저장</button>
+            </form>
+          </div>
+        </div>
+
+      </div><!-- /본문 -->
+
+      <div class="req-card-footer">
+        등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+</section>
+
+{% endblock %}
