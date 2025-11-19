@@ -17,11 +17,12 @@ def create_app():
 
     db.init_app(app)
 
-    # ---------------------------------------------------------
+    # =========================================================
     # 데코레이터: 로그인 & 관리자 체크
-    # ---------------------------------------------------------
+    # =========================================================
+    from functools import wraps
+
     def login_required(view):
-        from functools import wraps
         @wraps(view)
         def wrapped(*args, **kwargs):
             if "branch_id" not in session:
@@ -30,7 +31,6 @@ def create_app():
         return wrapped
 
     def admin_required(view):
-        from functools import wraps
         @wraps(view)
         def wrapped(*args, **kwargs):
             if not session.get("is_admin"):
@@ -39,9 +39,10 @@ def create_app():
             return view(*args, **kwargs)
         return wrapped
 
-    # ---------------------------------------------------------
-    # 임시 Admin 계정 생성
-    # ---------------------------------------------------------
+
+    # =========================================================
+    # 임시 관리자 생성
+    # =========================================================
     @app.route("/init-admin")
     def init_admin():
         try:
@@ -65,9 +66,10 @@ def create_app():
         except Exception as e:
             return f"Error: {e}"
 
-    # ---------------------------------------------------------
+
+    # =========================================================
     # 기본 라우트
-    # ---------------------------------------------------------
+    # =========================================================
     @app.route("/")
     def home():
         if "branch_id" in session:
@@ -98,9 +100,10 @@ def create_app():
         session.clear()
         return redirect(url_for("login"))
 
-    # ---------------------------------------------------------
-    # 요청 페이지
-    # ---------------------------------------------------------
+
+    # =========================================================
+    # 요청 등록 페이지
+    # =========================================================
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
@@ -134,151 +137,125 @@ def create_app():
 
         return render_template("request.html", branch=branch)
 
-    # ---------------------------------------------------------
-    # 대시보드 V1 (기본)
-    # ---------------------------------------------------------
+
+    # =========================================================
+    # 대시보드 (V1 / V2 / V3)
+    # =========================================================
     @app.route("/dashboard")
     @login_required
     @admin_required
     def dashboard():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard.html", reqs=reqs, current_date=date.today())
+        return render_template("dashboard.html", reqs=reqs)
 
-    # ---------------------------------------------------------
-    # 대시보드 V2 (스크롤 없는 버전)
-    # ---------------------------------------------------------
     @app.route("/dashboard_v2")
     @login_required
     @admin_required
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v2.html", reqs=reqs, current_date=date.today())
+        return render_template("dashboard_v2.html", reqs=reqs)
 
-    # ---------------------------------------------------------
-    # 대시보드 V3 (카드형)
-    # ---------------------------------------------------------
     @app.route("/dashboard_v3")
     @login_required
     @admin_required
     def dashboard_v3():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v3.html", reqs=reqs, current_date=date.today())
+        return render_template("dashboard_v3.html", reqs=reqs)
 
-    # ---------------------------------------------------------
-    # 상태 변경 (버전 1)
-    # ---------------------------------------------------------
+
+    # =========================================================
+    # 상태 변경
+    # =========================================================
+    def update_req_status(req_id, status, interview_date):
+        req = Req.query.get(req_id)
+        if req:
+            req.status = status
+            req.interview_date = (
+                datetime.strptime(interview_date, "%Y-%m-%d").date()
+                if interview_date else None
+            )
+            db.session.commit()
+
     @app.route("/update-status", methods=["POST"])
     @login_required
     @admin_required
     def update_status():
-        req_id = request.form.get("req_id")
-        status = request.form.get("status")
-        interview_date = request.form.get("interview_date") or None
-
-        req_obj = Req.query.get(req_id)
-        if req_obj:
-            req_obj.status = status
-            req_obj.interview_date = (
-                datetime.strptime(interview_date, "%Y-%m-%d").date()
-                if interview_date else None
-            )
-            db.session.commit()
-
+        update_req_status(
+            request.form.get("req_id"),
+            request.form.get("status"),
+            request.form.get("interview_date")
+        )
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard"))
 
-    # ---------------------------------------------------------
-    # 상태 변경 (버전 2)
-    # ---------------------------------------------------------
     @app.route("/update-status_v2", methods=["POST"])
     @login_required
     @admin_required
     def update_status_v2():
-        req_id = request.form.get("req_id")
-        status = request.form.get("status")
-        interview_date = request.form.get("interview_date") or None
-
-        req_obj = Req.query.get(req_id)
-        if req_obj:
-            req_obj.status = status
-            req_obj.interview_date = (
-                datetime.strptime(interview_date, "%Y-%m-%d").date()
-                if interview_date else None
-            )
-            db.session.commit()
-
+        update_req_status(
+            request.form.get("req_id"),
+            request.form.get("status"),
+            request.form.get("interview_date")
+        )
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard_v2"))
 
-    # ---------------------------------------------------------
-    # 상태 변경 (버전 3)
-    # ---------------------------------------------------------
     @app.route("/update-status_v3", methods=["POST"])
     @login_required
     @admin_required
     def update_status_v3():
-        req_id = request.form.get("req_id")
-        status = request.form.get("status")
-        interview_date = request.form.get("interview_date") or None
-
-        req_obj = Req.query.get(req_id)
-        if req_obj:
-            req_obj.status = status
-            req_obj.interview_date = (
-                datetime.strptime(interview_date, "%Y-%m-%d").date()
-                if interview_date else None
-            )
-            db.session.commit()
-
+        update_req_status(
+            request.form.get("req_id"),
+            request.form.get("status"),
+            request.form.get("interview_date")
+        )
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard_v3"))
-    
-      # ---------------------------------------------------------
-    # 필터 
-    # ---------------------------------------------------------
-    
-    @app.route('/api/requests', methods=['GET'])
+
+
+    # =========================================================
+    # 🔥 필터 API (AJAX용)
+    # =========================================================
+    @app.route("/api/requests", methods=["GET"])
+    @login_required
+    @admin_required
     def api_requests():
-        # URL 파라미터 받기
-        company = request.args.get('company', default="all", type=str)
-        status = request.args.get('status', default="all", type=str)
-    
-        # 기본 Query
-        query = Request.query  # 🔥 모델명: Request 또는 RequestModel 등 사용 중인 모델명으로 변경 필요
-    
-        # 회사 필터
-        if company != "all" and company != "" and company is not None:
-            query = query.filter(Request.company == company)
-    
-        # 상태 필터
-        if status != "all" and status != "" and status is not None:
-            query = query.filter(Request.status == status)
-    
-        # DB에서 결과 가져오기
-        rows = query.order_by(Request.created_at.desc()).all()
-    
-        # Dict 변환 (프론트에서 JS로 사용하기 위해)
+        company = request.args.get("company", "all")
+        status = request.args.get("status", "all")
+
+        query = Req.query
+
+        if company != "all" and company:
+            query = query.filter(Req.company == company)
+
+        if status != "all" and status:
+            query = query.filter(Req.status == status)
+
+        rows = query.order_by(Req.created_at.desc()).all()
+
         results = [
             {
-                "id": row.id,
-                "company": row.company,
-                "status": row.status,
-                "title": row.title if hasattr(row, 'title') else None,
-                "region": row.region if hasattr(row, 'region') else None,
-                "created_at": row.created_at.strftime('%Y-%m-%d %H:%M')
+                "id": r.id,
+                "company": r.company,
+                "region": r.region,
+                "branch_name": r.branch_name,
+                "unit_price": r.unit_price,
+                "volume": r.volume,
+                "vehicle_type": r.vehicle_type,
+                "headcount": r.headcount,
+                "etc": r.etc,
+                "status": r.status,
+                "interview_date": r.interview_date.isoformat() if r.interview_date else None,
+                "created_at": r.created_at.isoformat() if r.created_at else None
             }
-            for row in rows
+            for r in rows
         ]
-    
-        return jsonify({
-            "count": len(results),
-            "data": results
-        })
 
-    
+        return jsonify({"count": len(results), "data": results})
+
+
     return app
-    
-  
+
 
 app = create_app()
 
