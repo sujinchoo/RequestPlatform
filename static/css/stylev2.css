@@ -1,6 +1,24 @@
-/* ===========================================
-   Dashboard V2 — Simplified Structure (v1 동일)
-   =========================================== */
+/* sheet 전체 구조 개선 */
+.sheet {
+  overflow-x: hidden !important;
+  padding: 16px 24px !important;
+}
+
+/* 테이블이 sheet 안에 꽉 맞게 정렬 */
+.table-v2 {
+  width: 100% !important;
+  min-width: 100% !important;
+  table-layout: auto !important;
+  border-collapse: collapse;
+}
+
+/* 글자 줄바꿈 허용 */
+.table-v2 th,
+.table-v2 td {
+  white-space: normal !important;
+  word-break: break-word;
+  padding: 8px 10px;
+}
 
 /* sheet 내부에 있는 table 전체를 scroll 처리 */
 .sheet {
