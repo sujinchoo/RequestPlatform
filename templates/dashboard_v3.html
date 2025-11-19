@@ -45,7 +45,7 @@
 
         <div class="row"><span>면접일</span>
           <div>
-            <form method="POST" action="{{ url_for('update_status') }}">
+            <form method="POST" action="{{ url_for('update-status') }}">
               <input type="hidden" name="req_id" value="{{ r.id }}">
               <input type="date" name="interview_date" class="card-input"
                      value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
@@ -111,7 +111,7 @@ function renderData(data) {
 
             <div class="row"><span>면접일</span>
               <div>
-                <form method="POST" action="/update_status">
+                <form method="POST" action="/update-status">
                   <input type="hidden" name="req_id" value="${r.id}">
                   <input type="date" name="interview_date" class="card-input"
                          value="${r.interview_date || ""}">
