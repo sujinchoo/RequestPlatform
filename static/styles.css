@@ -424,28 +424,3 @@ tbody tr:nth-child(even) {
   font-size: 11px;
   height: 26px;
 }
-/* 테이블 전체를 가로 스크롤 */
-.table-wrapper {
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-}
-
-/* 셀 내부 텍스트 줄바꿈 금지 */
-#request-table td,
-#request-table th {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 140px; /* 필요시 개별 조정 */
-}
-
-/* 좁은 화면에서 컬럼 깨짐 방지 */
-#request-table {
-    table-layout: fixed;
-}
-
-/* 연한 노랑 배경 - 오늘 신규 등록 */
-.today-row {
-    background-color: #FFF9C4 !important; /* 연한 파스텔 노랑 */
-}
-
