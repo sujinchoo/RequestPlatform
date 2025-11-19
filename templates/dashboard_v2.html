@@ -1,33 +1,55 @@
 {% block extra_css %}
 <style>
-/* ---- v2: 가로 스크롤 제거, 줄바꿈 허용 ---- */
 
+/* V2 – 스크롤 없음 & 컬럼 폭 고정 스타일 */
 .table-wrapper {
-  overflow-x: hidden !important;  /* 스크롤 제거 */
+  overflow-x: hidden !important;
   width: 100% !important;
 }
 
-/* 테이블이 시트(흰 배경) 안에 꼭 맞도록 */
 table {
-  width: 100% !important;
-  min-width: 0 !important;   /* 절대 넘치지 않게 */
-  table-layout: fixed;       /* 칸 너비 균등 분배 */
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;   /* 컬럼 폭을 고정시키기 위해 반드시 필요 */
 }
 
-/* 텍스트는 자연스럽게 줄바꿈, 한국어 세로깨짐 방지 */
+/* 🔥 컬럼별 정밀 폭 설정 (dashboard.html 비율에 맞춤) */
+th:nth-child(1), td:nth-child(1) { width: 40px; }   /* No */
+th:nth-child(2), td:nth-child(2) { width: 80px; }   /* 지역 */
+th:nth-child(3), td:nth-child(3) { width: 90px; }   /* 택배사 */
+th:nth-child(4), td:nth-child(4) { width: 180px; }  /* 영업소/대리점명 – 가장 넓게 */
+th:nth-child(5), td:nth-child(5) { width: 70px; }   /* 단가 */
+th:nth-child(6), td:nth-child(6) { width: 80px; }   /* 월 물량 */
+th:nth-child(7), td:nth-child(7) { width: 70px; }   /* 차종 */
+th:nth-child(8), td:nth-child(8) { width: 70px; }   /* 필요 인원 */
+th:nth-child(9), td:nth-child(9) { width: 140px; }  /* 기타 사항 */
+th:nth-child(10), td:nth-child(10) { width: 90px; } /* 현재 상태 */
+th:nth-child(11), td:nth-child(11) { width: 110px; }/* 면접일 */
+th:nth-child(12), td:nth-child(12) { width: 110px; }/* 상태 변경 */
+
+/* 🔥 줄바꿈 허용 (모바일에서도 자연스럽게) */
 th, td {
   white-space: normal !important;
-  word-break: break-word !important; 
+  word-break: keep-all;
+  vertical-align: middle;
 }
 
-/* 폼 요소가 너무 커서 넘칠 때 자동 줄바꿈 */
-.cell-input,
-.cell-select {
-  width: 100% !important;
-  white-space: normal !important;
+/* 태그/셀렉트박스 깨짐 방지 */
+.cell-select, .cell-input {
+  width: 100%;
+  font-size: 11px;
 }
+
+/* 상태 태그 크기 고정 */
+.tag-status {
+  display: inline-block;
+  padding: 2px 6px;
+  white-space: nowrap;
+}
+
 </style>
 {% endblock %}
+
 
 
 {% extends "base.html" %}
