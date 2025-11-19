@@ -1,0 +1,116 @@
+/* ============================
+   DASHBOARD V3 전용 스타일
+   ============================ */
+
+/* 카드 */
+.req-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  transition: 0.2s ease;
+}
+
+.req-card:hover {
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+/* 카드 헤더 */
+.req-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.card-region {
+  font-weight: 600;
+  font-size: 14px;
+  color: #2563eb;
+}
+
+.card-company {
+  margin-left: 8px;
+  font-size: 13px;
+  padding: 3px 8px;
+  background: #e0f2fe;
+  color: #0369a1;
+  border-radius: 6px;
+  font-weight: 600;
+}
+
+/* 상태 태그 */
+.tag-status {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 8px;
+}
+
+.tag-모집중 { background:#dcfce7; color:#16a34a; }
+.tag-선탑진행중 { background:#fef9c3; color:#b45309; }
+.tag-면접예정 { background:#cffafe; color:#0e7490; }
+.tag-배차완료 { background:#e0e7ff; color:#4338ca; }
+
+/* 카드 본문 row */
+.req-card-body .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.req-card-body .row:last-child {
+  border-bottom: none;
+}
+
+.req-card-body span {
+  color: #475569;
+  font-size: 14px;
+}
+
+/* Input / Select */
+.card-input,
+.card-select {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 14px;
+  margin-top: 4px;
+  background: white;
+}
+
+/* 버튼 */
+.btn-primary {
+  width: 100%;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  padding: 10px 0;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 10px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.btn-primary:hover {
+  background: #1d4ed8;
+}
+
+/* 카드 footer */
+.req-card-footer {
+  margin-top: 14px;
+  font-size: 12px;
+  color: #94a3b8;
+  text-align: right;
+}
+
+/* 리스트 전체 */
+.card-list {
+  margin-top: 10px;
+}
