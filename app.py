@@ -1,8 +1,9 @@
 # app.py
+
 from datetime import datetime, date
 from flask import (
     Flask, render_template, request,
-    redirect, url_for, session, flash
+    redirect, url_for, session, flash, jsonify
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -231,8 +232,51 @@ def create_app():
 
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard_v3"))
+    
 
     return app
+    
+    # ---------------------------------------------------------
+    # 필터 
+    # ---------------------------------------------------------
+    
+    @app.route('/api/requests', methods=['GET'])
+    def api_requests():
+        # URL 파라미터 받기
+        company = request.args.get('company', default="all", type=str)
+        status = request.args.get('status', default="all", type=str)
+    
+        # 기본 Query
+        query = Request.query  # 🔥 모델명: Request 또는 RequestModel 등 사용 중인 모델명으로 변경 필요
+    
+        # 회사 필터
+        if company != "all" and company != "" and company is not None:
+            query = query.filter(Request.company == company)
+    
+        # 상태 필터
+        if status != "all" and status != "" and status is not None:
+            query = query.filter(Request.status == status)
+    
+        # DB에서 결과 가져오기
+        rows = query.order_by(Request.created_at.desc()).all()
+    
+        # Dict 변환 (프론트에서 JS로 사용하기 위해)
+        results = [
+            {
+                "id": row.id,
+                "company": row.company,
+                "status": row.status,
+                "title": row.title if hasattr(row, 'title') else None,
+                "region": row.region if hasattr(row, 'region') else None,
+                "created_at": row.created_at.strftime('%Y-%m-%d %H:%M')
+            }
+            for row in rows
+        ]
+    
+        return jsonify({
+            "count": len(results),
+            "data": results
+        })
 
 
 app = create_app()
