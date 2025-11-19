@@ -5,131 +5,36 @@
   <title>{% block title %}Request Platform{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <!-- ============================
-       🌿 GLOBAL THEME (SaaS Premium)
-       ============================ -->
-  <style>
-    :root {
-      --bg-page: linear-gradient(to bottom, #f7faf7, #ffffff);
-      --bg-sheet: #ffffff;
-      --border-color: #dbe7d6;
-      --text-primary: #374151;
-      --text-secondary: #4b5563;
-      --accent-green: #15803d;
-      --accent-green-dark: #166534;
-      --accent-light: #4ade80;
-      --shadow-soft: 0 4px 12px rgba(0,0,0,0.04);
-      --radius: 12px;
-    }
-
-    /* 페이지 전체 */
-    body {
-      background: var(--bg-page);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      color: var(--text-primary);
-      margin: 0;
-      padding: 0;
-    }
-
-    /* 공통 sheet */
-    .sheet {
-      background: var(--bg-sheet);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 22px 26px;
-      box-shadow: var(--shadow-soft);
-      margin-bottom: 18px;
-    }
-
-    /* Header / Nav (SaaS 스타일) */
-    .top-header {
-      background: #ffffffcc;
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid #e5e7eb;
-      padding: 10px 0;
-      position: sticky;
-      top: 0;
-      z-index: 999;
-    }
-
-    .header-inner {
-      max-width: 1200px;
-      margin: auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0 16px;
-    }
-
-    .logo-text {
-      font-weight: 600;
-      font-size: 17px;
-      color: var(--text-primary);
-    }
-
-    /* Nav Links */
-    .nav-link {
-      margin-left: 12px;
-      padding: 6px 12px;
-      border-radius: 8px;
-      color: var(--text-secondary);
-      text-decoration: none;
-      font-size: 14px;
-      transition: 0.2s ease;
-    }
-
-    .nav-link:hover {
-      background: #f3f7f3;
-      color: var(--accent-green-dark);
-    }
-
-    .nav-link.active {
-      background: var(--accent-green);
-      color: white !important;
-      font-weight: 600;
-    }
-
-    /* 📦 필터 (SaaS Premium) */
-    .filter-section {
-      margin-bottom: 18px;
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 12px;
-      padding: 14px;
-      background: #f3f7f3;
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-    }
-
-    .filter-select {
-      padding: 8px 10px;
-      font-size: 14px;
-      border-radius: 8px;
-      border: 1px solid var(--border-color);
-      background: white;
-      color: var(--text-primary);
-    }
-
-    /* Flash Message */
-    .sheet-flash {
-      padding: 14px;
-      font-size: 13px;
-    }
-
-  </style>
-
-
-  <!-- 기본 styles.css (기존 유지) -->
+  <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
   <!-- 개별 페이지 추가 CSS -->
   {% block extra_css %}{% endblock %}
+
+  <!-- 🔵 필터 공통 CSS -->
+  <style>
+    .filter-section {
+      margin-top: 10px;
+      margin-bottom: 16px;
+    }
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      padding: 12px;
+      background: #f4f4f5;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+    }
+    .filter-select {
+      padding: 8px 10px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #d4d4d8;
+      background: #ffffff;
+    }
+  </style>
+
 </head>
-
-
-
 
 <body>
   <header class="top-header">
@@ -146,12 +51,10 @@
                class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
               요청 현황(본사)
             </a>
-
             <a href="{{ url_for('dashboard_v2') }}"
                class="nav-link {% if request.endpoint == 'dashboard_v2' %}active{% endif %}">
               대시보드 v2
             </a>
-
             <a href="{{ url_for('dashboard_v3') }}"
                class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
               대시보드 v3
@@ -164,6 +67,7 @@
           </a>
 
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
+
         {% else %}
           <a href="{{ url_for('login') }}"
              class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
@@ -174,33 +78,28 @@
     </div>
   </header>
 
-
-
-
   <div class="page">
 
-    <!-- Flash Message -->
+    <!-- flash 메시지 -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-      <section class="sheet sheet-flash">
-        {% for category, msg in messages %}
-          <div style="color:
-            {% if category == 'error' %}#b91c1c
-            {% elif category == 'success' %}#166534
-            {% else %}#374151{% endif %};
-            margin-bottom: 4px;">
-            {{ msg }}
-          </div>
-        {% endfor %}
-      </section>
+        <div class="sheet" style="margin-top:10px;">
+          {% for category, msg in messages %}
+            <div style="font-size:12px; margin-bottom:4px; color:
+              {% if category == 'error' %}#b91c1c
+              {% elif category == 'success' %}#166534
+              {% else %}#374151{% endif %};
+            ">
+              {{ msg }}
+            </div>
+          {% endfor %}
+        </div>
       {% endif %}
     {% endwith %}
 
-
-
     <main class="main">
 
-      <!-- 관리자 전용 필터 -->
+      <!-- 🔥 관리자(admin) 페이지에서만 필터 표시 -->
       {% if session.get('branch_id') and session.get('is_admin') %}
       <section class="sheet filter-section">
         <div class="filter-bar">
@@ -223,54 +122,59 @@
       </section>
       {% endif %}
 
-      <!-- 페이지 본문 -->
+      <!-- 🔵 실제 페이지 내용 -->
       {% block content %}{% endblock %}
 
     </main>
-
-
 
     <footer class="footer">
       Request Platform – 샘플 서비스 (Flask + PostgreSQL)
     </footer>
   </div>
 
-
-
-
   <!-- ====================================================== -->
-  <!-- AJAX 필터 스크립트 -->
+  <!-- 🔥 AJAX 필터 스크립트 (관리자 전용) -->
   <!-- ====================================================== -->
   {% if session.get('branch_id') and session.get('is_admin') %}
+
   <script>
     function loadFilteredData() {
-      const company = document.getElementById("filter-company").value;
-      const status  = document.getElementById("filter-status").value;
-      const params = new URLSearchParams({ company, status });
-      history.pushState({}, "", `?${params.toString()}`);
+        const company = document.getElementById("filter-company").value;
+        const status  = document.getElementById("filter-status").value;
 
-      fetch(`/api/requests?${params.toString()}`)
-        .then(res => res.json())
-        .then(json => {
-          renderData(json.data);
-        })
-        .catch(err => console.error("API ERROR:", err));
+        const params = new URLSearchParams({ company, status });
+
+        // URL 반영
+        history.pushState({}, "", `?${params.toString()}`);
+
+        fetch(`/api/requests?${params.toString()}`)
+          .then(res => res.json())
+          .then(json => {
+              renderData(json.data);  // 각 페이지에서 구현
+          })
+          .catch(err => console.error("API ERROR:", err));
     }
 
+    // 이벤트 감지
     document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
     document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
+    // 페이지 로드 시 자동 적용
     window.addEventListener("load", () => {
-      const params = new URLSearchParams(window.location.search);
-      const c = params.get("company");
-      const s = params.get("status");
+        if (!document.getElementById("filter-company")) return;  // 관리자 아닐 때
 
-      if (c) document.getElementById("filter-company").value = c;
-      if (s) document.getElementById("filter-status").value = s;
+        const params = new URLSearchParams(window.location.search);
 
-      loadFilteredData();
+        const c = params.get("company");
+        const s = params.get("status");
+
+        if (c) document.getElementById("filter-company").value = c;
+        if (s) document.getElementById("filter-status").value = s;
+
+        loadFilteredData();
     });
   </script>
+
   {% endif %}
   <!-- ====================================================== -->
 
