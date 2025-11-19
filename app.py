@@ -1,5 +1,5 @@
 # app.py
-from datetime import datetime, date     # ← ⭐ date 추가
+from datetime import datetime, date
 from flask import (
     Flask, render_template, request,
     redirect, url_for, session, flash
@@ -16,10 +16,11 @@ def create_app():
 
     db.init_app(app)
 
-    # ----- 로그인 체크 데코레이터 -----
+    # ---------------------------------------------------------
+    # 데코레이터: 로그인 & 관리자 체크
+    # ---------------------------------------------------------
     def login_required(view):
         from functools import wraps
-
         @wraps(view)
         def wrapped(*args, **kwargs):
             if "branch_id" not in session:
@@ -29,7 +30,6 @@ def create_app():
 
     def admin_required(view):
         from functools import wraps
-
         @wraps(view)
         def wrapped(*args, **kwargs):
             if not session.get("is_admin"):
@@ -38,14 +38,11 @@ def create_app():
             return view(*args, **kwargs)
         return wrapped
 
-
-    # ---------------------------
+    # ---------------------------------------------------------
     # 임시 Admin 계정 생성
-    # ---------------------------
+    # ---------------------------------------------------------
     @app.route("/init-admin")
     def init_admin():
-        from werkzeug.security import generate_password_hash
-
         try:
             db.create_all()
             existing = Branch.query.filter_by(login_id="admin").first()
@@ -67,10 +64,9 @@ def create_app():
         except Exception as e:
             return f"Error: {e}"
 
-
-    # ---------------------------
+    # ---------------------------------------------------------
     # 기본 라우트
-    # ---------------------------
+    # ---------------------------------------------------------
     @app.route("/")
     def home():
         if "branch_id" in session:
@@ -101,7 +97,9 @@ def create_app():
         session.clear()
         return redirect(url_for("login"))
 
-    # 대리점 인력 요청 페이지
+    # ---------------------------------------------------------
+    # 요청 페이지
+    # ---------------------------------------------------------
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
@@ -121,64 +119,53 @@ def create_app():
                     headcount=int(form.get("headcount") or 0),
                     etc=form.get("etc"),
                     status="모집중",
-                    created_at=datetime.utcnow(),     # ← ⭐ 신설
+                    created_at=datetime.utcnow(),
                 )
                 db.session.add(new_req)
                 db.session.commit()
                 flash("요청이 저장되었습니다.", "success")
-                return redirect(url_for("request_page"))
-
             except Exception as e:
                 db.session.rollback()
-                print("Error:", e)
-                flash("요청 저장 중 오류가 발생했습니다.", "error")
+                flash("요청 저장 중 오류 발생", "error")
+                print(e)
+
+            return redirect(url_for("request_page"))
 
         return render_template("request.html", branch=branch)
 
-    # ---------------------------
-    # 대시보드 (본사만)
-    # ---------------------------
+    # ---------------------------------------------------------
+    # 대시보드 V1 (기본)
+    # ---------------------------------------------------------
     @app.route("/dashboard")
     @login_required
     @admin_required
     def dashboard():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template(
-            "dashboard.html",
-            reqs=reqs,
-            current_date=date.today()     # ← ⭐ 오늘 날짜 전달
-        )
+        return render_template("dashboard.html", reqs=reqs, current_date=date.today())
 
-    # ---------------------------
-    # 대시보드 v2 (가로스크롤 최적화 버전)
-    # ---------------------------
+    # ---------------------------------------------------------
+    # 대시보드 V2 (스크롤 없는 버전)
+    # ---------------------------------------------------------
     @app.route("/dashboard_v2")
     @login_required
     @admin_required
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template(
-            "dashboard_v2.html",
-            reqs=reqs,
-            current_date=date.today()     # ← ⭐ 오늘 날짜 전달
-        )
+        return render_template("dashboard_v2.html", reqs=reqs, current_date=date.today())
 
-    # 대시보드 v3 (카드형 리스트)
+    # ---------------------------------------------------------
+    # 대시보드 V3 (카드형)
+    # ---------------------------------------------------------
     @app.route("/dashboard_v3")
     @login_required
     @admin_required
     def dashboard_v3():
-        reqs = (
-            Req.query
-            .order_by(Req.created_at.desc())
-            .all()
-        )
-        return render_template("dashboard_v3.html", reqs=reqs)
+        reqs = Req.query.order_by(Req.created_at.desc()).all()
+        return render_template("dashboard_v3.html", reqs=reqs, current_date=date.today())
 
-
-    # ---------------------------
-    # 상태 변경
-    # ---------------------------
+    # ---------------------------------------------------------
+    # 상태 변경 (버전 1)
+    # ---------------------------------------------------------
     @app.route("/update-status", methods=["POST"])
     @login_required
     @admin_required
@@ -188,20 +175,62 @@ def create_app():
         interview_date = request.form.get("interview_date") or None
 
         req_obj = Req.query.get(req_id)
-        if not req_obj:
-            flash("요청을 찾을 수 없습니다.", "error")
-            return redirect(url_for("dashboard"))
+        if req_obj:
+            req_obj.status = status
+            req_obj.interview_date = (
+                datetime.strptime(interview_date, "%Y-%m-%d").date()
+                if interview_date else None
+            )
+            db.session.commit()
 
-        req_obj.status = status
-        if interview_date:
-            try:
-                req_obj.interview_date = datetime.strptime(interview_date, "%Y-%m-%d").date()
-            except:
-                flash("면접일 형식 오류", "error")
-
-        db.session.commit()
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard"))
+
+    # ---------------------------------------------------------
+    # 상태 변경 (버전 2)
+    # ---------------------------------------------------------
+    @app.route("/update-status_v2", methods=["POST"])
+    @login_required
+    @admin_required
+    def update_status_v2():
+        req_id = request.form.get("req_id")
+        status = request.form.get("status")
+        interview_date = request.form.get("interview_date") or None
+
+        req_obj = Req.query.get(req_id)
+        if req_obj:
+            req_obj.status = status
+            req_obj.interview_date = (
+                datetime.strptime(interview_date, "%Y-%m-%d").date()
+                if interview_date else None
+            )
+            db.session.commit()
+
+        flash("업데이트 완료", "success")
+        return redirect(url_for("dashboard_v2"))
+
+    # ---------------------------------------------------------
+    # 상태 변경 (버전 3)
+    # ---------------------------------------------------------
+    @app.route("/update-status_v3", methods=["POST"])
+    @login_required
+    @admin_required
+    def update_status_v3():
+        req_id = request.form.get("req_id")
+        status = request.form.get("status")
+        interview_date = request.form.get("interview_date") or None
+
+        req_obj = Req.query.get(req_id)
+        if req_obj:
+            req_obj.status = status
+            req_obj.interview_date = (
+                datetime.strptime(interview_date, "%Y-%m-%d").date()
+                if interview_date else None
+            )
+            db.session.commit()
+
+        flash("업데이트 완료", "success")
+        return redirect(url_for("dashboard_v3"))
 
     return app
 
