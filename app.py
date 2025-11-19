@@ -163,6 +163,19 @@ def create_app():
             current_date=date.today()     # ← ⭐ 오늘 날짜 전달
         )
 
+    # 대시보드 v3 (카드형 리스트)
+    @app.route("/dashboard_v3")
+    @login_required
+    @admin_required
+    def dashboard_v3():
+        reqs = (
+            Req.query
+            .order_by(Req.created_at.desc())
+            .all()
+        )
+        return render_template("dashboard_v3.html", reqs=reqs)
+
+
     # ---------------------------
     # 상태 변경
     # ---------------------------
