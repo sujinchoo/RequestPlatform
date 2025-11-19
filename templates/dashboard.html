@@ -18,17 +18,16 @@
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
-  <!-- 가로 스크롤 래퍼 -->
+  <!-- 🔹 가로 스크롤 가능 wrapper 추가 -->
   <div class="table-wrapper">
-
-    <!-- 컴팩트 테이블 스타일 -->
+    
+    <!-- 🔹 table-compact 적용 (행 간격 축소) -->
     <table id="request-table" class="table-compact">
       <thead>
         <tr>
           <th>No</th>
           <th>지역</th>
-          <th>택배사</th>
-          <th>영업소 / 대리점명</th>
+          <th>영업소 / 대리 / 점명</th>
           <th>단가 (원/건)</th>
           <th>월 물량 (건)</th>
           <th>차종</th>
@@ -42,39 +41,26 @@
       <tbody>
         {% for r in reqs %}
         <tr data-region="{{ r.region }}" data-company="{{ r.company }}" data-status="{{ r.status }}">
-          <!-- No -->
           <td>{{ loop.index }}</td>
-
-          <!-- 지역 -->
           <td>{{ r.region }}</td>
-
-          <!-- 택배사 -->
-          <td>{{ r.company }}</td>
-
-          <!-- 영업소 / 대리점명 (그냥 텍스트) -->
-          <td>{{ r.branch_name }}</td>
-
-          <!-- 단가 / 월물량 / 차종 / 필요인원 / 기타 -->
+          <td>
+            {{ r.company }}<br />
+            <span class="badge-branch">{{ r.branch_name }}</span>
+          </td>
           <td>{{ "{:,}".format(r.unit_price) }}</td>
           <td>{{ "{:,}".format(r.volume) }}</td>
           <td>{{ r.vehicle_type or "-" }}</td>
           <td>{{ r.headcount }}</td>
           <td>{{ r.etc or "-" }}</td>
-
-          <!-- 현재 상태 (텍스트 배지 유지, 필요 없으면 span 빼도 됨) -->
           <td>
             <span class="tag-status tag-{{ r.status }}" data-status-text>
               {{ r.status }}
             </span>
           </td>
-
-          <!-- 면접일 + 상태 변경 (기존 form 구조 그대로 유지) -->
           <td>
             <form method="post" action="{{ url_for('update_status') }}">
               <input type="hidden" name="req_id" value="{{ r.id }}" />
-              <input type="date"
-                     class="cell-input"
-                     name="interview_date"
+              <input type="date" class="cell-input" name="interview_date"
                      value="{{ r.interview_date.isoformat() if r.interview_date else '' }}" />
           </td>
           <td>
@@ -84,9 +70,7 @@
                 <option value="면접예정"    {% if r.status == "면접예정" %}selected{% endif %}>면접예정</option>
                 <option value="배차완료"    {% if r.status == "배차완료" %}selected{% endif %}>배차완료</option>
               </select>
-              <button type="submit"
-                      class="btn-primary"
-                      style="margin-top:4px; padding:4px 8px; font-size:11px;">
+              <button type="submit" class="btn-primary" style="margin-top:4px; padding:4px 8px; font-size:11px;">
                 저장
               </button>
             </form>
@@ -94,13 +78,13 @@
         </tr>
         {% else %}
         <tr>
-          <!-- 컬럼이 12개로 늘었으니 colspan도 12로 변경 -->
-          <td colspan="12" style="text-align:center;">등록된 요청이 없습니다.</td>
+          <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
 
-  </div> <!-- /.table-wrapper -->
+  </div> <!-- table-wrapper end -->
+
 </section>
 {% endblock %}
