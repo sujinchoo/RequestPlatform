@@ -615,3 +615,11 @@ table {
   width: 120px;
   white-space: nowrap;
 }
+/* ==========================================
+   🔵 v1 — Row Hover Highlight (Excel-like)
+   ========================================== */
+
+table tbody tr:hover {
+  background: #eef2ff !important;   /* 연한 블루 하이라이트 */
+  transition: background 0.15s ease-in-out;
+}
