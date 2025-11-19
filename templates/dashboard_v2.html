@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}대시보드 v2 (원본){% endblock %}
+{% block header_title %}대시보드 v2 — 스타일 없는 기본 버전{% endblock %}
+{% block logo_color %}logo-square-green{% endblock %}
+
+{% block content %}
+<section class="sheet sheet-hero">
+  <div class="hero-title">인력 요청 대시보드 v2</div>
+  <p class="hero-sub">원본 테이블 스타일 (스크롤, 줄바꿈, ellipsis 제거 없음)</p>
+</section>
+
+<section class="sheet">
+  <div class="sheet-title-row">
+    <div class="sheet-title">인력 요청 리스트 (원본 스타일)</div>
+    <div class="sheet-sub">최신 요청이 위로 표시됩니다.</div>
+  </div>
+
+  <div class="table-wrapper">
+    <table id="request-table">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>지역</th>
+          <th>택배사</th>
+          <th>영업소 / 대리점명</th>
+          <th>단가 (원/건)</th>
+          <th>월 물량 (건)</th>
+          <th>차종</th>
+          <th>필요 인원 (명)</th>
+          <th>기타 사항</th>
+          <th>현재 상태</th>
+          <th>면접일</th>
+          <th>상태 변경</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for r in reqs %}
+        <tr>
+          <td>{{ loop.index }}</td>
+          <td>{{ r.region }}</td>
+          <td>{{ r.company }}</td>
+          <td>{{ r.branch_name }}</td>
+          <td>{{ "{:,}".format(r.unit_price) }}</td>
+          <td>{{ "{:,}".format(r.volume) }}</td>
+          <td>{{ r.vehicle_type or "-" }}</td>
+          <td>{{ r.headcount }}</td>
+          <td>{{ r.etc or "-" }}</td>
+
+          <td>
+            <span class="tag-status tag-{{ r.status }}">
+              {{ r.status }}
+            </span>
+          </td>
+
+          <td>
+            <form method="POST" action="{{ url_for('update_status') }}">
+              <input type="hidden" name="req_id" value="{{ r.id }}" />
+              <input type="date"
+                     class="cell-input"
+                     name="interview_date"
+                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}" />
+          </td>
+
+          <td>
+              <select class="cell-select" name="status">
+                <option value="모집중"      {% if r.status == "모집중" %}selected{% endif %}>모집중</option>
+                <option value="선탑진행중"  {% if r.status == "선탑진행중" %}selected{% endif %}>선탑진행중</option>
+                <option value="면접예정"    {% if r.status == "면접예정" %}selected{% endif %}>면접예정</option>
+                <option value="배차완료"    {% if r.status == "배차완료" %}selected{% endif %}>배차완료</option>
+              </select>
+
+              <button type="submit"
+                      class="btn-primary"
+                      style="margin-top:4px; padding:4px 8px; font-size:11px;">
+                저장
+              </button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
