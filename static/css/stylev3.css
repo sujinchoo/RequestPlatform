@@ -1,50 +1,51 @@
-/* ============================
-   DASHBOARD V3 전용 스타일
-   ============================ */
+/* ===========================================
+   DASHBOARD V3 — Compact Mobile Card UI (표준 축소형)
+   한 화면에 카드 2개 표시되는 모바일 UX 최적화 버전
+   =========================================== */
 
-/* 카드 */
+/* ----- 기본 카드 레이아웃 ----- */
 .req-card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px;
-  margin-bottom: 22px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.06);
+  border-radius: 10px;                  /* 둥글기 소폭 감소 */
+  padding: 12px;                        /* (기존 20px → 12px) */
+  margin-bottom: 14px;                  /* 카드 간 간격 축소 */
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* 눌린 카드 느낌 */
   transition: 0.2s ease;
 }
 
 .req-card:hover {
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
 }
 
-/* 카드 헤더 */
+/* ----- 카드 헤더 ----- */
 .req-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 10px;                  /* (기존 16px → 10px) */
 }
 
 .card-region {
   font-weight: 600;
-  font-size: 14px;
+  font-size: 13px;                      /* (기존 14px → 13px) */
   color: #2563eb;
 }
 
 .card-company {
-  margin-left: 8px;
-  font-size: 13px;
-  padding: 3px 8px;
+  margin-left: 6px;
+  font-size: 12px;                      /* (기존 13px → 12px) */
+  padding: 2px 6px;                     /* 더 작게 */
   background: #e0f2fe;
   color: #0369a1;
   border-radius: 6px;
   font-weight: 600;
 }
 
-/* 상태 태그 */
+/* ----- 상태 태그 ----- */
 .tag-status {
-  padding: 4px 10px;
-  font-size: 12px;
+  padding: 3px 8px;                     /* (작게 조정) */
+  font-size: 11px;                      /* (기존 12px → 11px) */
   font-weight: 600;
   border-radius: 8px;
 }
@@ -54,12 +55,12 @@
 .tag-면접예정 { background:#cffafe; color:#0e7490; }
 .tag-배차완료 { background:#e0e7ff; color:#4338ca; }
 
-/* 카드 본문 row */
+/* ----- 카드 본문 row ----- */
 .req-card-body .row {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #f1f5f9;
+  padding: 4px 0;                       /* (기존 8px → 4px) */
+  border-bottom: 1px solid #eef2f5;     /* 얇고 연하게 */
 }
 
 .req-card-body .row:last-child {
@@ -68,32 +69,33 @@
 
 .req-card-body span {
   color: #475569;
-  font-size: 14px;
+  font-size: 12px;                      /* (기존 14px → 12px) */
 }
 
-/* Input / Select */
+/* ----- Input / Select (size 축소) ----- */
 .card-input,
 .card-select {
   width: 100%;
   border: 1px solid #cbd5e1;
-  border-radius: 8px;
-  padding: 6px 10px;
-  font-size: 14px;
-  margin-top: 4px;
+  border-radius: 6px;
+  padding: 4px 8px;                     /* (기존 6px 10px → 줄임) */
+  font-size: 12px;
+  margin-top: 3px;
   background: white;
+  height: 32px;                         /* 고정 높이 축소 */
 }
 
-/* 버튼 */
+/* ----- 버튼 (compact) ----- */
 .btn-primary {
   width: 100%;
   background: #2563eb;
   color: #fff;
   border: none;
-  padding: 10px 0;
-  border-radius: 10px;
-  font-size: 15px;
+  padding: 6px 0;                       /* (기존 10px → 6px) */
+  border-radius: 8px;                   /* (조금 더 컴팩트) */
+  font-size: 13px;                      /* (기존 15px → 13px) */
   font-weight: 600;
-  margin-top: 10px;
+  margin-top: 6px;
   cursor: pointer;
   transition: 0.2s ease;
 }
@@ -102,15 +104,15 @@
   background: #1d4ed8;
 }
 
-/* 카드 footer */
+/* ----- footer ----- */
 .req-card-footer {
-  margin-top: 14px;
-  font-size: 12px;
+  margin-top: 10px;                     /* (조금 줄임) */
+  font-size: 11px;
   color: #94a3b8;
   text-align: right;
 }
 
-/* 리스트 전체 */
+/* 카드 리스트 wrapper */
 .card-list {
   margin-top: 10px;
 }
