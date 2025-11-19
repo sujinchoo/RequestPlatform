@@ -1,3 +1,24 @@
+{% block extra_css %}
+<style>
+  /* v2 전용 : 오른쪽 스크롤 제거 */
+  .table-wrapper {
+    overflow-x: visible !important;
+  }
+
+  table {
+    min-width: auto !important;
+    width: 100% !important;
+  }
+
+  /* 원래 자동 적용되던 압축/ellipsis 스타일도 제거 */
+  th, td {
+    white-space: normal !important;
+    word-break: keep-all !important;
+  }
+</style>
+
+{% endblock %}
+
 {% extends "base.html" %}
 
 {% block title %}대시보드 v2 (원본){% endblock %}
