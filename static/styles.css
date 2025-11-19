@@ -525,3 +525,93 @@ table {
   }
 }
 
+/* ===============================
+   🔵 Dashboard V2 자동 폭 조절 테이블
+   =============================== */
+
+.table-responsive-auto {
+  width: 100%;
+  overflow-x: hidden;   /* 스크롤 없음 */
+}
+
+.table-auto {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;   /* 모든 컬럼 자동 폭 */
+}
+
+/* 공통 */
+.table-auto th,
+.table-auto td {
+  border: 1px solid #d4d4d8;
+  padding: 6px 8px;
+  font-size: 12px;
+  white-space: nowrap;      /* 줄바꿈 금지 */
+  overflow: hidden;
+  text-overflow: ellipsis;  /* 그래도 넘치면 ... */
+}
+
+/* ✨ 주요 컬럼 최소 너비 설정 */
+.table-auto th:nth-child(1), /* No */
+.table-auto td:nth-child(1) {
+  width: 40px; 
+}
+
+.table-auto th:nth-child(2), /* 지역 */
+.table-auto td:nth-child(2) {
+  min-width: 70px;
+}
+
+.table-auto th:nth-child(3), /* 택배사 */
+.table-auto td:nth-child(3) {
+  min-width: 90px;
+}
+
+.table-auto th:nth-child(4), /* 영업소/대리점명 */
+.table-auto td:nth-child(4) {
+  min-width: 150px;
+}
+
+.table-auto th:nth-child(5),
+.table-auto td:nth-child(5) {
+  min-width: 70px;
+}
+
+.table-auto th:nth-child(6),
+.table-auto td:nth-child(6) {
+  min-width: 70px;
+}
+
+.table-auto th:nth-child(7),
+.table-auto td:nth-child(7) {
+  min-width: 80px;
+}
+
+.table-auto th:nth-child(8),
+.table-auto td:nth-child(8) {
+  min-width: 55px;
+}
+
+.table-auto th:nth-child(9),
+.table-auto td:nth-child(9) {
+  min-width: 120px;
+}
+
+.table-auto th:nth-child(10), /* 현재 상태 */
+.table-auto td:nth-child(10) {
+  min-width: 80px;
+}
+
+.table-auto th:nth-child(11), /* 면접일 */
+.table-auto td:nth-child(11) {
+  min-width: 90px;
+}
+
+
+/* 🔥 저장 버튼 있는 마지막 컬럼은 절대 짤리면 안됨 */
+.table-auto th:nth-child(12),
+.table-auto td:nth-child(12) {
+  min-width: 120px;
+  width: 120px;
+  white-space: nowrap;
+}
