@@ -62,7 +62,7 @@
         <td>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</td>
 
         <td>
-          <form method="POST" action="{{ url_for('update-status_v2') }}">
+          <form method="POST" action="{{ url_for('update_status_v2') }}">
             <input type="hidden" name="req_id" value="{{ r.id }}">
 
             <input type="date"
@@ -119,7 +119,7 @@ function renderData(data) {
             <td>${r.interview_date || "-"}</td>
 
             <td>
-              <form method="POST" action="/update-status_v2">
+              <form method="POST" action="/update_status_v2">
                 <input type="hidden" name="req_id" value="${r.id}">
                 <input type="date" class="cell-input" name="interview_date" value="${r.interview_date || ""}">
                 <select class="cell-select" name="status" style="margin-top:4px;">
