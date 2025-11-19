@@ -1,21 +1,34 @@
 {% block extra_css %}
 <style>
-  /* v2 전용 : 오른쪽 스크롤 제거 */
-  .table-wrapper {
-    overflow-x: visible !important;
-  }
+/* ---- v2: 가로 스크롤 제거, 줄바꿈 허용 ---- */
 
-  table {
-    min-width: auto !important;
-    width: 100% !important;
-  }
+.table-wrapper {
+  overflow-x: hidden !important;  /* 스크롤 제거 */
+  width: 100% !important;
+}
 
-  /* 원래 자동 적용되던 압축/ellipsis 스타일도 제거 */
-  th, td {
-    white-space: normal !important;
-    word-break: keep-all !important;
-  }
+/* 테이블이 시트(흰 배경) 안에 꼭 맞도록 */
+table {
+  width: 100% !important;
+  min-width: 0 !important;   /* 절대 넘치지 않게 */
+  table-layout: fixed;       /* 칸 너비 균등 분배 */
+}
+
+/* 텍스트는 자연스럽게 줄바꿈, 한국어 세로깨짐 방지 */
+th, td {
+  white-space: normal !important;
+  word-break: break-word !important; 
+}
+
+/* 폼 요소가 너무 커서 넘칠 때 자동 줄바꿈 */
+.cell-input,
+.cell-select {
+  width: 100% !important;
+  white-space: normal !important;
+}
 </style>
+{% endblock %}
+
 
 {% endblock %}
 
