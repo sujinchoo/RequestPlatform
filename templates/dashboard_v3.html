@@ -8,16 +8,14 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/stylev3.css') }}">
 {% endblock %}
 
+{% block content %}
 
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청 현황 v3</div>
-  <p class="hero-sub">
-    모바일 친화형 카드 UI로 구성된 요청 리스트입니다.
-  </p>
+  <p class="hero-sub">모바일 친화형 카드 UI로 구성된 요청 리스트입니다.</p>
 </section>
 
 <section class="sheet">
-
   <div class="sheet-title-row">
     <div class="sheet-title">인력 요청 카드 리스트</div>
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
@@ -25,9 +23,9 @@
 
   <div class="card-list">
     {% for r in reqs %}
+    <!-- 카드 시작 -->
     <div class="req-card">
 
-      <!-- 상단 영역: 지역 / 택배사 / 상태 -->
       <div class="req-card-header">
         <div>
           <span class="card-region">{{ r.region }}</span>
@@ -36,7 +34,6 @@
         <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
       </div>
 
-      <!-- 본문 -->
       <div class="req-card-body">
 
         <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
@@ -50,9 +47,7 @@
           <div>
             <form method="POST" action="{{ url_for('update_status') }}">
               <input type="hidden" name="req_id" value="{{ r.id }}">
-              <input type="date"
-                     name="interview_date"
-                     class="card-input"
+              <input type="date" name="interview_date" class="card-input"
                      value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
           </div>
         </div>
@@ -71,7 +66,7 @@
           </div>
         </div>
 
-      </div><!-- /본문 -->
+      </div>
 
       <div class="req-card-footer">
         등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
@@ -80,7 +75,6 @@
     </div>
     {% endfor %}
   </div>
-
 </section>
 
 {% endblock %}
