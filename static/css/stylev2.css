@@ -141,3 +141,10 @@
     min-width: 1200px; /* 절대 잘리지 않도록 확보 */
   }
 }
+.table-responsive-v2 {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.05);
+}
+
