@@ -64,7 +64,7 @@
       </select>
     </div>
 
-    <button class="btn-primary" onclick="saveStatus()">저장</button>
+    <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
   </div>
 </div>
 
@@ -76,7 +76,7 @@
 let currentId = null;
 
 // ==================================================
-// 🔵 테이블 렌더링 (AJAX 데이터 → HTML 표시)
+// 🔵 테이블 렌더링
 // ==================================================
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
@@ -104,7 +104,11 @@ function renderData(data) {
             <td>${r.vehicle_type || "-"}</td>
             <td>${r.headcount}</td>
             <td>${r.etc || "-"}</td>
-            <td>${r.status}</td>
+            <td>
+              <span class="tag-status tag-${r.status}">
+                ${r.status}
+              </span>
+            </td>
             <td>${r.interview_date || "-"}</td>
         `;
 
@@ -144,10 +148,15 @@ function closeModal() {
 
 
 // ==================================================
-// 🔵 저장 요청
+// 🔥 저장 요청 (AJAX + UI Feedback)
 // ==================================================
 function saveStatus() {
-    fetch("/update-status", {
+
+    const btn = document.querySelector(".modal-save-btn");
+    btn.innerText = "저장중...";
+    btn.disabled = true;
+
+    fetch("/api/update-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -157,11 +166,41 @@ function saveStatus() {
         })
     })
     .then(res => res.json())
-    .then(() => {
-        closeModal();
-        loadFilteredData();  // ⚠️ 관리자 필터 사용 중일 때 자동 새로고침
+    .then(json => {
+
+        if (!json.success) {
+            alert("저장 실패: " + (json.error || ""));
+            btn.innerText = "저장";
+            btn.disabled = false;
+            return;
+        }
+
+        // 🔵 UI 성공 표시
+        btn.innerText = "저장완료 ✓";
+        btn.style.background = "#059669";   // 초록색
+        btn.style.borderColor = "#059669";
+
+        // 🔵 테이블 자동 새로고침
+        if (typeof loadFilteredData === "function") {
+            loadFilteredData();
+        }
+
+        // 🔵 1초 후 모달 닫기
+        setTimeout(() => {
+            closeModal();
+
+            // 버튼 초기화
+            btn.innerText = "저장";
+            btn.disabled = false;
+            btn.style.background = "#2563eb";
+            btn.style.borderColor = "#2563eb";
+        }, 1000);
     })
-    .catch(err => console.error("SAVE ERROR:", err));
+    .catch(err => {
+        alert("오류 발생: " + err);
+        btn.innerText = "저장";
+        btn.disabled = false;
+    });
 }
 </script>
 
