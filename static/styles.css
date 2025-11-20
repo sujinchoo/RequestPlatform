@@ -920,3 +920,21 @@ table tbody tr:hover {
   color: #166534 !important;
   border-color: #bbf7d0 !important;
 }
+/* 📊 통계 박스 */
+.stats-box {
+  margin: 10px 0 18px;
+  display: flex;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.stats-box .stat {
+  padding: 4px 10px;
+  background: #f3f4f6;
+  border-radius: 6px;
+  font-weight: 500;
+}
+
+.stats-box .total { color: #111827; }          /* 기본: 진한 회색 */
+.stats-box .active { color: #2563eb; }         /* 파란색 강조 */
+.stats-box .done { color: #059669; }           /* 녹색(배차완료) */
