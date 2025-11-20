@@ -319,80 +319,80 @@ def create_app():
         return jsonify({"success": True})
 
     # =========================================================
-# DB TEST PAGE (GUI)
-# =========================================================
-@app.route("/dbtest")
-@login_required
-@admin_required
-def dbtest_page():
-    return render_template("dbtest.html")
-
-
-# =========================================================
-# 수동 데이터 1건 저장 API
-# =========================================================
-@app.route("/api/dbtest-insert", methods=["POST"])
-@login_required
-@admin_required
-def api_dbtest_insert():
-
-    data = request.get_json()
-
-    try:
-        r = Req(
-            company=data.get("company"),
-            region=data.get("region"),
-            branch_name=data.get("branch_name"),
-            unit_price=int(data.get("unit_price") or 0),
-            volume=int(data.get("volume") or 0),
-            vehicle_type=data.get("vehicle_type"),
-            headcount=int(data.get("headcount") or 0),
-            etc=data.get("etc"),
-            status="모집중",
-            created_at=datetime.utcnow()
-        )
-        db.session.add(r)
-        db.session.commit()
-        return jsonify({"success": True})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
-
-
-# =========================================================
-# 랜덤 데이터 100개 자동 생성 API
-# =========================================================
-@app.route("/api/dbtest-generate", methods=["POST"])
-@login_required
-@admin_required
-def api_dbtest_generate():
-    import random
-    import string
-
-    def rand_txt():
-        return ''.join(random.choices(string.ascii_uppercase, k=5))
-
-    try:
-        for _ in range(100):
+    # DB TEST PAGE (GUI)
+    # =========================================================
+    @app.route("/dbtest")
+    @login_required
+    @admin_required
+    def dbtest_page():
+        return render_template("dbtest.html")
+    
+    
+    # =========================================================
+    # 수동 데이터 1건 저장 API
+    # =========================================================
+    @app.route("/api/dbtest-insert", methods=["POST"])
+    @login_required
+    @admin_required
+    def api_dbtest_insert():
+    
+        data = request.get_json()
+    
+        try:
             r = Req(
-                company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
-                region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
-                branch_name=f"{rand_txt()}지점"[:7],
-                unit_price=random.randint(300, 900),
-                volume=random.randint(10, 900),
-                vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
-                headcount=random.randint(1, 5),
-                etc="테스트",
+                company=data.get("company"),
+                region=data.get("region"),
+                branch_name=data.get("branch_name"),
+                unit_price=int(data.get("unit_price") or 0),
+                volume=int(data.get("volume") or 0),
+                vehicle_type=data.get("vehicle_type"),
+                headcount=int(data.get("headcount") or 0),
+                etc=data.get("etc"),
                 status="모집중",
                 created_at=datetime.utcnow()
             )
             db.session.add(r)
-
-        db.session.commit()
-        return jsonify({"success": True})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+            db.session.commit()
+            return jsonify({"success": True})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"success": False, "error": str(e)}), 500
+    
+    
+    # =========================================================
+    # 랜덤 데이터 100개 자동 생성 API
+    # =========================================================
+    @app.route("/api/dbtest-generate", methods=["POST"])
+    @login_required
+    @admin_required
+    def api_dbtest_generate():
+        import random
+        import string
+    
+        def rand_txt():
+            return ''.join(random.choices(string.ascii_uppercase, k=5))
+    
+        try:
+            for _ in range(100):
+                r = Req(
+                    company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
+                    region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
+                    branch_name=f"{rand_txt()}지점"[:7],
+                    unit_price=random.randint(300, 900),
+                    volume=random.randint(10, 900),
+                    vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
+                    headcount=random.randint(1, 5),
+                    etc="테스트",
+                    status="모집중",
+                    created_at=datetime.utcnow()
+                )
+                db.session.add(r)
+    
+            db.session.commit()
+            return jsonify({"success": True})
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"success": False, "error": str(e)}), 500
 
     
     return app
