@@ -180,7 +180,14 @@ function saveStatus() {
         btn.style.background = "#059669";
         btn.style.borderColor = "#059669";
 
-        if (typeof loadFilteredData === "function") loadFilteredData();
+        // 🔥 안전하게 처리 — v1에는 loadFilteredData 없음
+        try {
+            if (typeof loadFilteredData === "function") {
+                loadFilteredData();
+            }
+        } catch (e) {
+            console.warn("loadFilteredData 없음 — OK");
+        }
 
         setTimeout(() => {
             closeModal();
@@ -188,8 +195,7 @@ function saveStatus() {
             btn.disabled = false;
             btn.style.background = "#2563eb";
             btn.style.borderColor = "#2563eb";
-        }, 1000);
-
+        }, 800);   // 반응성 향상 0.8초 추천
     })
     .catch(err => {
         alert("오류 발생: " + err);
@@ -197,6 +203,7 @@ function saveStatus() {
         btn.disabled = false;
     });
 }
+
 </script>
 
 {% endblock %}
