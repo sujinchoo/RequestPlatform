@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>SaaS Demo Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<style>
+/* -----------------------------
+   Global Style : SaaS Look
+------------------------------ */
+body {
+  margin: 0;
+  background: #0c111b;
+  font-family: 'Inter', sans-serif;
+  color: #e5e7eb;
+  overflow-x: hidden;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 20px;
+}
+
+/* Section title */
+.section-title {
+  font-size: 22px;
+  margin-bottom: 10px;
+  font-weight: 600;
+}
+
+/* -----------------------------
+   Stat Cards
+------------------------------ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  border-radius: 14px;
+  backdrop-filter: blur(8px);
+}
+
+.stat-title {
+  font-size: 15px;
+  opacity: 0.7;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 700;
+  margin-top: 6px;
+}
+
+/* -----------------------------
+   Status Bar
+------------------------------ */
+.status-bar {
+  background: rgba(255, 255, 255, 0.06);
+  height: 14px;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 14px 0 20px;
+}
+
+.status-bar > div {
+  height: 14px;
+  float: left;
+}
+
+.status-1 { background: #3b82f6; width: 25%; }
+.status-2 { background: #10b981; width: 35%; }
+.status-3 { background: #f59e0b; width: 20%; }
+.status-4 { background: #ef4444; width: 20%; }
+
+/* -----------------------------
+   Recent Requests Table
+------------------------------ */
+.table-box {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 20px;
+  backdrop-filter: blur(10px);
+  margin-bottom: 30px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 12px;
+}
+
+th, td {
+  padding: 10px 8px;
+  text-align: left;
+  font-size: 14px;
+}
+
+th {
+  color: #9ca3af;
+}
+
+.tag {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.tag-blue { background: #1d4ed8; }
+.tag-green { background: #047857; }
+.tag-yellow { background: #b45309; }
+.tag-red { background: #b91c1c; }
+
+/* -----------------------------
+   Timeline Box
+------------------------------ */
+.timeline-box {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.timeline-item {
+  margin-bottom: 14px;
+}
+
+.timeline-time {
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.timeline-text {
+  font-size: 15px;
+  margin-top: 2px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1 style="font-size:26px; margin-bottom:20px;">오늘의 물류 요청 현황 — SaaS 데모</h1>
+  <p style="opacity:0.7; margin-bottom:30px;">승인 → 배차/출고 → 완료 흐름을 한눈에 보는 예시 대시보드입니다.</p>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-title">금일 총 요청</div>
+      <div class="stat-value">34건</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">승인 대기</div>
+      <div class="stat-value">7건</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">배차/출고 진행중</div>
+      <div class="stat-value">12건</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-title">금일 완료</div>
+      <div class="stat-value">15건</div>
+    </div>
+  </div>
+
+  <!-- 상태 비율 -->
+  <div class="section-title">요청 상태 분포</div>
+  <div class="status-bar">
+    <div class="status-1"></div>
+    <div class="status-2"></div>
+    <div class="status-3"></div>
+    <div class="status-4"></div>
+  </div>
+
+  <!-- 최근 요청 -->
+  <div class="table-box">
+    <div class="section-title">최근 요청 목록 (샘플)</div>
+
+    <table>
+      <thead>
+        <tr>
+          <th>요청 ID</th>
+          <th>대리점</th>
+          <th>내용</th>
+          <th>상태</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A-001</td>
+          <td>서울 A</td>
+          <td>냉동 1톤 + 인력 1명</td>
+          <td><span class="tag tag-blue">승인 대기</span></td>
+        </tr>
+        <tr>
+          <td>B-102</td>
+          <td>부산 B</td>
+          <td>1톤 일반 차량</td>
+          <td><span class="tag tag-green">승인 완료</span></td>
+        </tr>
+        <tr>
+          <td>C-210</td>
+          <td>대전 C</td>
+          <td>대차 4대 + 상하차</td>
+          <td><span class="tag tag-yellow">배차/출고</span></td>
+        </tr>
+        <tr>
+          <td>D-315</td>
+          <td>대구 D</td>
+          <td>1톤 차량 2대</td>
+          <td><span class="tag tag-red">완료</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Timeline -->
+  <div class="timeline-box">
+    <div class="section-title">타임라인 예시</div>
+
+    <div class="timeline-item">
+      <div class="timeline-time">08:10</div>
+      <div class="timeline-text">서울 A대리점 — A-001 요청 등록</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-time">08:25</div>
+      <div class="timeline-text">부산 B대리점 — B-102 승인 완료</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-time">09:10</div>
+      <div class="timeline-text">대전 C대리점 — C-210 배차/출고 진행</div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-time">10:45</div>
+      <div class="timeline-text">대구 D대리점 — D-315 요청 완료 처리</div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>
