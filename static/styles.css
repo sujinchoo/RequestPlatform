@@ -938,3 +938,18 @@ table tbody tr:hover {
 .stats-box .total { color: #111827; }          /* 기본: 진한 회색 */
 .stats-box .active { color: #2563eb; }         /* 파란색 강조 */
 .stats-box .done { color: #059669; }           /* 녹색(배차완료) */
+/* 🔥 테이블 wrapper — 스크롤 허용 */
+.table-wrapper {
+  max-height: 600px;   /* 원하는 높이 */
+  overflow-y: auto;     /* 세로 스크롤 */
+  overflow-x: auto;     /* 가로 스크롤 */
+}
+
+/* 🔥 헤더 sticky */
+.table-compact thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f9fafb;   /* 헤더 배경 */
+  backdrop-filter: blur(4px);
+}
