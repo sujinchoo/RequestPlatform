@@ -22,6 +22,13 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
+  <!-- 🔥 추가된 통계 박스 -->
+  <div class="stats-box">
+    <span class="stat total">전체: {{ total_cases }}개</span>
+    <span class="stat active">진행중: {{ active_cases }}개</span>
+    <span class="stat done">완료: {{ completed_cases }}개</span>
+  </div>
+
   <div class="card-list" id="card-list">
     {% for r in reqs %}
     <div class="req-card" onclick="openModal({
