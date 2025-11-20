@@ -12,9 +12,17 @@
 </section>
 
 <section class="sheet">
+
   <div class="sheet-title-row">
     <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
+  </div>
+
+  <!-- 📊 통계 박스 -->
+  <div class="stats-box">
+    <span class="stat total">전체: {{ total_cases }}개</span>
+    <span class="stat active">진행중: {{ active_cases }}개</span>
+    <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
 
   <div class="table-wrapper">
@@ -37,8 +45,8 @@
       <tbody></tbody>
     </table>
   </div>
-</section>
 
+</section>
 
 <!-- ====================== -->
 <!-- 🔥 상태 변경 Modal -->
@@ -69,9 +77,9 @@
 </div>
 
 
-<!-- ======================================= -->
-<!-- 🔥 JS: 렌더링 + 행 클릭 이벤트 + 모달 제어 -->
-<!-- ======================================= -->
+<!-- ====================== -->
+<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 로직 -->
+<!-- ====================== -->
 <script>
 let currentId = null;
 
@@ -104,11 +112,7 @@ function renderData(data) {
             <td>${r.vehicle_type || "-"}</td>
             <td>${r.headcount}</td>
             <td>${r.etc || "-"}</td>
-            <td>
-              <span class="tag-status tag-${r.status}">
-                ${r.status}
-              </span>
-            </td>
+            <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
             <td>${r.interview_date || "-"}</td>
         `;
 
@@ -118,6 +122,7 @@ function renderData(data) {
         tbody.appendChild(row);
     });
 }
+
 
 
 // ==================================================
@@ -139,12 +144,14 @@ function openModal(r) {
 }
 
 
+
 // ==================================================
 // 🔵 Modal 닫기
 // ==================================================
 function closeModal() {
     document.getElementById("status-modal").classList.add("hidden");
 }
+
 
 
 // ==================================================
@@ -177,23 +184,23 @@ function saveStatus() {
 
         // 🔵 UI 성공 표시
         btn.innerText = "저장완료 ✓";
-        btn.style.background = "#059669";   // 초록색
+        btn.style.background = "#059669";
         btn.style.borderColor = "#059669";
 
-        // 🔵 테이블 자동 새로고침
+        // 🔵 필터 기반 렌더링 함수가 있는 경우 자동 새로고침
         if (typeof loadFilteredData === "function") {
             loadFilteredData();
         }
 
-        // 🔵 1초 후 모달 닫기
+        // 🔵 1초 후 모달 닫기 + 초기화
         setTimeout(() => {
             closeModal();
 
-            // 버튼 초기화
             btn.innerText = "저장";
             btn.disabled = false;
             btn.style.background = "#2563eb";
             btn.style.borderColor = "#2563eb";
+
         }, 1000);
     })
     .catch(err => {
