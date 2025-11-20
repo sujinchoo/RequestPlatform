@@ -683,13 +683,13 @@ table tbody tr:hover {
 /* 지역 */
 .table-compact th:nth-child(2),
 .table-compact td:nth-child(2) {
-  min-width: 60px;
+  min-width: 50px;
 }
 
 /* 택배사 */
 .table-compact th:nth-child(3),
 .table-compact td:nth-child(3) {
-  min-width: 60px;
+  min-width: 50px;
 }
 
 /* 영업소/대리점명 */
@@ -730,7 +730,7 @@ table tbody tr:hover {
 /* 현재상태 */
 .table-compact th:nth-child(10),
 .table-compact td:nth-child(10) {
-  min-width: 85px;
+  min-width: 90px;
 }
 
 /* 면접일 */
