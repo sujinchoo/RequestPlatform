@@ -18,7 +18,7 @@ def create_app():
     db.init_app(app)
 
     # =========================================================
-    # 데코레이터: 로그인 & 관리자 체크
+    # 데코레이터
     # =========================================================
     from functools import wraps
 
@@ -61,14 +61,13 @@ def create_app():
             )
             db.session.add(admin)
             db.session.commit()
-            return "Admin created! login_id=admin / password=admin1234"
-
+            return "Admin created!"
         except Exception as e:
             return f"Error: {e}"
 
 
     # =========================================================
-    # 기본 라우트
+    # 홈 / 로그인
     # =========================================================
     @app.route("/")
     def home():
@@ -76,7 +75,6 @@ def create_app():
             return redirect(url_for("dashboard" if session.get("is_admin") else "request_page"))
         return redirect(url_for("login"))
 
-    # 로그인
     @app.route("/login", methods=["GET", "POST"])
     def login():
         if request.method == "POST":
@@ -94,7 +92,6 @@ def create_app():
 
         return render_template("login.html")
 
-    # 로그아웃
     @app.route("/logout")
     def logout():
         session.clear()
@@ -139,43 +136,70 @@ def create_app():
 
 
     # =========================================================
-    # 대시보드 (V1 / V2 / V3)
+    # 대시보드 (v1 / v2 / v3)
     # =========================================================
     @app.route("/dashboard")
     @login_required
     @admin_required
     def dashboard():
-        reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard.html", reqs=reqs)
+        return render_template("dashboard.html")
 
     @app.route("/dashboard_v2")
     @login_required
     @admin_required
     def dashboard_v2():
-        reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v2.html", reqs=reqs)
+        return render_template("dashboard_v2.html")
 
     @app.route("/dashboard_v3")
     @login_required
     @admin_required
     def dashboard_v3():
-        reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v3.html", reqs=reqs)
+        return render_template("dashboard_v3.html")
 
 
     # =========================================================
-    # 상태 변경
+    # 상태 업데이트 공통 함수
     # =========================================================
     def update_req_status(req_id, status, interview_date):
         req = Req.query.get(req_id)
-        if req:
-            req.status = status
-            req.interview_date = (
-                datetime.strptime(interview_date, "%Y-%m-%d").date()
-                if interview_date else None
-            )
-            db.session.commit()
+        if not req:
+            return False
 
+        req.status = status
+
+        req.interview_date = (
+            datetime.strptime(interview_date, "%Y-%m-%d").date()
+            if interview_date else None
+        )
+
+        db.session.commit()
+        return True
+
+
+    # =========================================================
+    # 🔥 JSON API — 모달에서 사용하는 저장 엔드포인트
+    # =========================================================
+    @app.route("/api/update-status", methods=["POST"])
+    @login_required
+    @admin_required
+    def api_update_status():
+        data = request.get_json()
+
+        req_id = data.get("req_id")
+        status = data.get("status")
+        interview_date = data.get("interview_date")
+
+        ok = update_req_status(req_id, status, interview_date)
+
+        if not ok:
+            return jsonify({"success": False, "error": "Invalid request ID"}), 400
+
+        return jsonify({"success": True})
+
+
+    # =========================================================
+    # 기존 form 방식 (호환 유지)
+    # =========================================================
     @app.route("/update-status", methods=["POST"])
     @login_required
     @admin_required
@@ -188,33 +212,9 @@ def create_app():
         flash("업데이트 완료", "success")
         return redirect(url_for("dashboard"))
 
-    @app.route("/update-status_v2", methods=["POST"])
-    @login_required
-    @admin_required
-    def update_status_v2():
-        update_req_status(
-            request.form.get("req_id"),
-            request.form.get("status"),
-            request.form.get("interview_date")
-        )
-        flash("업데이트 완료", "success")
-        return redirect(url_for("dashboard_v2"))
-
-    @app.route("/update-status_v3", methods=["POST"])
-    @login_required
-    @admin_required
-    def update_status_v3():
-        update_req_status(
-            request.form.get("req_id"),
-            request.form.get("status"),
-            request.form.get("interview_date")
-        )
-        flash("업데이트 완료", "success")
-        return redirect(url_for("dashboard_v3"))
-
 
     # =========================================================
-    # 🔥 필터 API (AJAX용)
+    # 🔥 필터 API
     # =========================================================
     @app.route("/api/requests", methods=["GET"])
     @login_required
@@ -255,6 +255,7 @@ def create_app():
 
 
     return app
+
 
 
 app = create_app()
