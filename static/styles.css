@@ -671,7 +671,7 @@ table tbody tr:hover {
 }
 
 /* ============================================================ 
-   🔻 Column Width Optimization (최종 튜닝 완료)
+   🔻 Column Width Optimization (지역/택배사 35% 축소 + 상태 확장)
    ============================================================ */
 
 /* No */
@@ -680,25 +680,27 @@ table tbody tr:hover {
   width: 35px;
 }
 
-/* 지역 — 더 줄임 */
+/* 지역 — 기존 42px → 30px */
 .table-compact th:nth-child(2),
 .table-compact td:nth-child(2) {
-  min-width: 42px;
+  min-width: 30px;
+  width: 30px;
 }
 
-/* 택배사 — 더 줄임 */
+/* 택배사 — 기존 45px → 30px */
 .table-compact th:nth-child(3),
 .table-compact td:nth-child(3) {
-  min-width: 45px;
+  min-width: 30px;
+  width: 30px;
 }
 
-/* 영업소/대리점명 — 유지 (가독성 중요) */
+/* 영업소/대리점명 */
 .table-compact th:nth-child(4),
 .table-compact td:nth-child(4) {
   min-width: 140px;
 }
 
-/* 단가, 월물량 — 그대로 효율적 */
+/* 단가, 월물량 */
 .table-compact th:nth-child(5),
 .table-compact td:nth-child(5),
 .table-compact th:nth-child(6),
@@ -708,7 +710,7 @@ table tbody tr:hover {
   text-align: right;
 }
 
-/* 차종 — 약간 줄임 */
+/* 차종 */
 .table-compact th:nth-child(7),
 .table-compact td:nth-child(7) {
   min-width: 55px;
@@ -720,17 +722,17 @@ table tbody tr:hover {
   min-width: 55px;
 }
 
-/* 기타 사항 — 유지 */
+/* 기타 */
 .table-compact th:nth-child(9),
 .table-compact td:nth-child(9) {
   min-width: 100px;
 }
 
-/* 현재 상태 — 넓힘 (가장 중요) */
+/* 현재 상태 — 기존 115px → 120px */
 .table-compact th:nth-child(10),
 .table-compact td:nth-child(10) {
-  min-width: 115px;      /* 기존 90px → 115px */
-  width: 115px;
+  min-width: 120px;
+  width: 120px;
 }
 
 /* 면접일 */
@@ -739,7 +741,7 @@ table tbody tr:hover {
   min-width: 85px;
 }
 
-/* 🔥 상태 변경 (반으로 축소 유지) */
+/* 상태 변경 (반으로 축소 유지) */
 .table-compact th:nth-child(12),
 .table-compact td:nth-child(12) {
   width: 95px !important;
@@ -747,7 +749,7 @@ table tbody tr:hover {
   white-space: nowrap !important;
 }
 
-/* 내부 form 요소 크기 */
+/* 내부 요소 */
 .table-compact .cell-input,
 .table-compact .cell-select {
   font-size: 11px !important;
@@ -760,6 +762,7 @@ table tbody tr:hover {
   font-size: 11px !important;
   border-radius: 3px !important;
 }
+
 
 /* ================================
    Modal Popup (카드형)
