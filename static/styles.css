@@ -683,21 +683,23 @@ table tbody tr:hover {
 /* 지역 — 기존 42px → 30px */
 .table-compact th:nth-child(2),
 .table-compact td:nth-child(2) {
-  min-width: 35px;
-  width: 40px;
+  min-width: 40px;
+  width: 42px;
   }
 
 /* 택배사 — 기존 45px → 30px */
 .table-compact th:nth-child(3),
 .table-compact td:nth-child(3) {
-  min-width: 35px;
-  width: 40px;
+  min-width: 40px;
+  width: 42px;
 }
 
 /* 영업소/대리점명 */
 .table-compact th:nth-child(4),
 .table-compact td:nth-child(4) {
   min-width: 80px;
+  width: 110px;
+  max-width: 120px;
 }
 
 /* 단가, 월물량 */
@@ -735,6 +737,7 @@ table tbody tr:hover {
 .table-compact td:nth-child(10) {
   min-width: 120px;
   width: 125px;
+  max-width: 130px;
 }
 
 /* 면접일 */
