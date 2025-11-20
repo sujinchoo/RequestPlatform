@@ -12,146 +12,143 @@
 
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청 현황 v3</div>
-  <p class="hero-sub">모바일 친화형 카드 UI로 구성된 요청 리스트입니다.</p>
+  <p class="hero-sub">모바일 친화형 카드 UI — 클릭하면 상태 변경이 가능합니다.</p>
 </section>
 
 <section class="sheet">
+
   <div class="sheet-title-row">
     <div class="sheet-title">인력 요청 카드 리스트</div>
-    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
+    <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <div class="card-list">
+  <div class="card-list" id="card-list">
     {% for r in reqs %}
+    <div class="req-card" onclick="openModal({
+        id: '{{ r.id }}',
+        region: '{{ r.region }}',
+        company: '{{ r.company }}',
+        branch_name: '{{ r.branch_name }}',
+        unit_price: '{{ r.unit_price }}',
+        volume: '{{ r.volume }}',
+        vehicle_type: '{{ r.vehicle_type or "-" }}',
+        headcount: '{{ r.headcount }}',
+        etc: `{{ r.etc or "-" }}`,
+        status: '{{ r.status }}',
+        interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
+        created_at: '{{ r.created_at.isoformat() }}'
+    })">
 
-    <!-- 🔥 카드 전체를 하나의 form으로 감싸기 -->
-    <form method="POST" action="{{ url_for('update_status_v3') }}">
-      <input type="hidden" name="req_id" value="{{ r.id }}">
-
-      <div class="req-card">
-
-        <div class="req-card-header">
-          <div>
-            <span class="card-region">{{ r.region }}</span>
-            <span class="card-company">{{ r.company }}</span>
-          </div>
-          <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+      <div class="req-card-header">
+        <div>
+          <span class="card-region">{{ r.region }}</span>
+          <span class="card-company">{{ r.company }}</span>
         </div>
+        <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+      </div>
 
-        <div class="req-card-body">
+      <div class="req-card-body">
 
-          <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
-          <div class="row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }} 원</div></div>
-          <div class="row"><span>월 물량</span><div>{{ "{:,}".format(r.volume) }} 건</div></div>
-          <div class="row"><span>차종</span><div>{{ r.vehicle_type or "-" }}</div></div>
-          <div class="row"><span>인원</span><div>{{ r.headcount }} 명</div></div>
-          <div class="row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
-
-          <div class="row">
-            <span>면접일</span>
-            <div>
-              <input type="date" name="interview_date"
-                     class="card-input"
-                     value="{{ r.interview_date.isoformat() if r.interview_date else '' }}">
-            </div>
-          </div>
-
-          <div class="row">
-            <span>상태 변경</span>
-            <div>
-              <select name="status" class="card-select">
-                <option value="모집중"      {% if r.status=="모집중" %}selected{% endif %}>모집중</option>
-                <option value="선탑진행중"  {% if r.status=="선탑진행중" %}selected{% endif %}>선탑진행중</option>
-                <option value="면접예정"    {% if r.status=="면접예정" %}selected{% endif %}>면접예정</option>
-                <option value="배차완료"    {% if r.status=="배차완료" %}selected{% endif %}>배차완료</option>
-              </select>
-
-              <button class="btn-primary" style="margin-top:6px;">저장</button>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="req-card-footer">
-          등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
-        </div>
+        <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
+        <div class="row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }} 원</div></div>
+        <div class="row"><span>월 물량</span><div>{{ "{:,}".format(r.volume) }} 건</div></div>
+        <div class="row"><span>차종</span><div>{{ r.vehicle_type or "-" }}</div></div>
+        <div class="row"><span>인원</span><div>{{ r.headcount }} 명</div></div>
+        <div class="row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
+        <div class="row"><span>면접일</span><div>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</div></div>
 
       </div>
-    </form>
 
+      <div class="req-card-footer">
+        등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
+      </div>
+
+    </div>
     {% endfor %}
   </div>
+
 </section>
 
+<!-- ====================== -->
+<!-- 🔥 상태 변경 Modal -->
+<!-- ====================== -->
+<div id="status-modal" class="modal hidden">
+  <div class="modal-card">
 
-<!-- 🔥 AJAX 렌더링 -->
+    <div class="modal-header">
+      <div id="modal-title" class="modal-title">상세 정보</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <label>면접일</label>
+      <input type="date" id="modal-interview" class="modal-input">
+
+      <label>상태 변경</label>
+      <select id="modal-status" class="modal-input">
+        <option value="모집중">모집중</option>
+        <option value="선탑진행중">선탑진행중</option>
+        <option value="면접예정">면접예정</option>
+        <option value="배차완료">배차완료</option>
+      </select>
+    </div>
+
+    <button class="btn-primary" onclick="saveStatus()">저장</button>
+
+  </div>
+</div>
+
+<!-- 🔥 JS -->
 <script>
-function renderData(data) {
-    const area = document.querySelector(".card-list");
-    area.innerHTML = "";
+let currentId = null;
 
-    if (data.length === 0) {
-        area.innerHTML = `<div style="text-align:center; padding:20px;">등록된 요청이 없습니다.</div>`;
-        return;
-    }
+// 🔵 Modal 열기
+function openModal(r) {
+    currentId = r.id;
 
-    data.forEach(r => {
-        area.innerHTML += `
-        <form method="POST" action="{{ url_for('update_status_v3') }}">
-          <input type="hidden" name="req_id" value="${r.id}">
+    document.getElementById("modal-title").innerText =
+        `${r.region} / ${r.company} / ${r.branch_name}`;
 
-          <div class="req-card">
+    document.getElementById("modal-interview").value = r.interview_date;
+    document.getElementById("modal-status").value = r.status;
 
-            <div class="req-card-header">
-              <div>
-                <span class="card-region">${r.region}</span>
-                <span class="card-company">${r.company}</span>
-              </div>
-              <span class="tag-status tag-${r.status}">${r.status}</span>
-            </div>
+    document.getElementById("status-modal").classList.remove("hidden");
+}
 
-            <div class="req-card-body">
+// 🔵 Modal 닫기
+function closeModal() {
+    document.getElementById("status-modal").classList.add("hidden");
+}
 
-              <div class="row"><span>영업소/대리점</span><div>${r.branch_name}</div></div>
-              <div class="row"><span>단가</span><div>${Number(r.unit_price).toLocaleString()} 원</div></div>
-              <div class="row"><span>월 물량</span><div>${Number(r.volume).toLocaleString()} 건</div></div>
-              <div class="row"><span>차종</span><div>${r.vehicle_type || "-"}</div></div>
-              <div class="row"><span>인원</span><div>${r.headcount} 명</div></div>
-              <div class="row"><span>기타</span><div>${r.etc || "-"}</div></div>
+// 🔵 상태 저장
+function saveStatus() {
+    const btn = document.querySelector(".btn-primary");
+    btn.innerText = "저장중...";
 
-              <div class="row">
-                <span>면접일</span>
-                <div>
-                  <input type="date" name="interview_date" class="card-input"
-                         value="${r.interview_date || ""}">
-                </div>
-              </div>
+    const payload = {
+        req_id: currentId,
+        interview_date: document.getElementById("modal-interview").value,
+        status: document.getElementById("modal-status").value
+    };
 
-              <div class="row">
-                <span>상태 변경</span>
-                <div>
-                  <select name="status" class="card-select">
-                    <option value="모집중"      ${r.status === "모집중" ? "selected":""}>모집중</option>
-                    <option value="선탑진행중"  ${r.status === "선탑진행중" ? "selected":""}>선탑진행중</option>
-                    <option value="면접예정"    ${r.status === "면접예정" ? "selected":""}>면접예정</option>
-                    <option value="배차완료"    ${r.status === "배차완료" ? "selected":""}>배차완료</option>
-                  </select>
+    fetch("/update-status-json", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(res => res.json())
+    .then(() => {
+        btn.innerText = "저장완료";
 
-                  <button class="btn-primary" style="margin-top:6px;">저장</button>
-                </div>
-              </div>
+        setTimeout(() => {
+            closeModal();
+            btn.innerText = "저장";
 
-            </div>
-
-            <div class="req-card-footer">
-              등록일: ${r.created_at}
-            </div>
-
-          </div>
-        </form>`;
-    });
+            loadFilteredData();   // 목록 자동 새로고침
+        }, 800);
+    })
+    .catch(err => console.error("SAVE ERROR:", err));
 }
 </script>
 
 {% endblock %}
-
