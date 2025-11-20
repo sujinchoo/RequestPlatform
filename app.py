@@ -59,36 +59,7 @@ def create_app():
     # =========================================================
     # SaaS 데모 대시보드 페이지
     # =========================================================
-    @app.route("/dashboard_demo")
-    @login_required
-    @admin_required
-    def dashboard_demo():
     
-        # 실제 DB 데이터 가져오기
-        total = Req.query.count()
-        completed = Req.query.filter_by(status="배차완료").count()
-        active = total - completed
-    
-        # 최근 요청 10개
-        recent = Req.query.order_by(Req.created_at.desc()).limit(10).all()
-    
-        # 상태 분포 (샘플 스타일)
-        status_wait = Req.query.filter_by(status="모집중").count()
-        status_pre = Req.query.filter_by(status="선탑진행중").count()
-        status_interview = Req.query.filter_by(status="면접예정").count()
-        status_done = Req.query.filter_by(status="배차완료").count()
-    
-        return render_template(
-            "dashboard_demo.html",
-            total_cases=total,
-            active_cases=active,
-            completed_cases=completed,
-            recent=recent,
-            status_wait=status_wait,
-            status_pre=status_pre,
-            status_interview=status_interview,
-            status_done=status_done
-        )
     
     @app.route("/dashboard_demo")
     @login_required
@@ -120,6 +91,7 @@ def create_app():
             status_pre_pct=(status_pre / total2) * 100,
             status_interview_pct=(status_interview / total2) * 100,
             status_done_pct=(status_done / total2) * 100,
+        )
 
         
     # =========================================================
