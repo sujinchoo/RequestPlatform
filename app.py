@@ -8,9 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, Branch, Request as Req
 
-# =========================================================
-# 🟦 GOOGLE LOGIN IMPORT
-# =========================================================
+# Google OAuth
 from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text
 import os
@@ -23,7 +21,7 @@ def create_app():
     db.init_app(app)
 
     # =========================================================
-    # 데코레이터
+    # 유틸 데코레이터
     # =========================================================
     from functools import wraps
 
@@ -47,7 +45,7 @@ def create_app():
         return wrapped
 
     # =========================================================
-    # 🌐 GOOGLE LOGIN BLUEPRINT 등록
+    # GOOGLE LOGIN (Blueprint 등록)
     # =========================================================
     google_bp = make_google_blueprint(
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
@@ -58,14 +56,13 @@ def create_app():
     app.register_blueprint(google_bp, url_prefix="/login")
 
     # =========================================================
-    # 임시 관리자 생성
+    # 초기 Admin 생성
     # =========================================================
     @app.route("/init-admin")
     def init_admin():
         try:
             db.create_all()
-            existing = Branch.query.filter_by(login_id="admin").first()
-            if existing:
+            if Branch.query.filter_by(login_id="admin").first():
                 return "Admin already exists."
 
             admin = Branch(
@@ -83,7 +80,7 @@ def create_app():
             return f"Error: {e}"
 
     # =========================================================
-    # 홈 / 로그인
+    # HOME / LOGIN
     # =========================================================
     @app.route("/")
     def home():
@@ -119,7 +116,7 @@ def create_app():
         return redirect(url_for("login"))
 
     # =========================================================
-    # 🟦 GOOGLE LOGIN ROUTE (DB 저장)
+    # GOOGLE LOGIN ROUTE
     # =========================================================
     @app.route("/login/google")
     def login_google():
@@ -167,14 +164,12 @@ def create_app():
         return redirect(url_for("request_page"))
 
     # =========================================================
-    # 요청 등록 페이지
+    # 요청 입력 페이지
     # =========================================================
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
-        branch = None
-        if "branch_id" in session:
-            branch = Branch.query.get(session["branch_id"])
+        branch = Branch.query.get(session["branch_id"]) if "branch_id" in session else None
 
         if request.method == "POST":
             form = request.form
@@ -205,7 +200,7 @@ def create_app():
         return render_template("request.html", branch=branch)
 
     # =========================================================
-    # 공통 통계 함수
+    # 통계 함수
     # =========================================================
     def get_stats():
         total = Req.query.count()
@@ -251,7 +246,7 @@ def create_app():
                                completed_cases=completed)
 
     # =========================================================
-    # 📌 요청 데이터 API
+    # 요청 리스트 API (필터)
     # =========================================================
     @app.route("/api/requests", methods=["GET"])
     @login_required
@@ -270,9 +265,8 @@ def create_app():
 
         rows = query.order_by(Req.created_at.desc()).all()
 
-        results = []
-        for r in rows:
-            results.append({
+        results = [
+            {
                 "id": r.id,
                 "company": r.company,
                 "region": r.region,
@@ -284,26 +278,42 @@ def create_app():
                 "etc": r.etc,
                 "status": r.status,
                 "interview_date": r.interview_date.isoformat() if r.interview_date else None,
-                "created_at": r.created_at.isoformat() if r.created_at else None,
-            })
+                "created_at": r.created_at.isoformat(),
+            }
+            for r in rows
+        ]
 
         return jsonify({"count": len(results), "data": results})
 
     # =========================================================
-    # 📌 상태 변경 API
+    # 🔥 최종 완성 — 상태 업데이트 API (JSON 방식)
     # =========================================================
     @app.route("/api/update-status", methods=["POST"])
     @login_required
     @admin_required
-    def update_status():
-        req_id = request.form.get("req_id")
-        new_status = request.form.get("new_status")
+    def api_update_status():
+
+        data = request.get_json(force=True)
+
+        req_id = data.get("req_id")
+        new_status = data.get("status")
+        interview_date = data.get("interview_date")
 
         row = Req.query.get(req_id)
         if not row:
-            return jsonify({"success": False, "message": "요청을 찾을 수 없습니다."}), 404
+            return jsonify({"success": False, "error": "Invalid request ID"}), 404
 
         row.status = new_status
+
+        # 날짜 저장 처리
+        try:
+            if interview_date:
+                row.interview_date = datetime.strptime(interview_date, "%Y-%m-%d").date()
+            else:
+                row.interview_date = None
+        except:
+            row.interview_date = None
+
         db.session.commit()
 
         return jsonify({"success": True})
