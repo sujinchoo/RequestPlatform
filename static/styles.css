@@ -835,3 +835,74 @@ table tbody tr:hover {
 }
 
 
+/* ============================================================
+   🔥 FINAL PATCH — Column Optimization + Status Tag Restore
+   2025-11-20
+   ============================================================ */
+
+/* ============================================================
+   1) Column Width Optimization (필요 인원 / 상태 / 면접일)
+   ============================================================ */
+
+/* 필요 인원 (명) → 최소폭 48px로 더 줄임 */
+.table-compact th:nth-child(8),
+.table-compact td:nth-child(8) {
+  width: 48px !important;
+  min-width: 48px !important;
+  text-align: center !important;
+}
+
+/* 현재 상태 → 태그 자체가 있으므로 적당히 좁게 */
+.table-compact th:nth-child(10),
+.table-compact td:nth-child(10) {
+  width: 70px !important;
+  min-width: 70px !important;
+}
+
+/* 면접일 → 날짜 형식이므로 80px로 축소 */
+.table-compact th:nth-child(11),
+.table-compact td:nth-child(11) {
+  width: 80px !important;
+  min-width: 80px !important;
+}
+
+/* ============================================================
+   2) 상태 태그 색상 복구 (table global reset override 방지)
+   ============================================================ */
+
+.table-compact .tag-status {
+  display: inline-block;
+  padding: 2px 8px !important;
+  font-size: 11px !important;
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  border: 1px solid #d4d4d8 !important;
+  white-space: nowrap !important;
+}
+
+/* 모집중 */
+.table-compact .tag-모집중 {
+  background: #ffffff !important;
+  color: #111827 !important;
+}
+
+/* 선탑진행중 */
+.table-compact .tag-선탑진행중 {
+  background: #dbeafe !important;
+  color: #1d4ed8 !important;
+  border-color: #bfdbfe !important;
+}
+
+/* 면접예정 */
+.table-compact .tag-면접예정 {
+  background: #fef9c3 !important;
+  color: #b45309 !important;
+  border-color: #fde68a !important;
+}
+
+/* 배차완료 */
+.table-compact .tag-배차완료 {
+  background: #dcfce7 !important;
+  color: #166534 !important;
+  border-color: #bbf7d0 !important;
+}
