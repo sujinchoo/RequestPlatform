@@ -689,7 +689,7 @@ table tbody tr:hover {
 /* 택배사 */
 .table-compact th:nth-child(3),
 .table-compact td:nth-child(3) {
-  min-width: 75px;
+  min-width: 60px;
 }
 
 /* 영업소/대리점명 */
@@ -703,8 +703,8 @@ table tbody tr:hover {
 .table-compact td:nth-child(5),
 .table-compact th:nth-child(6),
 .table-compact td:nth-child(6) {
-  min-width: 45px !important;  /* 기존 65px → 45px */
-  width: 45px !important;
+  min-width: 50px !important;  /* 기존 65px → 45px */
+  width: 50px !important;
   text-align: right;  /* 숫자 정렬 */
 }
 
@@ -712,7 +712,7 @@ table tbody tr:hover {
 /* 차종 */
 .table-compact th:nth-child(7),
 .table-compact td:nth-child(7) {
-  min-width: 65px;
+  min-width: 60px;
 }
 
 /* 인원 */
@@ -730,7 +730,7 @@ table tbody tr:hover {
 /* 현재상태 */
 .table-compact th:nth-child(10),
 .table-compact td:nth-child(10) {
-  min-width: 80px;
+  min-width: 85px;
 }
 
 /* 면접일 */
