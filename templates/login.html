@@ -99,13 +99,15 @@
   justify-content: center;
 }
 
+/* 🔥 완전 반응형 Google 로그인 이미지 */
 .google-login-img {
-  width: 220px;         /* 버튼 크기 조절 가능 */
-  max-width: 100%;      /* 반응형 */
-  height: auto;
+  width: 100%;            /* 부모(width:100%) 기준 자동 확장/축소 */
+  max-width: 400px;       /* 너무 커지지 않도록 최대폭 제한 */
+  height: auto;           /* 비율 유지 */
   display: block;
-  border-radius: 8px;   /* 필요하면 제거 가능 */
+  border-radius: 8px;
   box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  transition: opacity 0.2s;
 }
 
 .google-login-btn:hover .google-login-img {
