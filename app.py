@@ -402,41 +402,41 @@ def create_app():
     # 랜덤 데이터 100개 자동 생성 API
     # =========================================================
     @app.route("/api/dbtest-generate", methods=["POST"])
-@login_required
-@admin_required
-def api_dbtest_generate():
-
-    import random
-    import string
-
-    def rand_txt():
-        return ''.join(random.choices(string.ascii_uppercase, k=5))
-
-    admin_branch_id = session.get("branch_id", 1)
-
-    try:
-        for _ in range(100):
-            r = Req(
-                branch_id=admin_branch_id,
-                company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
-                region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
-                branch_name=f"{rand_txt()}지점"[:7],
-                unit_price=random.randint(300, 900),
-                volume=random.randint(10, 900),
-                vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
-                headcount=random.randint(1, 5),
-                etc="테스트",
-                status="모집중",
-                created_at=datetime.utcnow()
-            )
-            db.session.add(r)
-
-        db.session.commit()
-        return jsonify({"success": True})
-
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({"success": False, "error": str(e)}), 500
+    @login_required
+    @admin_required
+    def api_dbtest_generate():
+    
+        import random
+        import string
+    
+        def rand_txt():
+            return ''.join(random.choices(string.ascii_uppercase, k=5))
+    
+        admin_branch_id = session.get("branch_id", 1)
+    
+        try:
+            for _ in range(100):
+                r = Req(
+                    branch_id=admin_branch_id,
+                    company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
+                    region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
+                    branch_name=f"{rand_txt()}지점"[:7],
+                    unit_price=random.randint(300, 900),
+                    volume=random.randint(10, 900),
+                    vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
+                    headcount=random.randint(1, 5),
+                    etc="테스트",
+                    status="모집중",
+                    created_at=datetime.utcnow()
+                )
+                db.session.add(r)
+    
+            db.session.commit()
+            return jsonify({"success": True})
+    
+        except Exception as e:
+            db.session.rollback()
+            return jsonify({"success": False, "error": str(e)}), 500
 
     
     return app
