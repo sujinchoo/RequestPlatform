@@ -45,36 +45,45 @@
       </div>
 
       <nav class="nav">
-        {% if session.get('branch_id') %}
-          {% if session.get('is_admin') %}
-            <a href="{{ url_for('dashboard') }}"
-               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
-              요청 현황(본사)
-            </a>
-            <a href="{{ url_for('dashboard_v2') }}"
-               class="nav-link {% if request.endpoint == 'dashboard_v2' %}active{% endif %}">
-              대시보드 v2
-            </a>
-            <a href="{{ url_for('dashboard_v3') }}"
-               class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-              대시보드 v3
-            </a>
-          {% endif %}
-
-          <a href="{{ url_for('request_page') }}"
-             class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
-            요청 등록(대리점)
+      {% if session.get('branch_id') %}
+        {% if session.get('is_admin') %}
+          <a href="{{ url_for('dashboard') }}"
+             class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+            요청 현황(본사)
           </a>
-
-          <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
-
-        {% else %}
-          <a href="{{ url_for('login') }}"
-             class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
-            로그인
+    
+          <a href="{{ url_for('dashboard_v2') }}"
+             class="nav-link {% if request.endpoint == 'dashboard_v2' %}active{% endif %}">
+            요청 현황(본사) 대시보드 v2
+          </a>
+    
+          <a href="{{ url_for('dashboard_v3') }}"
+             class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
+            카드형 대시보드 v3
+          </a>
+    
+          <!-- 🔥 여기 추가됨: DB TEST 메뉴 -->
+          <a href="{{ url_for('dbtest_page') }}"
+             class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
+            DB TEST 테스트DB
           </a>
         {% endif %}
-      </nav>
+    
+        <a href="{{ url_for('request_page') }}"
+           class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
+          요청 등록(대리점)
+        </a>
+    
+        <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
+    
+      {% else %}
+        <a href="{{ url_for('login') }}"
+           class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
+          로그인
+        </a>
+      {% endif %}
+    </nav>
+
     </div>
   </header>
 
