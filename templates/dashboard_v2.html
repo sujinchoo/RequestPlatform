@@ -69,7 +69,7 @@
 
     </div>
 
-    <button class="btn-primary" onclick="saveStatus()">저장</button>
+    <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
 
   </div>
 </div>
@@ -138,8 +138,9 @@ function closeModal() {
 
 // 🔵 상태 저장
 function saveStatus() {
-    const btn = document.querySelector(".btn-primary");
+    const btn = document.querySelector(".modal-save-btn");
     btn.innerText = "저장중...";
+    btn.disabled = true;
 
     const payload = {
         req_id: currentId,
@@ -147,23 +148,48 @@ function saveStatus() {
         status: document.getElementById("modal-status").value
     };
 
-    fetch("/update-status-json", {
+    // 🔥 URL 수정 — app.py와 동일하게 /api/update-status
+    fetch("/api/update-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload)
     })
     .then(res => res.json())
-    .then(() => {
-        btn.innerText = "저장완료";
+    .then(json => {
+        if (!json.success) {
+            alert("저장 실패");
+            btn.innerText = "저장";
+            btn.disabled = false;
+            return;
+        }
+
+        btn.innerText = "저장완료 ✓";
+        btn.style.background = "#059669";
+        btn.style.borderColor = "#059669";
 
         setTimeout(() => {
             closeModal();
-            btn.innerText = "저장";
 
-            loadFilteredData();   // 🔥 필터가 켜져 있어도 자동 반영
+            btn.innerText = "저장";
+            btn.disabled = false;
+            btn.style.background = "#2563eb";
+            btn.style.borderColor = "#2563eb";
+
+            try {
+                if (typeof loadFilteredData === "function") {
+                    loadFilteredData();
+                }
+            } catch (e) {
+                console.warn("loadFilteredData 없음 — OK");
+            }
         }, 800);
     })
-    .catch(err => console.error("UPDATE ERROR:", err));
+    .catch(err => {
+        console.error("UPDATE ERROR:", err);
+        alert("상태 저장 중 오류 발생");
+        btn.innerText = "저장";
+        btn.disabled = false;
+    });
 }
 </script>
 
