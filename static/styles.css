@@ -623,3 +623,139 @@ table tbody tr:hover {
   background: #eef2ff !important;   /* 연한 블루 하이라이트 */
   transition: background 0.15s ease-in-out;
 }
+
+/* ============================================================
+   🔥 V1 DASHBOARD FINAL PATCH (2025.11.20)
+   Compact + Readability + Column Optimization
+   ============================================================ */
+
+/* 전체 wrapper는 그대로 두지만 padding 약간 줄임 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+/* v1 컴팩트 테이블 핵심 설정 */
+.table-compact {
+  width: 100% !important;
+  min-width: 1100px !important; /* 기존 1200~1400보다 살짝 줄임 */
+  border-collapse: collapse;
+  table-layout: fixed; /* 모든 컬럼 자동 비율로 */
+  font-size: 11px;
+}
+
+/* 공통 셀 스타일 (높이 감소) */
+.table-compact th,
+.table-compact td {
+  padding: 4px 6px !important;
+  line-height: 1.25 !important;
+  white-space: normal !important; /* 긴 글 자동 줄바꿈 */
+  word-break: break-word !important;
+  vertical-align: middle;
+}
+
+/* 헤더 스타일 유지 + 컴팩트 */
+.table-compact thead tr {
+  background: #f3f4f6;
+  font-weight: 600;
+  height: 32px;
+}
+
+/* 행 stripe + hover 유지 */
+.table-compact tbody tr:nth-child(even) {
+  background: #f9fafb !important;
+}
+.table-compact tbody tr:hover {
+  background: #eef2ff !important;
+}
+
+/* ============================================================
+   🔻 Column Width Optimization (전체 폭 줄임 핵심)
+   ============================================================ */
+
+/* No */
+.table-compact th:nth-child(1),
+.table-compact td:nth-child(1) {
+  width: 38px;
+}
+
+/* 지역 */
+.table-compact th:nth-child(2),
+.table-compact td:nth-child(2) {
+  min-width: 60px;
+}
+
+/* 택배사 */
+.table-compact th:nth-child(3),
+.table-compact td:nth-child(3) {
+  min-width: 75px;
+}
+
+/* 영업소/대리점명 */
+.table-compact th:nth-child(4),
+.table-compact td:nth-child(4) {
+  min-width: 140px;
+}
+
+/* 단가, 월물량 */
+.table-compact th:nth-child(5),
+.table-compact td:nth-child(5),
+.table-compact th:nth-child(6),
+.table-compact td:nth-child(6) {
+  min-width: 65px;
+}
+
+/* 차종 */
+.table-compact th:nth-child(7),
+.table-compact td:nth-child(7) {
+  min-width: 65px;
+}
+
+/* 인원 */
+.table-compact th:nth-child(8),
+.table-compact td:nth-child(8) {
+  min-width: 55px;
+}
+
+/* 기타 */
+.table-compact th:nth-child(9),
+.table-compact td:nth-child(9) {
+  min-width: 100px;
+}
+
+/* 현재상태 */
+.table-compact th:nth-child(10),
+.table-compact td:nth-child(10) {
+  min-width: 80px;
+}
+
+/* 면접일 */
+.table-compact th:nth-child(11),
+.table-compact td:nth-child(11) {
+  min-width: 85px;
+}
+
+/* 🔥 상태 변경 (대폭 축소 — “반으로”) */
+.table-compact th:nth-child(12),
+.table-compact td:nth-child(12) {
+  width: 95px !important;
+  min-width: 95px !important;
+  white-space: nowrap !important;
+}
+
+/* 내부 form 요소도 크기 축소 */
+.table-compact .cell-input,
+.table-compact .cell-select {
+  font-size: 11px !important;
+  padding: 2px 4px !important;
+  height: 26px !important;
+}
+
+.table-compact button {
+  padding: 4px 6px !important;
+  font-size: 11px !important;
+  border-radius: 3px !important;
+}
+
+
