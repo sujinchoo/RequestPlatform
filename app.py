@@ -255,6 +255,8 @@ def create_app():
     @admin_required
     def dashboard():
         total, active, completed = get_stats()
+        # 🔥 DB에서 회사 목록 자동 가져오기
+        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
         return render_template("dashboard.html",
                                total_cases=total,
                                active_cases=active,
@@ -266,6 +268,8 @@ def create_app():
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
+        # 🔥 DB에서 회사 목록 자동 가져오기
+        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
         return render_template("dashboard_v2.html",
                                reqs=reqs,
                                total_cases=total,
@@ -278,6 +282,8 @@ def create_app():
     def dashboard_v3():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
+        # 🔥 DB에서 회사 목록 자동 가져오기
+        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
         return render_template("dashboard_v3.html",
                                reqs=reqs,
                                total_cases=total,
