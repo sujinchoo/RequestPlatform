@@ -4,50 +4,70 @@
 {% block header_title %}대리점 / 본사 로그인{% endblock %}
 
 {% block content %}
+
+<!-- ================================
+     히어로 영역 / 배너
+================================ -->
 <section class="sheet sheet-hero">
 
-  <!-- 🔹 TPR System 배너 -->
   <div class="tpr-banner">
     <img src="{{ url_for('static', filename='images/tpr-banner.png') }}"
-         alt="TPR System - Truck People Request System"
+         alt="TPR System Banner"
          class="tpr-banner-img" />
+
     <div class="tpr-banner-text">
-      <div class="tpr-banner-title">TPR System </div>
+      <div class="tpr-banner-title">TPR System</div>
       <div class="tpr-banner-sub">Truck · People · Request Board</div>
     </div>
   </div>
 
   <div class="hero-title">로그인</div>
   <p class="hero-sub">
-    대리점 ID와 비밀번호를 입력해 주세요. 본사 계정(admin)은 대시보드 접근이 가능합니다.
+    대리점 ID와 비밀번호를 입력해주세요.<br>
+    본사 계정(admin)은 대시보드 접근이 가능합니다.
   </p>
+
 </section>
 
+
+<!-- ================================
+     로그인 폼 박스
+================================ -->
 <section class="sheet">
 
-  <!-- 기존 로그인 폼 -->
+  <!-- 기본 로그인 폼 -->
   <form method="post">
     <div class="grid-row">
+
       <div class="field">
         <label for="login_id">대리점 ID</label>
         <input id="login_id" name="login_id" type="text"
-               placeholder="예: 본인 ID 또는 관리자 admin ID" required />
+               placeholder="예: 본인 ID 또는 관리자 admin ID"
+               required />
       </div>
+
       <div class="field">
         <label for="password">비밀번호</label>
         <input id="password" name="password" type="password" required />
       </div>
+
     </div>
+
     <button type="submit" class="btn-primary">로그인</button>
   </form>
+
 
   <!-- 구분선 -->
   <div class="divider">또는</div>
 
-  <!-- 🔵 Google 공식 Material Button (UI만 표시) -->
+
+  <!-- ================================
+       Google 공식 Material 버튼 (UI만 표시)
+  ================================= -->
   <button type="button" class="gsi-material-button">
-    <div class="gsi-material-button-state"></div>
+
     <div class="gsi-material-button-content-wrapper">
+
       <div class="gsi-material-button-icon">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
           <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
@@ -56,14 +76,25 @@
           <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
         </svg>
       </div>
-      <span class="gsi-material-button-contents">Google 계정으로 로그인</span>
+
+      <span class="gsi-material-button-contents">
+        Google 계정으로 로그인
+      </span>
+
     </div>
   </button>
 
 </section>
+
 {% endblock %}
 
+
+
+<!-- ================================
+     스타일
+================================ -->
 <style>
+
 .divider {
   text-align: center;
   color: #aaa;
@@ -71,26 +102,35 @@
   font-size: 14px;
 }
 
+/* Google Material Button */
 .gsi-material-button {
-  background-color: white;
-  border: 1px solid #dadce0;
-  border-radius: 8px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  width: 100%;
-  padding: 10px 0;
   justify-content: center;
-  gap: 10px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  padding: 12px 0;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  margin-top: 10px;
 }
 
 .gsi-material-button:hover {
-  background: #f7f7f7;
+  background: #f5f5f5;
+}
+
+.gsi-material-button-content-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .gsi-material-button-icon svg {
   width: 20px;
   height: 20px;
+  display: block;
 }
 
 .gsi-material-button-contents {
@@ -98,4 +138,12 @@
   font-weight: 600;
   color: #444;
 }
+
+/* 기본 button 스타일 오버라이드 */
+button.gsi-material-button {
+  border: none;
+  outline: none;
+  box-shadow: none;
+}
+
 </style>
