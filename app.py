@@ -326,10 +326,10 @@ def create_app():
         })
 
 
-    # =========================================================
+       # =========================================================
     # 📌 상태 변경 API (대시보드 팝업용)
     # =========================================================
-    @app.route("/api/update_status", methods=["POST"])
+    @app.route("/api/update-status", methods=["POST"])
     @login_required
     @admin_required
     def update_status():
@@ -344,10 +344,6 @@ def create_app():
         db.session.commit()
 
         return jsonify({"success": True})
-
-
-    
-    return app
 
 
 
