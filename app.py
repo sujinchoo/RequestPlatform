@@ -282,7 +282,71 @@ def create_app():
             completed_cases=completed
         )
 
+        # =========================================================
+    # 📌 요청 데이터 API (대시보드 테이블용)
+    # =========================================================
+    @app.route("/api/requests", methods=["GET"])
+    @login_required
+    @admin_required
+    def api_requests():
+        company = request.args.get("company", "all")
+        status = request.args.get("status", "all")
 
+        query = Req.query
+
+        if company != "all" and company:
+            query = query.filter(Req.company == company)
+
+        if status != "all" and status:
+            query = query.filter(Req.status == status)
+
+        rows = query.order_by(Req.created_at.desc()).all()
+
+        # JSON 변환
+        results = []
+        for r in rows:
+            results.append({
+                "id": r.id,
+                "company": r.company,
+                "region": r.region,
+                "branch_name": r.branch_name,
+                "unit_price": r.unit_price,
+                "volume": r.volume,
+                "vehicle_type": r.vehicle_type,
+                "headcount": r.headcount,
+                "etc": r.etc,
+                "status": r.status,
+                "interview_date": r.interview_date.isoformat() if r.interview_date else None,
+                "created_at": r.created_at.isoformat() if r.created_at else None,
+            })
+
+        return jsonify({
+            "count": len(results),
+            "data": results
+        })
+
+
+    # =========================================================
+    # 📌 상태 변경 API (대시보드 팝업용)
+    # =========================================================
+    @app.route("/api/update_status", methods=["POST"])
+    @login_required
+    @admin_required
+    def update_status():
+        req_id = request.form.get("req_id")
+        new_status = request.form.get("new_status")
+
+        row = Req.query.get(req_id)
+        if not row:
+            return jsonify({"success": False, "message": "요청을 찾을 수 없습니다."}), 404
+
+        row.status = new_status
+        db.session.commit()
+
+        return jsonify({"success": True})
+
+
+    
     return app
 
 
