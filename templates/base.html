@@ -114,10 +114,11 @@
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
             <option value="all">전체 택배사</option>
-            <option value="CJ대한통운">CJ대한통운</option>
-            <option value="한진택배">한진택배</option>
-            <option value="롯데택배">롯데택배</option>
-            <option value="우체국택배">우체국택배</option>
+            {% for c in companies %}
+              {% if c %}
+                <option value="{{ c }}">{{ c }}</option>
+              {% endif %}
+            {% endfor %}
           </select>
 
           <select id="filter-status" class="filter-select">
