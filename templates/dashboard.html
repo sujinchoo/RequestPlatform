@@ -1,263 +1,51 @@
 {% extends "base.html" %}
 
-{% block title %}인력 요청 현황 대시보드{% endblock %}
-{% block header_title %}인력 요청 현황 대시보드{% endblock %}
+{% block title %}대시보드 v2 (개선버전){% endblock %}
+{% block header_title %}대시보드 v2 — 반응형 개선 완료{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
-{% block content %}
-
-<section class="sheet sheet-hero">
-  <div class="hero-title">전국 택배 대리점 인력 요청 현황</div>
-  <p class="hero-sub">행(row)을 클릭하면 상태 변경 팝업이 열립니다.</p>
-</section>
-
-<section class="sheet">
-
-  <div class="sheet-title-row">
-    <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
-    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
-  </div>
-
-  <!-- 📊 통계 박스 -->
-  <div class="stats-box">
-    <span class="stat total">전체: {{ total_cases }}개</span>
-    <span class="stat active">진행중: {{ active_cases }}개</span>
-    <span class="stat done">완료: {{ completed_cases }}개</span>
-  </div>
-
-  <div class="table-wrapper">
-    <table id="request-table" class="table-compact">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>지역</th>
-          <th>택배사</th>
-          <th>영업소 / 대리점명</th>
-          <th>단가 (원/건)</th>
-          <th>월 물량 (건)</th>
-          <th>차종</th>
-          <th>필요 인원 (명)</th>
-          <th>기타 사항</th>
-          <th>현재 상태</th>
-          <th>면접일</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
-
-</section>
-
-<!-- ====================== -->
-<!-- 🔥 상태 변경 Modal -->
-<!-- ====================== -->
-<div id="status-modal" class="modal hidden">
-  <div class="modal-card">
-
-    <div class="modal-header">
-      <div id="modal-title" class="modal-title">상세 정보</div>
-      <button class="modal-close" onclick="closeModal()">✕</button>
-    </div>
-
-    <div class="modal-body">
-      <label>면접일</label>
-      <input type="date" id="modal-interview" class="modal-input" />
-
-      <label>상태 변경</label>
-      <select id="modal-status" class="modal-input">
-        <option value="모집중">모집중</option>
-        <option value="선탑진행중">선탑진행중</option>
-        <option value="면접예정">면접예정</option>
-        <option value="배차완료">배차완료</option>
-      </select>
-    </div>
-
-    <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
-  </div>
-</div>
-
-<!-- ===================================================== -->
-<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 로직 -->
-<!-- ===================================================== -->
-<script>
-let currentId = null;
-
-
-/* =========================================================
-   🔵 테이블 렌더링
-========================================================= */
-function renderData(data) {
-    const tbody = document.querySelector("#request-table tbody");
-    tbody.innerHTML = "";
-
-    if (!data || data.length === 0) {
-        tbody.innerHTML = `
-            <tr>
-              <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
-            </tr>`;
-        return;
-    }
-
-    data.forEach((r, idx) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
-            <td>${idx + 1}</td>
-            <td>${r.region}</td>
-            <td>${r.company}</td>
-            <td>${r.branch_name}</td>
-            <td>${Number(r.unit_price).toLocaleString()}</td>
-            <td>${Number(r.volume).toLocaleString()}</td>
-            <td>${r.vehicle_type || "-"}</td>
-            <td>${r.headcount}</td>
-            <td>${r.etc || "-"}</td>
-            <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
-            <td>${r.interview_date || "-"}</td>
-        `;
-
-        row.onclick = () => openModal(r);
-
-        tbody.appendChild(row);
-    });
-}
-
-
-/* =========================================================
-   🔵 Modal 열기
-========================================================= */
-function openModal(r) {
-    currentId = r.id;
-
-    document.getElementById("modal-title").innerText =
-        `${r.region} / ${r.company} / ${r.branch_name}`;
-
-    document.getElementById("modal-interview").value =
-        r.interview_date || "";
-
-    document.getElementById("modal-status").value =
-        r.status || "모집중";
-
-    document.getElementById("status-modal").classList.remove("hidden");
-}
-
-
-/* =========================================================
-   🔵 Modal 닫기
-========================================================= */
-function closeModal() {
-    document.getElementById("status-modal").classList.add("hidden");
-}
-
-
-/* =========================================================
-   🔥 저장 요청 (AJAX + UI Feedback)
-========================================================= */
-function saveStatus() {
-
-    const btn = document.querySelector(".modal-save-btn");
-    btn.innerText = "저장중...";
-    btn.disabled = true;
-
-    fetch("/api/update-status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            req_id: currentId,
-            interview_date: document.getElementById("modal-interview").value,
-            status: document.getElementById("modal-status").value
-        })
-    })
-    .then(res => res.json())
-    .then(json => {
-
-        if (!json.success) {
-            alert("저장 실패: " + (json.error || ""));
-            btn.innerText = "저장";
-            btn.disabled = false;
-            return;
-        }
-
-        // 성공 UI
-        btn.innerText = "저장완료 ✓";
-        btn.style.background = "#059669";
-        btn.style.borderColor = "#059669";
-
-        // 자동 새로고침 함수 존재 시 실행
-        if (typeof loadFilteredData === "function") {
-            loadFilteredData();
-        }
-
-        // 모달 종료 및 초기화
-        setTimeout(() => {
-            closeModal();
-            btn.innerText = "저장";
-            btn.disabled = false;
-            btn.style.background = "#2563eb";
-            btn.style.borderColor = "#2563eb";
-        }, 1000);
-
-    })
-    .catch(err => {
-        alert("오류 발생: " + err);
-        btn.innerText = "저장";
-        btn.disabled = false;
-    });
-}
-
-</script>
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/stylev2.css') }}">
 {% endblock %}
-{% extends "base.html" %}
-
-{% block title %}인력 요청 현황 대시보드{% endblock %}
-{% block header_title %}인력 요청 현황 대시보드{% endblock %}
-{% block logo_color %}logo-square-green{% endblock %}
 
 {% block content %}
 
 <section class="sheet sheet-hero">
-  <div class="hero-title">전국 택배 대리점 인력 요청 현황</div>
-  <p class="hero-sub">행(row)을 클릭하면 상태 변경 팝업이 열립니다.</p>
+  <div class="hero-title">전국 택배 대리점 인력 요청 현황 v2</div>
+  <p class="hero-sub">모바일/PC 자동 최적화 · 클릭하면 상태 변경 가능</p>
 </section>
 
 <section class="sheet">
 
   <div class="sheet-title-row">
-    <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
-    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
+    <div class="sheet-title">인력 요청 리스트 (v2 개선판)</div>
+    <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- 📊 통계 박스 -->
-  <div class="stats-box">
-    <span class="stat total">전체: {{ total_cases }}개</span>
-    <span class="stat active">진행중: {{ active_cases }}개</span>
-    <span class="stat done">완료: {{ completed_cases }}개</span>
-  </div>
-
-  <div class="table-wrapper">
-    <table id="request-table" class="table-compact">
-      <thead>
-        <tr>
-          <th>No</th>
-          <th>지역</th>
-          <th>택배사</th>
-          <th>영업소 / 대리점명</th>
-          <th>단가 (원/건)</th>
-          <th>월 물량 (건)</th>
-          <th>차종</th>
-          <th>필요 인원 (명)</th>
-          <th>기타 사항</th>
-          <th>현재 상태</th>
-          <th>면접일</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </div>
+  <table id="request-table" class="table-v2">
+    <thead>
+      <tr>
+        <th>No</th>
+        <th>지역</th>
+        <th>택배사</th>
+        <th>영업소 / 대리점명</th>
+        <th>단가 (원/건)</th>
+        <th>월 물량 (건)</th>
+        <th>차종</th>
+        <th>필요 인원 (명)</th>
+        <th>기타 사항</th>
+        <th>현재 상태</th>
+        <th>면접일</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
 </section>
 
+
 <!-- ====================== -->
-<!-- 🔥 상태 변경 Modal -->
+<!-- Modal -->
 <!-- ====================== -->
 <div id="status-modal" class="modal hidden">
   <div class="modal-card">
@@ -269,7 +57,7 @@ function saveStatus() {
 
     <div class="modal-body">
       <label>면접일</label>
-      <input type="date" id="modal-interview" class="modal-input" />
+      <input type="date" id="modal-interview" class="modal-input">
 
       <label>상태 변경</label>
       <select id="modal-status" class="modal-input">
@@ -280,37 +68,33 @@ function saveStatus() {
       </select>
     </div>
 
-    <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
+    <button class="btn-primary" onclick="saveStatus()">저장</button>
+
   </div>
 </div>
 
 
 <!-- ====================== -->
-<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 로직 -->
+<!-- JS -->
 <!-- ====================== -->
 <script>
 let currentId = null;
 
-// ==================================================
-// 🔵 테이블 렌더링
-// ==================================================
+// 테이블 렌더링
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
     tbody.innerHTML = "";
 
     if (!data || data.length === 0) {
         tbody.innerHTML = `
-            <tr>
-              <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
-            </tr>
+          <tr><td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td></tr>
         `;
         return;
     }
 
     data.forEach((r, idx) => {
-        const row = document.createElement("tr");
-
-        row.innerHTML = `
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
             <td>${idx + 1}</td>
             <td>${r.region}</td>
             <td>${r.company}</td>
@@ -323,53 +107,31 @@ function renderData(data) {
             <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
             <td>${r.interview_date || "-"}</td>
         `;
-
-        // 🔥 클릭 시 모달 열기
-        row.onclick = () => openModal(r);
-
-        tbody.appendChild(row);
+        tr.onclick = () => openModal(r);
+        tbody.appendChild(tr);
     });
 }
 
 
-
-// ==================================================
-// 🔵 Modal 열기
-// ==================================================
+// Modal 열기
 function openModal(r) {
     currentId = r.id;
-
     document.getElementById("modal-title").innerText =
         `${r.region} / ${r.company} / ${r.branch_name}`;
-
-    document.getElementById("modal-interview").value =
-        r.interview_date || "";
-
-    document.getElementById("modal-status").value =
-        r.status || "모집중";
+    document.getElementById("modal-interview").value = r.interview_date || "";
+    document.getElementById("modal-status").value = r.status;
 
     document.getElementById("status-modal").classList.remove("hidden");
 }
 
-
-
-// ==================================================
-// 🔵 Modal 닫기
-// ==================================================
+// Modal 닫기
 function closeModal() {
     document.getElementById("status-modal").classList.add("hidden");
 }
 
 
-
-// ==================================================
-// 🔥 저장 요청 (AJAX + UI Feedback)
-// ==================================================
+// 저장 요청 (PATCH)
 function saveStatus() {
-
-    const btn = document.querySelector(".modal-save-btn");
-    btn.innerText = "저장중...";
-    btn.disabled = true;
 
     fetch("/api/update-status", {
         method: "POST",
@@ -384,38 +146,14 @@ function saveStatus() {
     .then(json => {
 
         if (!json.success) {
-            alert("저장 실패: " + (json.error || ""));
-            btn.innerText = "저장";
-            btn.disabled = false;
+            alert("저장 실패");
             return;
         }
 
-        // 🔵 UI 성공 표시
-        btn.innerText = "저장완료 ✓";
-        btn.style.background = "#059669";
-        btn.style.borderColor = "#059669";
-
-        // 🔵 필터 기반 렌더링 함수가 있는 경우 자동 새로고침
-        if (typeof loadFilteredData === "function") {
-            loadFilteredData();
-        }
-
-        // 🔵 1초 후 모달 닫기 + 초기화
-        setTimeout(() => {
-            closeModal();
-
-            btn.innerText = "저장";
-            btn.disabled = false;
-            btn.style.background = "#2563eb";
-            btn.style.borderColor = "#2563eb";
-
-        }, 1000);
+        closeModal();
+        loadFilteredData();    // 선택적 — 필터 새로고침 함수가 있을 때만
     })
-    .catch(err => {
-        alert("오류 발생: " + err);
-        btn.innerText = "저장";
-        btn.disabled = false;
-    });
+    .catch(err => console.error("SAVE ERROR:", err));
 }
 </script>
 
