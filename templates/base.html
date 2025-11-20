@@ -113,13 +113,12 @@
       <section class="sheet filter-section">
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
-            <option value="all">전체 택배사</option>
-            {% for c in companies %}
-              {% if c %}
+              <option value="all">전체 택배사</option>
+              {% for c in companies %}
                 <option value="{{ c }}">{{ c }}</option>
-              {% endif %}
-            {% endfor %}
+              {% endfor %}
           </select>
+
 
           <select id="filter-status" class="filter-select">
             <option value="all">전체 상태</option>
