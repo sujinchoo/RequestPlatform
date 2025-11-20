@@ -21,7 +21,14 @@
     <div class="sheet-title">인력 요청 리스트 (v2 개선판)</div>
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
-
+  
+  <!-- 🔥 추가된 통계 박스 -->
+  <div class="stats-box">
+    <span class="stat total">전체: {{ total_cases }}개</span>
+    <span class="stat active">진행중: {{ active_cases }}개</span>
+    <span class="stat done">완료: {{ completed_cases }}개</span>
+  </div>
+  
   <table id="request-table" class="table-v2">
     <thead>
       <tr>
