@@ -136,33 +136,61 @@ def create_app():
 
 
     # =========================================================
+    # 공통 통계 함수
+    # =========================================================
+    def get_stats():
+        total = Req.query.count()
+        completed = Req.query.filter_by(status="배차완료").count()
+        active = total - completed
+        return total, active, completed
+
+
+    # =========================================================
     # 대시보드 (v1 / v2 / v3)
     # =========================================================
     @app.route("/dashboard")
     @login_required
     @admin_required
     def dashboard():
-        return render_template("dashboard.html")
+        total, active, completed = get_stats()
+        return render_template(
+            "dashboard.html",
+            total_cases=total,
+            active_cases=active,
+            completed_cases=completed
+        )
 
     @app.route("/dashboard_v2")
     @login_required
     @admin_required
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v2.html", reqs=reqs)
-    
-    
+        total, active, completed = get_stats()
+        return render_template(
+            "dashboard_v2.html",
+            reqs=reqs,
+            total_cases=total,
+            active_cases=active,
+            completed_cases=completed
+        )
+
     @app.route("/dashboard_v3")
     @login_required
     @admin_required
     def dashboard_v3():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
-        return render_template("dashboard_v3.html", reqs=reqs)
-
+        total, active, completed = get_stats()
+        return render_template(
+            "dashboard_v3.html",
+            reqs=reqs,
+            total_cases=total,
+            active_cases=active,
+            completed_cases=completed
+        )
 
 
     # =========================================================
-    # 상태 업데이트 공통 함수
+    # 상태 업데이트 함수
     # =========================================================
     def update_req_status(req_id, status, interview_date):
         req = Req.query.get(req_id)
@@ -170,18 +198,16 @@ def create_app():
             return False
 
         req.status = status
-
         req.interview_date = (
             datetime.strptime(interview_date, "%Y-%m-%d").date()
             if interview_date else None
         )
-
         db.session.commit()
         return True
 
 
     # =========================================================
-    # 🔥 JSON API — 모달에서 사용하는 저장 엔드포인트
+    # 🔥 JSON 모달 저장 API
     # =========================================================
     @app.route("/api/update-status", methods=["POST"])
     @login_required
@@ -202,7 +228,7 @@ def create_app():
 
 
     # =========================================================
-    # 기존 form 방식 (호환 유지)
+    # 기존 form 방식
     # =========================================================
     @app.route("/update-status", methods=["POST"])
     @login_required
