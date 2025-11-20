@@ -703,8 +703,11 @@ table tbody tr:hover {
 .table-compact td:nth-child(5),
 .table-compact th:nth-child(6),
 .table-compact td:nth-child(6) {
-  min-width: 65px;
+  min-width: 45px !important;  /* 기존 65px → 45px */
+  width: 45px !important;
+  text-align: right;  /* 숫자 정렬 */
 }
+
 
 /* 차종 */
 .table-compact th:nth-child(7),
