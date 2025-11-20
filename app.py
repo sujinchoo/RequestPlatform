@@ -10,6 +10,13 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from config import Config
 from models import db, Branch, Request as Req
 
+# =========================================================
+# 🟦 GOOGLE LOGIN IMPORT
+# =========================================================
+from flask_dance.contrib.google import make_google_blueprint, google
+from sqlalchemy import text
+import os
+
 
 def create_app():
     app = Flask(__name__)
@@ -25,9 +32,15 @@ def create_app():
     def login_required(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
-            if "branch_id" not in session:
-                return redirect(url_for("login"))
-            return view(*args, **kwargs)
+            # (1) 브랜치 계정 로그인
+            if "branch_id" in session:
+                return view(*args, **kwargs)
+
+            # (2) 구글 로그인 사용자
+            if "google_user_id" in session:
+                return view(*args, **kwargs)
+
+            return redirect(url_for("login"))
         return wrapped
 
     def admin_required(view):
@@ -38,6 +51,18 @@ def create_app():
                 return redirect(url_for("request_page"))
             return view(*args, **kwargs)
         return wrapped
+
+
+    # =========================================================
+    # 🌐 GOOGLE LOGIN BLUEPRINT 등록
+    # =========================================================
+    google_bp = make_google_blueprint(
+        client_id=os.getenv("GOOGLE_CLIENT_ID"),
+        client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+        scope=["email", "profile"],
+        redirect_url="/login/google/authorized"
+    )
+    app.register_blueprint(google_bp, url_prefix="/login")
 
 
     # =========================================================
@@ -71,12 +96,23 @@ def create_app():
     # =========================================================
     @app.route("/")
     def home():
+        # 구글 사용자 → request_page
+        if "google_user_id" in session:
+            return redirect(url_for("request_page"))
+
+        # 기존 브랜치 관리자/지점 계정
         if "branch_id" in session:
             return redirect(url_for("dashboard" if session.get("is_admin") else "request_page"))
+
         return redirect(url_for("login"))
+
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
+        # 구글 사용자는 로그인 페이지 접속 시 바로 service 페이지로 보내기
+        if "google_user_id" in session:
+            return redirect(url_for("request_page"))
+
         if request.method == "POST":
             login_id = request.form.get("login_id", "").strip()
             password = request.form.get("password", "")
@@ -92,10 +128,66 @@ def create_app():
 
         return render_template("login.html")
 
+
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect(url_for("login"))
+
+
+    # =========================================================
+    # 🟦 GOOGLE LOGIN ROUTE (DB 저장)
+    # =========================================================
+    @app.route("/login/google")
+    def login_google():
+        if not google.authorized:
+            return redirect(url_for("google.login"))
+
+        # 사용자 정보 받아오기
+        resp = google.get("/oauth2/v2/userinfo")
+        info = resp.json()
+
+        google_id = info["id"]
+        email = info.get("email", "")
+        name = info.get("name", "")
+        profile_img = info.get("picture", "")
+
+        # DB 저장 (users table)
+        try:
+            result = db.session.execute(
+                text("""
+                    INSERT INTO users (google_id, email, name, profile_img)
+                    VALUES (:gid, :email, :name, :pic)
+                    ON CONFLICT (google_id) DO NOTHING
+                    RETURNING id
+                """),
+                {"gid": google_id, "email": email, "name": name, "pic": profile_img}
+            )
+            db.session.commit()
+
+            # 신규유저
+            new_id = result.fetchone()[0] if result.rowcount > 0 else None
+
+            # 기존 유저면 다시 조회
+            if not new_id:
+                q = db.session.execute(
+                    text("SELECT id FROM users WHERE google_id=:gid"),
+                    {"gid": google_id}
+                ).fetchone()
+                new_id = q[0]
+
+        except Exception as e:
+            print("[GOOGLE LOGIN ERROR]", e)
+            flash("구글 로그인 오류", "error")
+            return redirect(url_for("login"))
+
+        # 세션 저장
+        session["google_user_id"] = new_id
+        session["google_email"] = email
+        session["google_name"] = name
+        session["is_admin"] = False
+
+        return redirect(url_for("request_page"))
 
 
     # =========================================================
@@ -104,13 +196,15 @@ def create_app():
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
-        branch = Branch.query.get(session["branch_id"])
+        branch = None
+        if "branch_id" in session:
+            branch = Branch.query.get(session["branch_id"])
 
         if request.method == "POST":
             form = request.form
             try:
                 new_req = Req(
-                    branch_id=branch.id,
+                    branch_id=branch.id if branch else None,
                     company=form.get("company"),
                     branch_name=form.get("branch"),
                     region=form.get("region"),
@@ -187,101 +281,6 @@ def create_app():
             active_cases=active,
             completed_cases=completed
         )
-
-
-    # =========================================================
-    # 상태 업데이트 함수
-    # =========================================================
-    def update_req_status(req_id, status, interview_date):
-        req = Req.query.get(req_id)
-        if not req:
-            return False
-
-        req.status = status
-        req.interview_date = (
-            datetime.strptime(interview_date, "%Y-%m-%d").date()
-            if interview_date else None
-        )
-        db.session.commit()
-        return True
-
-
-    # =========================================================
-    # 🔥 JSON 모달 저장 API
-    # =========================================================
-    @app.route("/api/update-status", methods=["POST"])
-    @login_required
-    @admin_required
-    def api_update_status():
-        data = request.get_json()
-
-        req_id = data.get("req_id")
-        status = data.get("status")
-        interview_date = data.get("interview_date")
-
-        ok = update_req_status(req_id, status, interview_date)
-
-        if not ok:
-            return jsonify({"success": False, "error": "Invalid request ID"}), 400
-
-        return jsonify({"success": True})
-
-
-    # =========================================================
-    # 기존 form 방식
-    # =========================================================
-    @app.route("/update-status", methods=["POST"])
-    @login_required
-    @admin_required
-    def update_status():
-        update_req_status(
-            request.form.get("req_id"),
-            request.form.get("status"),
-            request.form.get("interview_date")
-        )
-        flash("업데이트 완료", "success")
-        return redirect(url_for("dashboard"))
-
-
-    # =========================================================
-    # 🔥 필터 API
-    # =========================================================
-    @app.route("/api/requests", methods=["GET"])
-    @login_required
-    @admin_required
-    def api_requests():
-        company = request.args.get("company", "all")
-        status = request.args.get("status", "all")
-
-        query = Req.query
-
-        if company != "all" and company:
-            query = query.filter(Req.company == company)
-
-        if status != "all" and status:
-            query = query.filter(Req.status == status)
-
-        rows = query.order_by(Req.created_at.desc()).all()
-
-        results = [
-            {
-                "id": r.id,
-                "company": r.company,
-                "region": r.region,
-                "branch_name": r.branch_name,
-                "unit_price": r.unit_price,
-                "volume": r.volume,
-                "vehicle_type": r.vehicle_type,
-                "headcount": r.headcount,
-                "etc": r.etc,
-                "status": r.status,
-                "interview_date": r.interview_date.isoformat() if r.interview_date else None,
-                "created_at": r.created_at.isoformat() if r.created_at else None
-            }
-            for r in rows
-        ]
-
-        return jsonify({"count": len(results), "data": results})
 
 
     return app
