@@ -670,49 +670,48 @@ table tbody tr:hover {
   background: #eef2ff !important;
 }
 
-/* ============================================================
-   🔻 Column Width Optimization (전체 폭 줄임 핵심)
+/* ============================================================ 
+   🔻 Column Width Optimization (최종 튜닝 완료)
    ============================================================ */
 
 /* No */
 .table-compact th:nth-child(1),
 .table-compact td:nth-child(1) {
-  width: 38px;
+  width: 35px;
 }
 
-/* 지역 */
+/* 지역 — 더 줄임 */
 .table-compact th:nth-child(2),
 .table-compact td:nth-child(2) {
-  min-width: 50px;
+  min-width: 42px;
 }
 
-/* 택배사 */
+/* 택배사 — 더 줄임 */
 .table-compact th:nth-child(3),
 .table-compact td:nth-child(3) {
-  min-width: 50px;
+  min-width: 45px;
 }
 
-/* 영업소/대리점명 */
+/* 영업소/대리점명 — 유지 (가독성 중요) */
 .table-compact th:nth-child(4),
 .table-compact td:nth-child(4) {
   min-width: 140px;
 }
 
-/* 단가, 월물량 */
+/* 단가, 월물량 — 그대로 효율적 */
 .table-compact th:nth-child(5),
 .table-compact td:nth-child(5),
 .table-compact th:nth-child(6),
 .table-compact td:nth-child(6) {
-  min-width: 50px !important;  /* 기존 65px → 45px */
+  min-width: 50px !important;
   width: 50px !important;
-  text-align: right;  /* 숫자 정렬 */
+  text-align: right;
 }
 
-
-/* 차종 */
+/* 차종 — 약간 줄임 */
 .table-compact th:nth-child(7),
 .table-compact td:nth-child(7) {
-  min-width: 60px;
+  min-width: 55px;
 }
 
 /* 인원 */
@@ -721,16 +720,17 @@ table tbody tr:hover {
   min-width: 55px;
 }
 
-/* 기타 */
+/* 기타 사항 — 유지 */
 .table-compact th:nth-child(9),
 .table-compact td:nth-child(9) {
   min-width: 100px;
 }
 
-/* 현재상태 */
+/* 현재 상태 — 넓힘 (가장 중요) */
 .table-compact th:nth-child(10),
 .table-compact td:nth-child(10) {
-  min-width: 90px;
+  min-width: 115px;      /* 기존 90px → 115px */
+  width: 115px;
 }
 
 /* 면접일 */
@@ -739,7 +739,7 @@ table tbody tr:hover {
   min-width: 85px;
 }
 
-/* 🔥 상태 변경 (대폭 축소 — “반으로”) */
+/* 🔥 상태 변경 (반으로 축소 유지) */
 .table-compact th:nth-child(12),
 .table-compact td:nth-child(12) {
   width: 95px !important;
@@ -747,7 +747,7 @@ table tbody tr:hover {
   white-space: nowrap !important;
 }
 
-/* 내부 form 요소도 크기 축소 */
+/* 내부 form 요소 크기 */
 .table-compact .cell-input,
 .table-compact .cell-select {
   font-size: 11px !important;
@@ -760,6 +760,7 @@ table tbody tr:hover {
   font-size: 11px !important;
   border-radius: 3px !important;
 }
+
 /* ================================
    Modal Popup (카드형)
 ================================ */
