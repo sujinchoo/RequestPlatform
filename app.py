@@ -1,5 +1,3 @@
-# app.py
-
 from datetime import datetime, date
 from flask import (
     Flask, render_template, request,
@@ -32,14 +30,10 @@ def create_app():
     def login_required(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
-            # (1) 브랜치 계정 로그인
             if "branch_id" in session:
                 return view(*args, **kwargs)
-
-            # (2) 구글 로그인 사용자
             if "google_user_id" in session:
                 return view(*args, **kwargs)
-
             return redirect(url_for("login"))
         return wrapped
 
@@ -52,7 +46,6 @@ def create_app():
             return view(*args, **kwargs)
         return wrapped
 
-
     # =========================================================
     # 🌐 GOOGLE LOGIN BLUEPRINT 등록
     # =========================================================
@@ -63,7 +56,6 @@ def create_app():
         redirect_url="/login/google/authorized"
     )
     app.register_blueprint(google_bp, url_prefix="/login")
-
 
     # =========================================================
     # 임시 관리자 생성
@@ -90,26 +82,19 @@ def create_app():
         except Exception as e:
             return f"Error: {e}"
 
-
     # =========================================================
     # 홈 / 로그인
     # =========================================================
     @app.route("/")
     def home():
-        # 구글 사용자 → request_page
         if "google_user_id" in session:
             return redirect(url_for("request_page"))
-
-        # 기존 브랜치 관리자/지점 계정
         if "branch_id" in session:
             return redirect(url_for("dashboard" if session.get("is_admin") else "request_page"))
-
         return redirect(url_for("login"))
-
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
-        # 구글 사용자는 로그인 페이지 접속 시 바로 service 페이지로 보내기
         if "google_user_id" in session:
             return redirect(url_for("request_page"))
 
@@ -128,12 +113,10 @@ def create_app():
 
         return render_template("login.html")
 
-
     @app.route("/logout")
     def logout():
         session.clear()
         return redirect(url_for("login"))
-
 
     # =========================================================
     # 🟦 GOOGLE LOGIN ROUTE (DB 저장)
@@ -143,7 +126,6 @@ def create_app():
         if not google.authorized:
             return redirect(url_for("google.login"))
 
-        # 사용자 정보 받아오기
         resp = google.get("/oauth2/v2/userinfo")
         info = resp.json()
 
@@ -152,7 +134,6 @@ def create_app():
         name = info.get("name", "")
         profile_img = info.get("picture", "")
 
-        # DB 저장 (users table)
         try:
             result = db.session.execute(
                 text("""
@@ -165,30 +146,25 @@ def create_app():
             )
             db.session.commit()
 
-            # 신규유저
             new_id = result.fetchone()[0] if result.rowcount > 0 else None
 
-            # 기존 유저면 다시 조회
             if not new_id:
                 q = db.session.execute(
                     text("SELECT id FROM users WHERE google_id=:gid"),
                     {"gid": google_id}
                 ).fetchone()
                 new_id = q[0]
-
         except Exception as e:
             print("[GOOGLE LOGIN ERROR]", e)
             flash("구글 로그인 오류", "error")
             return redirect(url_for("login"))
 
-        # 세션 저장
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
         session["is_admin"] = False
 
         return redirect(url_for("request_page"))
-
 
     # =========================================================
     # 요청 등록 페이지
@@ -228,7 +204,6 @@ def create_app():
 
         return render_template("request.html", branch=branch)
 
-
     # =========================================================
     # 공통 통계 함수
     # =========================================================
@@ -238,7 +213,6 @@ def create_app():
         active = total - completed
         return total, active, completed
 
-
     # =========================================================
     # 대시보드 (v1 / v2 / v3)
     # =========================================================
@@ -247,12 +221,10 @@ def create_app():
     @admin_required
     def dashboard():
         total, active, completed = get_stats()
-        return render_template(
-            "dashboard.html",
-            total_cases=total,
-            active_cases=active,
-            completed_cases=completed
-        )
+        return render_template("dashboard.html",
+                               total_cases=total,
+                               active_cases=active,
+                               completed_cases=completed)
 
     @app.route("/dashboard_v2")
     @login_required
@@ -260,13 +232,11 @@ def create_app():
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
-        return render_template(
-            "dashboard_v2.html",
-            reqs=reqs,
-            total_cases=total,
-            active_cases=active,
-            completed_cases=completed
-        )
+        return render_template("dashboard_v2.html",
+                               reqs=reqs,
+                               total_cases=total,
+                               active_cases=active,
+                               completed_cases=completed)
 
     @app.route("/dashboard_v3")
     @login_required
@@ -274,16 +244,14 @@ def create_app():
     def dashboard_v3():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
-        return render_template(
-            "dashboard_v3.html",
-            reqs=reqs,
-            total_cases=total,
-            active_cases=active,
-            completed_cases=completed
-        )
+        return render_template("dashboard_v3.html",
+                               reqs=reqs,
+                               total_cases=total,
+                               active_cases=active,
+                               completed_cases=completed)
 
-        # =========================================================
-    # 📌 요청 데이터 API (대시보드 테이블용)
+    # =========================================================
+    # 📌 요청 데이터 API
     # =========================================================
     @app.route("/api/requests", methods=["GET"])
     @login_required
@@ -302,7 +270,6 @@ def create_app():
 
         rows = query.order_by(Req.created_at.desc()).all()
 
-        # JSON 변환
         results = []
         for r in rows:
             results.append({
@@ -320,14 +287,10 @@ def create_app():
                 "created_at": r.created_at.isoformat() if r.created_at else None,
             })
 
-        return jsonify({
-            "count": len(results),
-            "data": results
-        })
+        return jsonify({"count": len(results), "data": results})
 
-
-       # =========================================================
-    # 📌 상태 변경 API (대시보드 팝업용)
+    # =========================================================
+    # 📌 상태 변경 API
     # =========================================================
     @app.route("/api/update-status", methods=["POST"])
     @login_required
@@ -345,6 +308,7 @@ def create_app():
 
         return jsonify({"success": True})
 
+    return app
 
 
 app = create_app()
