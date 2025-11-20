@@ -148,13 +148,17 @@ def create_app():
     @login_required
     @admin_required
     def dashboard_v2():
-        return render_template("dashboard_v2.html")
-
+        reqs = Req.query.order_by(Req.created_at.desc()).all()
+        return render_template("dashboard_v2.html", reqs=reqs)
+    
+    
     @app.route("/dashboard_v3")
     @login_required
     @admin_required
     def dashboard_v3():
-        return render_template("dashboard_v3.html")
+        reqs = Req.query.order_by(Req.created_at.desc()).all()
+        return render_template("dashboard_v3.html", reqs=reqs)
+
 
 
     # =========================================================
