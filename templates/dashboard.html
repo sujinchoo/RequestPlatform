@@ -203,6 +203,16 @@ function saveStatus() {
         btn.disabled = false;
     });
 }
+/* =========================================================
+   🔵 Modal 닫기 (필수!)
+========================================================= */
+function closeModal() {
+    const modal = document.getElementById("status-modal");
+    if (modal) {
+        modal.classList.add("hidden");
+    }
+}
+  
 
 </script>
 
