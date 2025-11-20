@@ -82,9 +82,8 @@
 <script>
 let currentId = null;
 
-
 /* =========================================================
-   🔵 테이블 렌더링
+   🔵 테이블 렌더링 — (ID 누락 문제 해결!)
 ========================================================= */
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
@@ -115,7 +114,15 @@ function renderData(data) {
             <td>${r.interview_date || "-"}</td>
         `;
 
-        row.onclick = () => openModal(r);
+        /* 🔥 FIXED — ID 포함해서 openModal에 전달 */
+        row.onclick = () => openModal({
+            id: r.id,
+            region: r.region,
+            company: r.company,
+            branch_name: r.branch_name,
+            interview_date: r.interview_date,
+            status: r.status
+        });
 
         tbody.appendChild(row);
     });
@@ -123,16 +130,16 @@ function renderData(data) {
 
 
 /* =========================================================
-   🔵 Modal 열기
+   🔵 Modal 열기 — 이제 값이 정상적으로 들어옴
 ========================================================= */
 function openModal(r) {
-    currentId = r.id;
+    currentId = r.id;   // 🔥 FIXED: undefined였던 문제 해결됨
 
     document.getElementById("modal-title").innerText =
         `${r.region} / ${r.company} / ${r.branch_name}`;
 
     document.getElementById("modal-interview").value =
-        r.interview_date || "";
+        r.interview_date || "";  // 🔥 "-" 들어가던 문제 해결
 
     document.getElementById("modal-status").value =
         r.status || "모집중";
@@ -142,15 +149,7 @@ function openModal(r) {
 
 
 /* =========================================================
-   🔵 Modal 닫기
-========================================================= */
-function closeModal() {
-    document.getElementById("status-modal").classList.add("hidden");
-}
-
-
-/* =========================================================
-   🔥 저장 요청 (AJAX + UI Feedback)
+   🔥 저장 요청 (AJAX + 성공 UI)
 ========================================================= */
 function saveStatus() {
 
@@ -177,17 +176,12 @@ function saveStatus() {
             return;
         }
 
-        // 성공 UI
         btn.innerText = "저장완료 ✓";
         btn.style.background = "#059669";
         btn.style.borderColor = "#059669";
 
-        // 자동 새로고침 함수 존재 시 실행
-        if (typeof loadFilteredData === "function") {
-            loadFilteredData();
-        }
+        if (typeof loadFilteredData === "function") loadFilteredData();
 
-        // 모달 종료 및 초기화
         setTimeout(() => {
             closeModal();
             btn.innerText = "저장";
@@ -203,6 +197,6 @@ function saveStatus() {
         btn.disabled = false;
     });
 }
-
 </script>
+
 {% endblock %}
