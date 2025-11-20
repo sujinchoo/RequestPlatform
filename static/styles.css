@@ -677,7 +677,9 @@ table tbody tr:hover {
 /* No */
 .table-compact th:nth-child(1),
 .table-compact td:nth-child(1) {
-  width: 35px;
+  min-width: 30px;
+  width: 30px;
+  max-width: 35px;
 }
 
 /* 지역 — 기존 42px → 30px */
@@ -698,7 +700,7 @@ table tbody tr:hover {
 .table-compact th:nth-child(4),
 .table-compact td:nth-child(4) {
   min-width: 80px;
-  width: 110px;
+  width: 105px;
   max-width: 120px;
 }
 
