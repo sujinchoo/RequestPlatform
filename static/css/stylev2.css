@@ -115,3 +115,13 @@
     overflow-x: auto !important;   /* 모바일에서만 가로 스크롤 허용 */
   }
 }
+/* ===============================
+   🔥 테이블 헤더 고정 (v1과 동일)
+   =============================== */
+.table-v2 thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f3f4f6 !important;
+}
+
