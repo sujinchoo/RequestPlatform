@@ -22,23 +22,7 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- 🔥 필터 추가 -->
-  <div class="filter-bar">
-      <select id="filter-company" class="filter-select">
-          <option value="all">전체 택배사</option>
-          {% for c in company_list %}
-          <option value="{{ c }}">{{ c }}</option>
-          {% endfor %}
-      </select>
-
-      <select id="filter-status" class="filter-select">
-          <option value="all">전체 상태</option>
-          <option value="모집중">모집중</option>
-          <option value="선탑진행중">선탑진행중</option>
-          <option value="면접예정">면접예정</option>
-          <option value="배차완료">배차완료</option>
-      </select>
-  </div>
+ 
 
   <!-- 🔥 통계 박스 -->
   <div class="stats-box">
