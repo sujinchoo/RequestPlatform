@@ -443,7 +443,17 @@ def create_app():
         except Exception as e:
             db.session.rollback()
             return jsonify({"success": False, "error": str(e)}), 500
-
+    # =========================================================
+    # DB에서 택배사 목록 자동 수집 함수
+    # =========================================================
+    def get_company_list():
+        try:
+            rows = db.session.query(Req.company).distinct().all()
+            return [c[0] for c in rows if c[0]]
+        except Exception as e:
+            print("COMPANY LIST ERROR:", e)
+            return []
+    
     
     return app
 
