@@ -1,14 +1,11 @@
 {% extends "base.html" %}
 {% set disable_filter = true %}
 
-
 {% block title %}오늘의 물류 요청 현황 — Demo{% endblock %}
 {% block header_title %}SAAS Demo Dashboard{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
 {% block extra_css %}
-
-
 <style>
 /* ------------------------------
    SaaS Demo Style
@@ -80,7 +77,7 @@
   margin-top: 10px;
 }
 
-/* 색상 진행률 — CSS 0~100% 완벽 대응 */
+/* 색상 진행률 */
 .progress-inner {
   height: 12px;
   background: linear-gradient(
@@ -122,9 +119,7 @@
 
 <div class="demo-container">
 
-  <!-- ------------------------ -->
   <!-- 오늘의 통계 -->
-  <!-- ------------------------ -->
   <div class="demo-section">
     <div class="demo-title">오늘의 통계</div>
     <div class="demo-sub">요청 처리 현황 요약</div>
@@ -153,9 +148,7 @@
     </div>
   </div>
 
-  <!-- ------------------------ -->
   <!-- 상태 진행률 -->
-  <!-- ------------------------ -->
   <div class="demo-section">
     <div class="demo-title">상태 진행률</div>
     <div class="demo-sub">전체 요청 대비 상태별 비중</div>
@@ -167,13 +160,11 @@
     </div>
   </div>
 
-  <!-- ------------------------ -->
-  <!-- 최근 요청 -->
-  <!-- ------------------------ -->
+  <!-- 최근 5건 -->
   <div class="demo-section">
     <div class="demo-title">최근 요청 5건</div>
 
-    <div class="recent-box">
+    <div class="recent-box" id="recent-box">
       {% for r in recent_reqs %}
         <div class="recent-item">
           <strong>{{ r.company }}</strong> — {{ r.branch_name }}
@@ -190,16 +181,17 @@
 
 {% block extra_js %}
 <script>
-// API 호출해서 recent 데이터 넣기
 async function loadRecent() {
     try {
         const res = await fetch('/api/requests?company=all&status=all');
-        const data = await res.json();
+        const json = await res.json();
 
-        const box = document.querySelector('.recent-box');
-        box.innerHTML = '';
+        const list = json.data;   // 핵심
 
-        data.slice(0, 5).forEach(r => {
+        const box = document.getElementById('recent-box');
+        box.innerHTML = "";
+
+        list.slice(0, 5).forEach(r => {
             box.insertAdjacentHTML("beforeend", `
                 <div class="recent-item">
                     <strong>${r.company}</strong> — ${r.branch_name}
@@ -208,8 +200,8 @@ async function loadRecent() {
             `);
         });
 
-    } catch (e) {
-        console.error("Demo recent load error:", e);
+    } catch (err) {
+        console.error("Demo recent load error:", err);
     }
 }
 
