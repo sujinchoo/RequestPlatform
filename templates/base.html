@@ -155,27 +155,33 @@
 
         const params = new URLSearchParams({ company, status });
 
-        // URL 반영
+        // URL 적용
         history.pushState({}, "", `?${params.toString()}`);
 
         fetch(`/api/requests?${params.toString()}`)
           .then(res => res.json())
           .then(json => {
-              renderData(json.data);  // 각 페이지에서 구현
+
+              /* 🔥 페이지별 렌더링 함수 분기 */
+              {% if request.endpoint == 'dashboard_v3' %}
+                  renderCards(json.data);
+              {% else %}
+                  renderData(json.data);
+              {% endif %}
+
           })
           .catch(err => console.error("API ERROR:", err));
     }
 
-    // 이벤트 감지
+    // 이벤트 등록
     document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
     document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
-    // 페이지 로드 시 자동 적용
+    // 처음 로드시
     window.addEventListener("load", () => {
-        if (!document.getElementById("filter-company")) return;  // 관리자 아닐 때
+        if (!document.getElementById("filter-company")) return;
 
         const params = new URLSearchParams(window.location.search);
-
         const c = params.get("company");
         const s = params.get("status");
 
@@ -184,7 +190,8 @@
 
         loadFilteredData();
     });
-  </script>
+</script>
+
 
   {% endif %}
   <!-- ====================================================== -->
