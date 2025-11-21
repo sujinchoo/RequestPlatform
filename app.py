@@ -255,12 +255,13 @@ def create_app():
     @admin_required
     def dashboard():
         total, active, completed = get_stats()
-        # 🔥 DB에서 회사 목록 자동 가져오기
-        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
+      
         return render_template("dashboard.html",
                                total_cases=total,
                                active_cases=active,
-                               completed_cases=completed)
+                               completed_cases=completed,
+                              company_list=get_company_list()
+                              )
 
     @app.route("/dashboard_v2")
     @login_required
@@ -268,13 +269,14 @@ def create_app():
     def dashboard_v2():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
-        # 🔥 DB에서 회사 목록 자동 가져오기
-        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
+     
         return render_template("dashboard_v2.html",
                                reqs=reqs,
                                total_cases=total,
                                active_cases=active,
-                               completed_cases=completed)
+                               completed_cases=completed,
+                               company_list=get_company_list()
+                              )
 
     @app.route("/dashboard_v3")
     @login_required
@@ -282,13 +284,14 @@ def create_app():
     def dashboard_v3():
         reqs = Req.query.order_by(Req.created_at.desc()).all()
         total, active, completed = get_stats()
-        # 🔥 DB에서 회사 목록 자동 가져오기
-        companies = [row.company for row in Req.query.with_entities(Req.company).distinct()]
+    
         return render_template("dashboard_v3.html",
                                reqs=reqs,
                                total_cases=total,
                                active_cases=active,
-                               completed_cases=completed)
+                               completed_cases=completed,
+                              company_list=get_company_list()
+                              )
 
     # =========================================================
     # 요청 리스트 API (필터)
