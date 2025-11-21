@@ -73,12 +73,18 @@
   margin-top: 10px;
 }
 
+/* 🔥 CSS Color-stop 문법 완전 정리됨 */
 .progress-inner {
   height: 12px;
-  background: linear-gradient(90deg,
+  background: linear-gradient(
+    to right,
+    #4ade80 0%,
     #4ade80 {{ status_wait_pct }}%,
+    #38bdf8 {{ status_wait_pct }}%,
     #38bdf8 {{ status_pre_pct }}%,
+    #c084fc {{ status_pre_pct }}%,
     #c084fc {{ status_interview_pct }}%,
+    #f87171 {{ status_interview_pct }}%,
     #f87171 {{ status_done_pct }}%
   );
 }
@@ -86,4 +92,71 @@
 /* 최근 요청 */
 .recent-box {
   background: #141a2a;
-  padding:
+  padding: 20px;
+  border-radius: 12px;
+  border: 1px solid #1f2937;
+  margin-top: 20px;
+  color: #e5e7eb;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="demo-container">
+
+  <div class="demo-section">
+    <div class="demo-title">오늘의 통계</div>
+    <div class="demo-sub">요청 처리 현황 요약</div>
+
+    <div class="card-grid">
+      <div class="stat-card">
+        <div class="count">{{ total_count }}</div>
+        <div class="label">총 요청 수</div>
+      </div>
+      <div class="stat-card">
+        <div class="count">{{ status_wait }}</div>
+        <div class="label">모집중</div>
+      </div>
+      <div class="stat-card">
+        <div class="count">{{ status_pre }}</div>
+        <div class="label">선탑 진행중</div>
+      </div>
+      <div class="stat-card">
+        <div class="count">{{ status_interview }}</div>
+        <div class="label">면접 예정</div>
+      </div>
+      <div class="stat-card">
+        <div class="count">{{ status_done }}</div>
+        <div class="label">배차 완료</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <div class="demo-title">상태 진행률</div>
+    <div class="demo-sub">전체 요청 대비 진행률 시각화</div>
+
+    <div class="progress-container">
+      <div class="progress-bar">
+        <div class="progress-inner"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="demo-section">
+    <div class="demo-title">최근 요청 5건</div>
+
+    <div class="recent-box">
+      {% for r in recent_reqs %}
+        <div>
+          <strong>{{ r.company }}</strong> — {{ r.branch }}  
+          <span style="color:#38bdf8">{{ r.status }}</span>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}
