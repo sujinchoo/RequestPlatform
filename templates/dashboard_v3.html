@@ -22,7 +22,25 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
-  <!-- 🔥 추가된 통계 박스 -->
+  <!-- 🔥 필터 추가 -->
+  <div class="filter-bar">
+      <select id="filter-company" class="filter-select">
+          <option value="all">전체 택배사</option>
+          {% for c in company_list %}
+          <option value="{{ c }}">{{ c }}</option>
+          {% endfor %}
+      </select>
+
+      <select id="filter-status" class="filter-select">
+          <option value="all">전체 상태</option>
+          <option value="모집중">모집중</option>
+          <option value="선탑진행중">선탑진행중</option>
+          <option value="면접예정">면접예정</option>
+          <option value="배차완료">배차완료</option>
+      </select>
+  </div>
+
+  <!-- 🔥 통계 박스 -->
   <div class="stats-box">
     <span class="stat total">전체: {{ total_cases }}개</span>
     <span class="stat active">진행중: {{ active_cases }}개</span>
@@ -30,48 +48,46 @@
   </div>
 
   <div class="card-list" id="card-list">
-    {% for r in reqs %}
-    <div class="req-card" onclick="openModal({
-        id: '{{ r.id }}',
-        region: '{{ r.region }}',
-        company: '{{ r.company }}',
-        branch_name: '{{ r.branch_name }}',
-        unit_price: '{{ r.unit_price }}',
-        volume: '{{ r.volume }}',
-        vehicle_type: '{{ r.vehicle_type or "-" }}',
-        headcount: '{{ r.headcount }}',
-        etc: `{{ r.etc or "-" }}`,
-        status: '{{ r.status }}',
-        interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
-        created_at: '{{ r.created_at.isoformat() }}'
-    })">
+      {% for r in reqs %}
+      <div class="req-card" onclick="openModal({
+          id: '{{ r.id }}',
+          region: '{{ r.region }}',
+          company: '{{ r.company }}',
+          branch_name: '{{ r.branch_name }}',
+          unit_price: '{{ r.unit_price }}',
+          volume: '{{ r.volume }}',
+          vehicle_type: '{{ r.vehicle_type or "-" }}',
+          headcount: '{{ r.headcount }}',
+          etc: `{{ r.etc or "-" }}`,
+          status: '{{ r.status }}',
+          interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
+          created_at: '{{ r.created_at.isoformat() }}'
+      })">
 
-      <div class="req-card-header">
-        <div>
-          <span class="card-region">{{ r.region }}</span>
-          <span class="card-company">{{ r.company }}</span>
+        <div class="req-card-header">
+          <div>
+            <span class="card-region">{{ r.region }}</span>
+            <span class="card-company">{{ r.company }}</span>
+          </div>
+          <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
         </div>
-        <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+
+        <div class="req-card-body">
+          <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
+          <div class="row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }} 원</div></div>
+          <div class="row"><span>월 물량</span><div>{{ "{:,}".format(r.volume) }} 건</div></div>
+          <div class="row"><span>차종</span><div>{{ r.vehicle_type or "-" }}</div></div>
+          <div class="row"><span>인원</span><div>{{ r.headcount }} 명</div></div>
+          <div class="row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
+          <div class="row"><span>면접일</span><div>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</div></div>
+        </div>
+
+        <div class="req-card-footer">
+          등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
+        </div>
+
       </div>
-
-      <div class="req-card-body">
-
-        <div class="row"><span>영업소/대리점</span><div>{{ r.branch_name }}</div></div>
-        <div class="row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }} 원</div></div>
-        <div class="row"><span>월 물량</span><div>{{ "{:,}".format(r.volume) }} 건</div></div>
-        <div class="row"><span>차종</span><div>{{ r.vehicle_type or "-" }}</div></div>
-        <div class="row"><span>인원</span><div>{{ r.headcount }} 명</div></div>
-        <div class="row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
-        <div class="row"><span>면접일</span><div>{{ r.interview_date.isoformat() if r.interview_date else "-" }}</div></div>
-
-      </div>
-
-      <div class="req-card-footer">
-        등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
-      </div>
-
-    </div>
-    {% endfor %}
+      {% endfor %}
   </div>
 
 </section>
@@ -109,7 +125,67 @@
 <script>
 let currentId = null;
 
-// 🔵 Modal 열기
+/* ==========================================================
+   🟦 1) 카드 렌더링 함수 (v1,v2와 동일)
+   ========================================================== */
+function renderCards(list) {
+    const container = document.getElementById("card-list");
+    container.innerHTML = "";
+
+    list.forEach(r => {
+        const html = `
+        <div class="req-card" onclick="openModal(${JSON.stringify(r).replace(/"/g, '&quot;')})">
+            <div class="req-card-header">
+                <div>
+                    <span class="card-region">${r.region}</span>
+                    <span class="card-company">${r.company}</span>
+                </div>
+                <span class="tag-status tag-${r.status}">${r.status}</span>
+            </div>
+
+            <div class="req-card-body">
+                <div class="row"><span>영업소/대리점</span><div>${r.branch_name}</div></div>
+                <div class="row"><span>단가</span><div>${r.unit_price.toLocaleString()} 원</div></div>
+                <div class="row"><span>월 물량</span><div>${r.volume.toLocaleString()} 건</div></div>
+                <div class="row"><span>차종</span><div>${r.vehicle_type || "-"}</div></div>
+                <div class="row"><span>인원</span><div>${r.headcount} 명</div></div>
+                <div class="row"><span>기타</span><div>${r.etc || "-"}</div></div>
+                <div class="row"><span>면접일</span><div>${r.interview_date || "-"}</div></div>
+            </div>
+
+            <div class="req-card-footer">
+                등록일: ${r.created_at.substring(0,16).replace("T"," ")}
+            </div>
+        </div>`;
+        container.insertAdjacentHTML("beforeend", html);
+    });
+}
+
+/* ==========================================================
+   🟧 2) 필터 기능 (v2와 동일)
+   ========================================================== */
+function loadFilteredData() {
+    const company = document.getElementById("filter-company").value;
+    const status = document.getElementById("filter-status").value;
+
+    fetch(`/api/requests?company=${company}&status=${status}`)
+        .then(res => res.json())
+        .then(json => {
+            renderCards(json.data);
+        })
+        .catch(err => console.error("API ERROR:", err));
+}
+
+/* ==========================================================
+   🟩 필터 onchange 이벤트 연결
+   ========================================================== */
+document.getElementById("filter-company").onchange = loadFilteredData;
+document.getElementById("filter-status").onchange = loadFilteredData;
+
+
+/* ==========================================================
+   🟦 Modal 관련
+   ========================================================== */
 function openModal(r) {
     currentId = r.id;
 
@@ -125,12 +201,13 @@ function openModal(r) {
     document.getElementById("status-modal").classList.remove("hidden");
 }
 
-// 🔵 Modal 닫기
 function closeModal() {
     document.getElementById("status-modal").classList.add("hidden");
 }
 
-// 🔵 저장
+/* ==========================================================
+   상태 저장
+   ========================================================== */
 function saveStatus() {
 
     const btn = document.querySelector(".modal-save-btn");
@@ -143,7 +220,6 @@ function saveStatus() {
         status: document.getElementById("modal-status").value
     };
 
-    // 🔥 URL 정확히 수정 (v2와 동일)
     fetch("/api/update-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -169,11 +245,7 @@ function saveStatus() {
             btn.disabled = false;
             btn.style.background = "#2563eb";
 
-            try {
-                if (typeof loadFilteredData === "function") {
-                    loadFilteredData();
-                }
-            } catch (_) {}
+            loadFilteredData();
         }, 800);
     })
     .catch(err => {
@@ -183,6 +255,7 @@ function saveStatus() {
         btn.disabled = false;
     });
 }
+
 </script>
 
 {% endblock %}
