@@ -58,7 +58,12 @@
             요청 현황(본사) 대시보드 v2
           </a>
           -->
-                    <a href="{{ url_for('dashboard_v3') }}"
+          <a href="{{ url_for('dashboard_demo') }}"
+             class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
+             Demo Dashboard
+          </a>
+                  
+        <a href="{{ url_for('dashboard_v3') }}"
              class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
             카드형 대시보드 v3
           </a>
