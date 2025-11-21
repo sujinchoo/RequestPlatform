@@ -1,3 +1,9 @@
+/* ============================================================
+   🌈 SaaS Modern UI — Full Stylesheet
+   Clean, Pastel, Soft Shadow, Smooth UX
+   ============================================================ */
+
+
 /* ===== 기본 공통 ===== */
 * {
   box-sizing: border-box;
@@ -7,7 +13,7 @@
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-  background: #e5e7eb; /* 엑셀 배경처럼 연한 회색 */
+  background: #f3f5f9; /* SaaS 느낌 연한 그레이 */
   color: #111827;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
@@ -19,19 +25,22 @@ body {
   padding: 16px 14px 40px;
 }
 
-/* ===== 상단 헤더 (엑셀 리본 상단 느낌) ===== */
+
+/* ===== 상단 헤더 (SaaS Ribbon) ===== */
 .top-header {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: #f3f4f6;
-  border-bottom: 1px solid #d4d4d8;
+  z-index: 20;
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  backdrop-filter: blur(6px);
 }
 
 .header-inner {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 8px 14px;
+  padding: 10px 14px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -47,14 +56,14 @@ body {
 .logo-square {
   width: 14px;
   height: 14px;
-  border-radius: 2px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  box-shadow: 0 0 0 1px #15803d;
+  border-radius: 3px;
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.6);
 }
 
 .logo-square-green {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  box-shadow: 0 0 0 1px #1d4ed8;
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.6);
 }
 
 .logo-text {
@@ -63,6 +72,7 @@ body {
   color: #111827;
 }
 
+/* 메뉴 */
 .nav {
   display: flex;
   gap: 6px;
@@ -71,14 +81,20 @@ body {
 }
 
 .nav-link {
-  font-size: 11px;
-  padding: 4px 10px;
+  font-size: 12px;
+  padding: 5px 12px;
   border-radius: 999px;
-  border: 1px solid #d4d4d8;
+  border: 1px solid #e0e3e7;
   background: #ffffff;
   color: #4b5563;
   text-decoration: none;
   white-space: nowrap;
+  transition: all .15s ease;
+}
+
+.nav-link:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
 }
 
 .nav-link.active {
@@ -88,22 +104,22 @@ body {
   font-weight: 600;
 }
 
-/* ===== 메인 / 시트 ===== */
 
+/* ===== 메인 / 시트 ===== */
 .main {
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 10px;
+  margin-top: 12px;
 }
 
-/* 엑셀 시트 같은 흰 바탕 박스 */
+/* 엑셀 시트 같은 흰 바탕 박스 → SaaS 버전 */
 .sheet {
   background: #ffffff;
-  border-radius: 4px;
-  border: 1px solid #d4d4d8;
-  padding: 12px 12px 10px;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+  border-radius: 10px;
+  border: 1px solid #e3e6ec;
+  padding: 15px 16px 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
 }
 
 .sheet-hero {
@@ -111,41 +127,43 @@ body {
 }
 
 .hero-title {
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   margin-bottom: 4px;
 }
 
 .hero-sub {
-  font-size: 12px;
-  color: #4b5563;
+  font-size: 13px;
+  color: #64748b;
 }
 
+
+/* ===== Section Title ===== */
 .sheet-title-row {
   display: flex;
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px;
 }
 
 .sheet-title {
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .sheet-sub {
-  font-size: 11px;
+  font-size: 12px;
   color: #6b7280;
 }
 
-/* ===== 폼 / 그리드 ===== */
 
+/* ===== Form / Grid ===== */
 .grid-row {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 12px;
+  margin-bottom: 10px;
 }
 
 @media (max-width: 640px) {
@@ -157,7 +175,7 @@ body {
 .field {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 4px;
 }
 
 .field-full {
@@ -165,86 +183,91 @@ body {
 }
 
 label {
-  font-size: 11px;
-  color: #4b5563;
+  font-size: 12px;
+  color: #475569;
 }
 
+/* 입력 요소 */
 input,
 select,
 textarea {
-  border-radius: 3px;
-  border: 1px solid #d4d4d8;
-  padding: 6px 7px;
-  font-size: 12px;
+  border-radius: 6px;
+  border: 1px solid #d4d7dd;
+  padding: 8px 10px;
+  font-size: 13px;
   color: #111827;
   background: #ffffff;
-  outline: none;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  transition: border .15s, box-shadow .15s;
 }
 
 input:focus,
 select:focus,
 textarea:focus {
   border-color: #2563eb;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
 textarea {
-  min-height: 60px;
+  min-height: 70px;
   resize: vertical;
 }
 
-/* 엑셀 셀 느낌의 간단 인풋/셀 */
+
+/* 간단한 셀 스타일 */
 .cell-input,
 .cell-select {
   width: 100%;
-  padding: 4px 6px;
-  font-size: 11px;
-  border-radius: 2px;
-  border: 1px solid #d4d4d8;
+  padding: 6px 8px;
+  font-size: 12px;
+  border-radius: 5px;
+  border: 1px solid #cdd1d6;
   background: #ffffff;
 }
 
-/* 버튼 */
+
+/* ===== 버튼 ===== */
 .btn-primary {
   width: 100%;
-  margin-top: 6px;
-  border-radius: 3px;
-  padding: 8px;
+  margin-top: 8px;
+  border-radius: 6px;
+  padding: 10px;
   border: 1px solid #2563eb;
-  background: #2563eb;
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
   color: #ffffff;
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
+  transition: all .18s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  opacity: .93;
 }
 
 .btn-primary:active {
   transform: translateY(1px);
+  opacity: .88;
 }
 
-/* 힌트 텍스트 */
-.hint {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 6px;
-}
 
-/* ===== 최근 등록 리스트 (index 아래쪽) ===== */
-
+/* ===== 최근 등록 리스트 ===== */
 .recent-list {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  font-size: 11px;
+  font-size: 12px;
 }
 
 .recent-row {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px 6px;
-  border: 1px solid #e5e7eb;
-  background: #f9fafb;
+  gap: 6px;
+  padding: 6px 8px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  border-radius: 6px;
 }
 
 @media (max-width: 768px) {
@@ -253,527 +276,151 @@ textarea {
   }
 }
 
-/* ===== 테이블 (엑셀 시트 느낌) ===== */
 
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-
-thead {
-  background: #f3f4f6;
-  border-bottom: 2px solid #d4d4d8;
-}
-
-th,
-td {
-  border: 1px solid #d4d4d8;
-  padding: 5px 6px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  font-weight: 500;
-  color: #374151;
-}
-
-tbody tr:nth-child(even) {
-  background: #f9fafb;
-}
-
-/* 브랜치 / 상태 태그 */
-.badge-branch {
-  display: inline-block;
-  margin-top: 2px;
-  padding: 2px 5px;
-  border-radius: 999px;
-  border: 1px solid #d4d4d8;
-  background: #f9fafb;
-  font-size: 10px;
-  color: #4b5563;
-}
-
-.tag-status {
-  display: inline-block;
-  padding: 2px 6px;
-  border-radius: 999px;
-  border: 1px solid #d4d4d8;
-  font-size: 10px;
-}
-
-/* 상태별 색상 (살짝만 강조, 엑셀 조건부서식 느낌) */
-.tag-모집중 {
-  background: #ffffff;
-  color: #111827;
-}
-
-.tag-선탑진행중 {
-  background: #dbeafe;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
-}
-
-.tag-면접예정 {
-  background: #fef9c3;
-  color: #b45309;
-  border-color: #fde68a;
-}
-
-.tag-배차완료 {
-  background: #dcfce7;
-  color: #166534;
-  border-color: #bbf7d0;
-}
-
-/* ===== 푸터 ===== */
-
-.footer {
-  margin-top: 16px;
-  font-size: 10px;
-  color: #6b7280;
-  text-align: center;
-}
-/* TPR System banner */
-.tpr-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #e8f3ff;          /* 연한 파스텔 블루 */
-  border: 1px solid #d4e4ff;
-  margin-bottom: 16px;
-}
-
-.tpr-banner-img {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-}
-
-.tpr-banner-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.tpr-banner-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #2563eb;               /* 살짝 진한 파란색 포인트 */
-}
-
-.tpr-banner-sub {
-  font-size: 12px;
-  color: #4b5563;               /* 중간 톤 그레이 */
-}
-
-/* 모바일에서 좌우 여백 조금 줄이기 */
-@media (max-width: 480px) {
-  .tpr-banner {
-    padding: 8px 10px;
-  }
-  .tpr-banner-title {
-    font-size: 15px;
-  }
-  .tpr-banner-img {
-    width: 38px;
-    height: 38px;
-  }
-}
-/* 🔹 가로 스크롤 전체 래퍼 */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* 🔹 테이블 컴팩트 모드 (행 간격 줄임) */
-.table-compact th,
-.table-compact td {
-  padding: 4px 6px !important;
-  font-size: 12px !important;
-  line-height: 1.2 !important;
-}
-
-.table-compact .badge-branch {
-  display: inline-block;
-  padding: 2px 6px;
-  background: #eef2ff;
-  border-radius: 6px;
-  font-size: 11px;
-  color: #4f46e5;
-}
-
-.table-compact .tag-status {
-  padding: 2px 8px;
-  font-size: 11px;
-  border-radius: 8px;
-}
-
-.table-compact .cell-input,
-.table-compact .cell-select {
-  padding: 2px 4px;
-  font-size: 11px;
-  height: 26px;
-}
-
-
-/*2025.11.19 수정 */
-/* 🔥 글자 잘림 방지 (ellipsis 제거 핵심) */
-th, td {
-  white-space: normal !important;
-  word-break: keep-all;  /* 한국어 단어 깨짐 방지 */
-}
-
-/* 🔥 엑셀처럼 테이블 펼치기 (모바일은 가로 스크롤) */
-table {
-  min-width: 1200px; /* 또는 1400px, 필요하면 조정 */
-}
-
-
-/* ===========================
-   Dashboard v3 — 카드 리스트 UI
-   =========================== */
-
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.req-card {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.req-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.card-region {
-  background: #eef2ff;
-  color: #4338ca;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
-.card-company {
-  background: #f0fdf4;
-  color: #166534;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-/* 카드 본문 row */
-.req-card-body .row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 12px;
-}
-
-.req-card-body .row span {
-  width: 90px;
-  font-weight: 600;
-  color: #374151;
-}
-
-/* 입력 박스 */
-.card-input, .card-select {
-  width: 160px;
-  padding: 4px 6px;
-  font-size: 12px;
-  border-radius: 4px;
-  border: 1px solid #d4d4d8;
-}
-
-.req-card-footer {
-  margin-top: 12px;
-  font-size: 11px;
-  color: #6b7280;
-  text-align: right;
-}
-
-/* 모바일 UI */
-@media (max-width: 640px) {
-  .req-card-body .row {
-    flex-direction: column;
-    gap: 4px;
-  }
-  .req-card-body .row span {
-    width: 100%;
-  }
-  .card-input, .card-select {
-    width: 100%;
-  }
-}
-
-/* ===============================
-   🔵 Dashboard V2 자동 폭 조절 테이블
-   =============================== */
-
-.table-responsive-auto {
-  width: 100%;
-  overflow-x: hidden;   /* 스크롤 없음 */
-}
-
-.table-auto {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;   /* 모든 컬럼 자동 폭 */
-}
-
-/* 공통 */
-.table-auto th,
-.table-auto td {
-  border: 1px solid #d4d4d8;
-  padding: 6px 8px;
-  font-size: 12px;
-  white-space: nowrap;      /* 줄바꿈 금지 */
-  overflow: hidden;
-  text-overflow: ellipsis;  /* 그래도 넘치면 ... */
-}
-
-/* ✨ 주요 컬럼 최소 너비 설정 */
-.table-auto th:nth-child(1), /* No */
-.table-auto td:nth-child(1) {
-  width: 40px; 
-}
-
-.table-auto th:nth-child(2), /* 지역 */
-.table-auto td:nth-child(2) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(3), /* 택배사 */
-.table-auto td:nth-child(3) {
-  min-width: 90px;
-}
-
-.table-auto th:nth-child(4), /* 영업소/대리점명 */
-.table-auto td:nth-child(4) {
-  min-width: 150px;
-}
-
-.table-auto th:nth-child(5),
-.table-auto td:nth-child(5) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(6),
-.table-auto td:nth-child(6) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(7),
-.table-auto td:nth-child(7) {
-  min-width: 80px;
-}
-
-.table-auto th:nth-child(8),
-.table-auto td:nth-child(8) {
-  min-width: 55px;
-}
-
-.table-auto th:nth-child(9),
-.table-auto td:nth-child(9) {
-  min-width: 120px;
-}
-
-.table-auto th:nth-child(10), /* 현재 상태 */
-.table-auto td:nth-child(10) {
-  min-width: 80px;
-}
-
-.table-auto th:nth-child(11), /* 면접일 */
-.table-auto td:nth-child(11) {
-  min-width: 90px;
-}
-
-
-/* 🔥 저장 버튼 있는 마지막 컬럼은 절대 짤리면 안됨 */
-.table-auto th:nth-child(12),
-.table-auto td:nth-child(12) {
-  min-width: 120px;
-  width: 120px;
-  white-space: nowrap;
-}
-/* ==========================================
-   🔵 v1 — Row Hover Highlight (Excel-like)
-   ========================================== */
-
-table tbody tr:hover {
-  background: #eef2ff !important;   /* 연한 블루 하이라이트 */
-  transition: background 0.15s ease-in-out;
-}
-
-/* ============================================================
-   🔥 V1 DASHBOARD FINAL PATCH (2025.11.20)
-   Compact + Readability + Column Optimization
-   ============================================================ */
-
-/* 전체 wrapper는 그대로 두지만 padding 약간 줄임 */
+/* ===== 테이블 ===== */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
   padding-bottom: 4px;
 }
 
-/* v1 컴팩트 테이블 핵심 설정 */
-.table-compact {
-  width: 100% !important;
-  min-width: 1100px !important; /* 기존 1200~1400보다 살짝 줄임 */
+table {
+  width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* 모든 컬럼 자동 비율로 */
-  font-size: 11px;
+  font-size: 12px;
 }
 
-/* 공통 셀 스타일 (높이 감소) */
-.table-compact th,
-.table-compact td {
-  padding: 4px 6px !important;
-  line-height: 1.25 !important;
-  white-space: normal !important; /* 긴 글 자동 줄바꿈 */
-  word-break: break-word !important;
+thead {
+  background: rgba(248,250,252,0.9);
+  border-bottom: 2px solid #e2e8f0;
+  backdrop-filter: blur(4px);
+}
+
+th,
+td {
+  border: 1px solid #e2e6ea;
+  padding: 6px 8px;
+  text-align: left;
   vertical-align: middle;
 }
 
-/* 헤더 스타일 유지 + 컴팩트 */
-.table-compact thead tr {
-  background: #f3f4f6;
+th {
   font-weight: 600;
-  height: 32px;
+  color: #334155;
 }
 
-/* 행 stripe + hover 유지 */
-.table-compact tbody tr:nth-child(even) {
-  background: #f9fafb !important;
+tbody tr:nth-child(even) {
+  background: #f8fafc;
 }
-.table-compact tbody tr:hover {
+
+tbody tr:hover {
   background: #eef2ff !important;
+  transition: background 0.15s ease-in-out;
 }
 
-/* ============================================================ 
-   🔻 Column Width Optimization (지역/택배사 35% 축소 + 상태 확장)
+/* 상태 태그 */
+.tag-status {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.tag-모집중 { background: #ffffff; color: #111827; }
+.tag-선탑진행중 { background: #dbeafe; color: #1d4ed8; border-color: #bfdbfe; }
+.tag-면접예정 { background: #fef9c3; color: #b45309; border-color: #fde68a; }
+.tag-배차완료 { background: #dcfce7; color: #166534; border-color: #bbf7d0; }
+
+
+/* ===== Footer ===== */
+.footer {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #94a3b8;
+  text-align: center;
+}
+
+
+/* ============================================================
+   Dashboard v3 — 카드 리스트 SaaS 스타일
    ============================================================ */
-
-/* No */
-.table-compact th:nth-child(1),
-.table-compact td:nth-child(1) {
-  min-width: 30px;
-  width: 30px;
-  max-width: 35px;
+.card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/* 지역 — 기존 42px → 30px */
-.table-compact th:nth-child(2),
-.table-compact td:nth-child(2) {
-  min-width: 40px;
-  width: 42px;
-  }
-
-/* 택배사 — 기존 45px → 30px */
-.table-compact th:nth-child(3),
-.table-compact td:nth-child(3) {
-  min-width: 40px;
-  width: 42px;
+.req-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 16px;
+  border: 1px solid #e2e6ea;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: all .18s ease;
 }
 
-/* 영업소/대리점명 */
-.table-compact th:nth-child(4),
-.table-compact td:nth-child(4) {
-  min-width: 80px;
-  width: 105px;
-  max-width: 120px;
+.req-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
-/* 단가, 월물량 */
-.table-compact th:nth-child(5),
-.table-compact td:nth-child(5),
-.table-compact th:nth-child(6),
-.table-compact td:nth-child(6) {
-  min-width: 50px !important;
-  width: 50px !important;
+.req-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.card-region {
+  background: #eef2ff;
+  color: #4338ca;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+  margin-right: 6px;
+}
+
+.card-company {
+  background: #f0fdf4;
+  color: #166534;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 8px;
+}
+
+.req-card-body .row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 6px;
+  font-size: 13px;
+}
+
+.req-card-body .row span {
+  width: 100px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.req-card-footer {
+  margin-top: 12px;
+  font-size: 12px;
+  color: #6b7280;
   text-align: right;
 }
 
-/* 차종 */
-.table-compact th:nth-child(7),
-.table-compact td:nth-child(7) {
-  min-width: 55px;
-  width: 80px;
-}
-
-/* 인원 */
-.table-compact th:nth-child(8),
-.table-compact td:nth-child(8) {
-  min-width: 55px;
-}
-
-/* 기타 */
-.table-compact th:nth-child(9),
-.table-compact td:nth-child(9) {
-  min-width: 100px;
-  width: 110px
-}
-
-/* 현재 상태 — 기존 115px → 120px */
-.table-compact th:nth-child(10),
-.table-compact td:nth-child(10) {
-  min-width: 120px;
-  width: 125px;
-  max-width: 130px;
-}
-
-/* 면접일 */
-.table-compact th:nth-child(11),
-.table-compact td:nth-child(11) {
-  min-width: 85px;
-}
-
-/* 상태 변경 (반으로 축소 유지) */
-.table-compact th:nth-child(12),
-.table-compact td:nth-child(12) {
-  width: 95px !important;
-  min-width: 95px !important;
-  white-space: nowrap !important;
-}
-
-/* 내부 요소 */
-.table-compact .cell-input,
-.table-compact .cell-select {
-  font-size: 11px !important;
-  padding: 2px 4px !important;
-  height: 26px !important;
-}
-
-.table-compact button {
-  padding: 4px 6px !important;
-  font-size: 11px !important;
-  border-radius: 3px !important;
+@media (max-width: 640px) {
+  .req-card-body .row {
+    flex-direction: column;
+    gap: 4px;
+  }
 }
 
 
-/* ================================
-   Modal Popup (카드형)
-================================ */
+/* ============================================================
+   Modal Popup — SaaS Style
+   ============================================================ */
 
 .modal.hidden {
   display: none;
@@ -785,7 +432,7 @@ table tbody tr:hover {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(15, 23, 42, 0.35); /* 반투명 블랙 */
+  background: rgba(15, 23, 42, 0.35);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -794,12 +441,12 @@ table tbody tr:hover {
 }
 
 .modal-card {
-  width: 320px;
+  width: 330px;
   background: #ffffff;
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  animation: modalPop 0.22s ease-out;
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  animation: modalPop .22s ease-out;
 }
 
 @keyframes modalPop {
@@ -815,7 +462,7 @@ table tbody tr:hover {
 }
 
 .modal-title {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 600;
   color: #111827;
 }
@@ -823,7 +470,7 @@ table tbody tr:hover {
 .modal-close {
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 20px;
   color: #6b7280;
   cursor: pointer;
 }
@@ -832,7 +479,7 @@ table tbody tr:hover {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 18px;
 }
 
 .modal-body label {
@@ -846,110 +493,40 @@ table tbody tr:hover {
   border-radius: 6px;
   border: 1px solid #d4d4d8;
   font-size: 13px;
+  background: #ffffff;
 }
 
 
 /* ============================================================
-   🔥 FINAL PATCH — Column Optimization + Status Tag Restore
-   2025-11-20
+   통계 박스
    ============================================================ */
 
-/* ============================================================
-   1) Column Width Optimization (필요 인원 / 상태 / 면접일)
-   ============================================================ */
-
-/* 필요 인원 (명) → 최소폭 48px로 더 줄임 */
-.table-compact th:nth-child(8),
-.table-compact td:nth-child(8) {
-  width: 48px !important;
-  min-width: 48px !important;
-  text-align: center !important;
-}
-
-/* 현재 상태 → 태그 자체가 있으므로 적당히 좁게 */
-.table-compact th:nth-child(10),
-.table-compact td:nth-child(10) {
-  width: 70px !important;
-  min-width: 70px !important;
-}
-
-/* 면접일 → 날짜 형식이므로 80px로 축소 */
-.table-compact th:nth-child(11),
-.table-compact td:nth-child(11) {
-  width: 80px !important;
-  min-width: 80px !important;
-}
-
-/* ============================================================
-   2) 상태 태그 색상 복구 (table global reset override 방지)
-   ============================================================ */
-
-.table-compact .tag-status {
-  display: inline-block;
-  padding: 2px 8px !important;
-  font-size: 11px !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
-  border: 1px solid #d4d4d8 !important;
-  white-space: nowrap !important;
-}
-
-/* 모집중 */
-.table-compact .tag-모집중 {
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-/* 선탑진행중 */
-.table-compact .tag-선탑진행중 {
-  background: #dbeafe !important;
-  color: #1d4ed8 !important;
-  border-color: #bfdbfe !important;
-}
-
-/* 면접예정 */
-.table-compact .tag-면접예정 {
-  background: #fef9c3 !important;
-  color: #b45309 !important;
-  border-color: #fde68a !important;
-}
-
-/* 배차완료 */
-.table-compact .tag-배차완료 {
-  background: #dcfce7 !important;
-  color: #166534 !important;
-  border-color: #bbf7d0 !important;
-}
-/* 📊 통계 박스 */
 .stats-box {
-  margin: 10px 0 18px;
+  margin: 12px 0 20px;
   display: flex;
   gap: 12px;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .stats-box .stat {
-  padding: 4px 10px;
+  padding: 6px 12px;
   background: #f3f4f6;
   border-radius: 6px;
   font-weight: 500;
 }
 
-.stats-box .total { color: #111827; }          /* 기본: 진한 회색 */
-.stats-box .active { color: #2563eb; }         /* 파란색 강조 */
-.stats-box .done { color: #059669; }           /* 녹색(배차완료) */
-/* 🔥 테이블 wrapper — 스크롤 허용 */
-.table-wrapper {
-  max-height: 600px;   /* 원하는 높이 */
-  overflow-y: auto;     /* 세로 스크롤 */
-  overflow-x: auto;     /* 가로 스크롤 */
-}
+.stats-box .total { color: #111827; }
+.stats-box .active { color: #2563eb; }
+.stats-box .done { color: #059669; }
 
-/* 🔥 헤더 sticky */
+
+/* ============================================================
+   Table sticky header
+   ============================================================ */
 .table-compact thead th {
   position: sticky;
   top: 0;
   z-index: 10;
-  background: #f9fafb;   /* 헤더 배경 */
-  backdrop-filter: blur(4px);
+  background: rgba(249,250,251,0.94);
+  backdrop-filter: blur(6px);
 }
