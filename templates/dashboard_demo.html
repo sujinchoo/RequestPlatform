@@ -190,8 +190,29 @@
 
 {% block extra_js %}
 <script>
-function renderData() {
-    // demo 페이지는 아무것도 하지 않음
+// API 호출해서 recent 데이터 넣기
+async function loadRecent() {
+    try {
+        const res = await fetch('/api/requests?company=all&status=all');
+        const data = await res.json();
+
+        const box = document.querySelector('.recent-box');
+        box.innerHTML = '';
+
+        data.slice(0, 5).forEach(r => {
+            box.insertAdjacentHTML("beforeend", `
+                <div class="recent-item">
+                    <strong>${r.company}</strong> — ${r.branch_name}
+                    <span style="color:#38bdf8">(${r.status})</span>
+                </div>
+            `);
+        });
+
+    } catch (e) {
+        console.error("Demo recent load error:", e);
+    }
 }
+
+document.addEventListener("DOMContentLoaded", loadRecent);
 </script>
 {% endblock %}
