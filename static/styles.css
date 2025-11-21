@@ -104,10 +104,12 @@ body {
   border: 1px solid #d4d4d8;
   padding: 8px 12px 6px;
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
+  margin-bottom: 4px !important;
 }
 
 .sheet-hero {
   border-left: 4px solid #2563eb;
+  margin-top: 4px !important;
 }
 
 .hero-title {
