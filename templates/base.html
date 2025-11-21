@@ -113,16 +113,13 @@
       <section class="sheet filter-section">
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
-              <option value="all">전체 택배사</option>
-              <option value="all">CJ</option>
-              <option value="all">우체국</option>
-              <option value="all">롯데</option>
-              <option value="all">쿠팡</option>
-              <option value="all">HPL</option>
-              <option value="all">로젠</option>
-              <option value="all">기타</option>
-              
+            <option value="all">전체 택배사</option>
+          
+            {% for c in company_list %}
+              <option value="{{ c }}">{{ c }}</option>
+            {% endfor %}
           </select>
+
 
 
           <select id="filter-status" class="filter-select">
