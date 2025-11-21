@@ -1,118 +1,69 @@
-/* ===========================================
-   DASHBOARD V3 — Compact Mobile Card UI (표준 축소형)
-   한 화면에 카드 2개 표시되는 모바일 UX 최적화 버전
-   =========================================== */
+/* =========================================
+   🔥 V3 Card Pastel Theme Upgrade
+   ========================================= */
 
-/* ----- 기본 카드 레이아웃 ----- */
+/* 전체 카드 리스트 여백 */
+.card-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+/* 카드 기본 스타일 */
 .req-card {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;                  /* 둥글기 소폭 감소 */
-  padding: 12px;                        /* (기존 20px → 12px) */
-  margin-bottom: 14px;                  /* 카드 간 간격 축소 */
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06); /* 눌린 카드 느낌 */
+  background: #f8fafc;                  /* 파스텔 밝은 회색-파랑 */
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+  border: 1px solid #e2e8f0;
   transition: 0.2s ease;
+  cursor: pointer;
 }
 
+/* Hover 효과 */
 .req-card:hover {
-  box-shadow: 0 2px 6px rgba(0,0,0,0.10);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  background: #f1f5f9;   /* 살짝 더 강조된 파스텔 톤 */
 }
 
-/* ----- 카드 헤더 ----- */
+/* 카드 헤더 */
 .req-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;                  /* (기존 16px → 10px) */
-}
-
-.card-region {
   font-weight: 600;
-  font-size: 13px;                      /* (기존 14px → 13px) */
-  color: #2563eb;
+  color: #334155;
+  margin-bottom: 12px;
 }
 
-.card-company {
-  margin-left: 6px;
-  font-size: 12px;                      /* (기존 13px → 12px) */
-  padding: 2px 6px;                     /* 더 작게 */
-  background: #e0f2fe;
-  color: #0369a1;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-/* ----- 상태 태그 ----- */
-.tag-status {
-  padding: 3px 8px;                     /* (작게 조정) */
-  font-size: 11px;                      /* (기존 12px → 11px) */
-  font-weight: 600;
-  border-radius: 8px;
-}
-
-.tag-모집중 { background:#dcfce7; color:#16a34a; }
-.tag-선탑진행중 { background:#fef9c3; color:#b45309; }
-.tag-면접예정 { background:#cffafe; color:#0e7490; }
-.tag-배차완료 { background:#e0e7ff; color:#4338ca; }
-
-/* ----- 카드 본문 row ----- */
+/* 본문 텍스트 */
 .req-card-body .row {
   display: flex;
   justify-content: space-between;
-  padding: 4px 0;                       /* (기존 8px → 4px) */
-  border-bottom: 1px solid #eef2f5;     /* 얇고 연하게 */
-}
-
-.req-card-body .row:last-child {
-  border-bottom: none;
-}
-
-.req-card-body span {
+  padding: 4px 0;
+  font-size: 14px;
   color: #475569;
-  font-size: 12px;                      /* (기존 14px → 12px) */
 }
 
-/* ----- Input / Select (size 축소) ----- */
-.card-input,
-.card-select {
-  width: 100%;
-  border: 1px solid #cbd5e1;
-  border-radius: 6px;
-  padding: 4px 8px;                     /* (기존 6px 10px → 줄임) */
-  font-size: 12px;
-  margin-top: 3px;
-  background: white;
-  height: 32px;                         /* 고정 높이 축소 */
-}
-
-/* ----- 버튼 (compact) ----- */
-.btn-primary {
-  width: 100%;
-  background: #2563eb;
-  color: #fff;
-  border: none;
-  padding: 6px 0;                       /* (기존 10px → 6px) */
-  border-radius: 8px;                   /* (조금 더 컴팩트) */
-  font-size: 13px;                      /* (기존 15px → 13px) */
-  font-weight: 600;
-  margin-top: 6px;
-  cursor: pointer;
-  transition: 0.2s ease;
-}
-
-.btn-primary:hover {
-  background: #1d4ed8;
-}
-
-/* ----- footer ----- */
+/* 푸터 */
 .req-card-footer {
-  margin-top: 10px;                     /* (조금 줄임) */
-  font-size: 11px;
-  color: #94a3b8;
-  text-align: right;
+  margin-top: 12px;
+  font-size: 12px;
+  color: #64748b;
+  border-top: 1px solid #e2e8f0;
+  padding-top: 8px;
 }
 
-/* 카드 리스트 wrapper */
-.card-list {
-  margin-top: 10px;
+/* Status 태그 – 파스텔 스타일 */
+.tag-status {
+  padding: 3px 8px;
+  border-radius: 8px;
+  font-size: 12px;
+  color: white;
 }
+
+.tag-모집중 { background: #60a5fa; }       /* 파스텔 블루 */
+.tag-선탑진행중 { background: #34d399; }    /* 민트 */
+.tag-면접예정 { background: #fbbf24; }      /* 파스텔 옐로우 */
+.tag-배차완료 { background: #9ca3af; }      /* 파스텔 그레이 */
