@@ -126,7 +126,7 @@
 let currentId = null;
 
 /* ==========================================================
-   🟦 1) 카드 렌더링 함수 (v1,v2와 동일)
+   🟦 1) 카드 렌더링 함수
    ========================================================== */
 function renderCards(list) {
     const container = document.getElementById("card-list");
@@ -162,7 +162,7 @@ function renderCards(list) {
 }
 
 /* ==========================================================
-   🟧 2) 필터 기능 (v2와 동일)
+   🟧 2) 필터 기능
    ========================================================== */
 function loadFilteredData() {
     const company = document.getElementById("filter-company").value;
@@ -177,14 +177,15 @@ function loadFilteredData() {
 }
 
 /* ==========================================================
-   🟩 필터 onchange 이벤트 연결
+   🟩 필터 이벤트 연결
    ========================================================== */
-document.getElementById("filter-company").onchange = loadFilteredData;
-document.getElementById("filter-status").onchange = loadFilteredData;
-
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("filter-company").onchange = loadFilteredData;
+    document.getElementById("filter-status").onchange = loadFilteredData;
+});
 
 /* ==========================================================
-   🟦 Modal 관련
+   🟦 Modal
    ========================================================== */
 function openModal(r) {
     currentId = r.id;
@@ -206,7 +207,7 @@ function closeModal() {
 }
 
 /* ==========================================================
-   상태 저장
+   🟥 상태 저장
    ========================================================== */
 function saveStatus() {
 
