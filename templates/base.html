@@ -115,7 +115,7 @@
     <main class="main">
 
       <!-- 🔥 관리자(admin) 페이지에서만 필터 표시 -->
-      {% if session.get('branch_id') and session.get('is_admin') %}
+      {% if session.get('branch_id') and session.get('is_admin') and not disable_filter %}
       <section class="sheet filter-section">
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
