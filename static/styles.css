@@ -93,7 +93,7 @@ body {
 .main {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 6px;
   margin-top: 10px;
 }
 
@@ -102,7 +102,7 @@ body {
   background: #ffffff;
   border-radius: 4px;
   border: 1px solid #d4d4d8;
-  padding: 12px 12px 10px;
+  padding: 8px 12px 6px;
   box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
 }
 
