@@ -51,30 +51,16 @@ def create_app():
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
         scope=["profile", "email"],
-        redirect_url="/login/google/authorized"   # ★ Flask-Dance 기본 콜백
+        redirect_url="/login/google/authorized"
     )
-    app.register_blueprint(google_bp, url_prefix="/login")
     
-    
-    # =========================================================
-    # Google 로그인 시작
-    # =========================================================
-    @app.route("/login/google_start")
-    def login_google_start():
-        return redirect(url_for("google.login"))
-    
-    
-    # =========================================================
-    # Google OAuth Callback (자동 콜백 경로)
-    # Flask-Dance 기본 endpoint: google.authorized
-    # =========================================================
+    # 🔥 callback handler 반드시 blueprint 등록 전 위치해야 함
     @google_bp.route("/authorized")
     def authorized():
         if not google.authorized:
             flash("Google 인증 실패했습니다.", "error")
             return redirect(url_for("login"))
     
-        # 사용자 정보 요청
         resp = google.get("/oauth2/v2/userinfo")
         info = resp.json()
     
@@ -110,13 +96,15 @@ def create_app():
             flash("Google 로그인 저장 중 오류 발생", "error")
             return redirect(url_for("login"))
     
-        # 세션 저장
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
         session["is_admin"] = False
     
         return redirect(url_for("request_page"))
+    
+    # 🔥 blueprint는 반드시 마지막에 등록
+    app.register_blueprint(google_bp, url_prefix="/login")
 
 
     # =========================================================
