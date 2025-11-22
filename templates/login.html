@@ -17,7 +17,7 @@
 
     <div class="tpr-banner-text">
       <div class="tpr-banner-title">TPR System</div>
-      <div class="tpr-banner-sub">Truck · People · Request Board</div>
+      <div class="tpr-banner-sub">Truck · People · Request Systemboard</div>
     </div>
   </div>
 
@@ -64,7 +64,8 @@
   <!-- ================================
        Google 로그인 버튼 (이미지 기반)
   ================================= -->
-  <button type="button" class="google-login-btn">
+  <button type="button" class="google-login-btn" 
+       onclick="window.location.href='/login/google_start'">
     <img src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}"
          alt="Google Login Button"
          class="google-login-img">
