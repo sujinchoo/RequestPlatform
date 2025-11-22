@@ -51,29 +51,26 @@ def create_app():
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
         scope=["email", "profile"],
-        redirect_url="/login/callback/google"   # ← 수정됨
+        redirect_url="/login/callback/google" 
     )
     app.register_blueprint(google_bp, url_prefix="/login")
 
-
     # =========================================================
-    # Google 로그인 시작 (버튼 클릭 시)
+    # Google 로그인 시작
     # =========================================================
     @app.route("/login/google_start")
     def login_google_start():
         return redirect(url_for("google.login"))
 
-
     # =========================================================
-    # Google OAuth Callback (로그인 성공)
+    # Google OAuth Callback
     # =========================================================
-    @app.route("/login/callback/google")   # ← 수정됨
+    @app.route("/login/callback/google")
     def google_callback():
         if not google.authorized:
             flash("Google 인증 실패했습니다.", "error")
             return redirect(url_for("login"))
 
-        # 사용자 정보 요청
         resp = google.get("/oauth2/v2/userinfo")
         info = resp.json()
 
@@ -82,7 +79,6 @@ def create_app():
         name = info.get("name", "")
         profile_img = info.get("picture", "")
 
-        # DB 저장
         try:
             result = db.session.execute(
                 text("""
@@ -109,7 +105,6 @@ def create_app():
             flash("Google 로그인 저장 중 오류 발생", "error")
             return redirect(url_for("login"))
 
-        # 세션 저장
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
@@ -117,9 +112,8 @@ def create_app():
 
         return redirect(url_for("request_page"))
 
-
     # =========================================================
-    # SaaS 데모 대시보드 페이지
+    # SaaS 데모 대시보드
     # =========================================================
     @app.route("/dashboard_demo")
     @login_required
@@ -152,7 +146,6 @@ def create_app():
             status_interview_pct=(status_interview / total2) * 100,
             status_done_pct=(status_done / total2) * 100,
         )
-
 
     # =========================================================
     # 초기 Admin 생성
@@ -214,7 +207,6 @@ def create_app():
         session.clear()
         return redirect(url_for("login"))
 
-
     # =========================================================
     # 요청 입력 페이지
     # =========================================================
@@ -251,7 +243,6 @@ def create_app():
 
         return render_template("request.html", branch=branch)
 
-
     # =========================================================
     # 통계 함수
     # =========================================================
@@ -260,7 +251,6 @@ def create_app():
         completed = Req.query.filter_by(status="배차완료").count()
         active = total - completed
         return total, active, completed
-
 
     # =========================================================
     # 대시보드 (v1 / v2 / v3)
@@ -275,8 +265,7 @@ def create_app():
                                total_cases=total,
                                active_cases=active,
                                completed_cases=completed,
-                               company_list=get_company_list()
-                              )
+                               company_list=get_company_list())
 
     @app.route("/dashboard_v2")
     @login_required
@@ -290,8 +279,7 @@ def create_app():
                                total_cases=total,
                                active_cases=active,
                                completed_cases=completed,
-                               company_list=get_company_list()
-                              )
+                               company_list=get_company_list())
 
     @app.route("/dashboard_v3")
     @login_required
@@ -305,9 +293,7 @@ def create_app():
                                total_cases=total,
                                active_cases=active,
                                completed_cases=completed,
-                               company_list=get_company_list()
-                              )
-
+                               company_list=get_company_list())
 
     # =========================================================
     # 요청 리스트 API (필터)
@@ -349,7 +335,6 @@ def create_app():
 
         return jsonify({"count": len(results), "data": results})
 
-
     # =========================================================
     # 상태 업데이트 API
     # =========================================================
@@ -382,7 +367,6 @@ def create_app():
 
         return jsonify({"success": True})
 
-
     # =========================================================
     # DB TEST PAGE
     # =========================================================
@@ -392,9 +376,8 @@ def create_app():
     def dbtest_page():
         return render_template("dbtest.html")
 
-
     # =========================================================
-    # 수동 데이터 1건 저장
+    # 수동 데이터 저장
     # =========================================================
     @app.route("/api/dbtest-insert", methods=["POST"])
     @login_required
@@ -422,7 +405,6 @@ def create_app():
         except Exception as e:
             db.session.rollback()
             return jsonify({"success": False, "error": str(e)}), 500
-
 
     # =========================================================
     # 랜덤 데이터 100개 자동 생성
@@ -464,9 +446,8 @@ def create_app():
             db.session.rollback()
             return jsonify({"success": False, "error": str(e)}), 500
 
-
     # =========================================================
-    # 회사 목록 수집 함수
+    # 회사 목록 수집
     # =========================================================
     def get_company_list():
         try:
@@ -475,7 +456,6 @@ def create_app():
         except Exception as e:
             print("COMPANY LIST ERROR:", e)
             return []
-
 
     return app
 
