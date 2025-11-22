@@ -69,7 +69,7 @@ def create_app():
     # Flask-Dance 기본 endpoint: google.authorized
     # =========================================================
     @google_bp.route("/authorized")
-    def google_authorized():
+    def authorized():
         if not google.authorized:
             flash("Google 인증 실패했습니다.", "error")
             return redirect(url_for("login"))
