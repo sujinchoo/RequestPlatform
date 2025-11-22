@@ -51,7 +51,7 @@ def create_app():
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
         scope=["email", "profile"],
-        redirect_url="/login/google/authorized"
+        redirect_url="/login/callback/google"
     )
     app.register_blueprint(google_bp, url_prefix="/login")
     
