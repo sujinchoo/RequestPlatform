@@ -56,6 +56,13 @@ def create_app():
 
     app.register_blueprint(google_bp, url_prefix="/login")
 
+    # 🔵 Google Login Start (login_google_start 엔드포인트 복구)
+    @app.route("/login/google/start")
+    def login_google_start():
+        # Flask-Dance의 blueprint 시작 URL로 리다이렉트
+        return redirect(url_for("google.login"))
+
+
     # =========================================================
     # Google OAuth Callback (Flask-Dance의 google.authorized 대신 직접 처리)
     # =========================================================
