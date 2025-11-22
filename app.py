@@ -44,31 +44,36 @@ def create_app():
             return view(*args, **kwargs)
         return wrapped
 
-   # =========================================================
-    # GOOGLE LOGIN (Blueprint 등록)
+    # =========================================================
+    # GOOGLE LOGIN (Blueprint 등록) — 충돌 제거 버전
     # =========================================================
     google_bp = make_google_blueprint(
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
         scope=["profile", "email"],
-        redirect_url="/login/google/authorized"
+        redirect_url="/login/callback/google"   # Google Console과 동일하게 맞춤
     )
-    
-    # 🔥 callback handler 반드시 blueprint 등록 전 위치해야 함
-    @google_bp.route("/authorized")
-    def authorized():
+
+    app.register_blueprint(google_bp, url_prefix="/login")
+
+    # =========================================================
+    # Google OAuth Callback (Flask-Dance의 google.authorized 대신 직접 처리)
+    # =========================================================
+    @app.route("/login/callback/google")
+    def google_callback():
         if not google.authorized:
             flash("Google 인증 실패했습니다.", "error")
             return redirect(url_for("login"))
-    
+
+        # 사용자 정보 요청
         resp = google.get("/oauth2/v2/userinfo")
         info = resp.json()
-    
+
         google_id = info["id"]
         email = info.get("email", "")
         name = info.get("name", "")
         profile_img = info.get("picture", "")
-    
+
         # DB 저장
         try:
             result = db.session.execute(
@@ -81,31 +86,28 @@ def create_app():
                 {"gid": google_id, "email": email, "name": name, "pic": profile_img}
             )
             db.session.commit()
-    
+
             new_id = result.fetchone()[0] if result.rowcount > 0 else None
-    
+
             if not new_id:
                 q = db.session.execute(
                     text("SELECT id FROM users WHERE google_id=:gid"),
                     {"gid": google_id}
                 ).fetchone()
                 new_id = q[0]
-    
+
         except Exception as e:
             print("[GOOGLE LOGIN ERROR]", e)
             flash("Google 로그인 저장 중 오류 발생", "error")
             return redirect(url_for("login"))
-    
+
+        # 세션 저장
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
         session["is_admin"] = False
-    
-        return redirect(url_for("request_page"))
-    
-    # 🔥 blueprint는 반드시 마지막에 등록
-    app.register_blueprint(google_bp, url_prefix="/login")
 
+        return redirect(url_for("request_page"))
 
     # =========================================================
     # SaaS 데모 대시보드
