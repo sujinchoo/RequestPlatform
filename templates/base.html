@@ -33,7 +33,7 @@
       background: #ffffff;
     }
 
-    /* 🔥 추가: 구글 로그인 유저 표시 스타일 */
+    /* 🔥 구글 로그인 유저 표시 스타일 */
     .nav-user {
       color: #4b5563;
       font-size: 14px;
@@ -53,14 +53,15 @@
 
       <nav class="nav">
 
-      <!-- 🔥🔥 추가됨: Google 로그인 상태 표시 -->
+      <!-- 🔥 Google 로그인 시 이름 표시 -->
       {% if session.get('google_user_id') %}
         <span class="nav-user">Google 로그인: {{ session.get("google_name") }}</span>
       {% endif %}
-      <!-- 🔥🔥 끝 -->
 
-      {% if session.get('branch_id') %}
-        {% if session.get('is_admin') %}
+      <!-- 🔥 로그인 여부 체크: branch_id OR google_user_id -->
+      {% if session.get('branch_id') or session.get('google_user_id') %}
+
+        {% if session.get('branch_id') and session.get('is_admin') %}
           <a href="{{ url_for('dashboard') }}"
              class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
             요청 현황(본사)
@@ -88,14 +89,15 @@
         </a>
     
         <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
-    
+
       {% else %}
         <a href="{{ url_for('login') }}"
            class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
           로그인
         </a>
       {% endif %}
-    </nav>
+
+      </nav>
 
     </div>
   </header>
