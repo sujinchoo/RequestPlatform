@@ -64,8 +64,10 @@
   <!-- ================================
        Google 로그인 버튼 (이미지 기반)
   ================================= -->
-  <button type="button" class="google-login-btn" 
-       onclick="window.location.href='/login/google_start'">
+  <button type="button"
+          class="google-login-btn"
+          onclick="window.location.href='{{ url_for('login_google_start') }}'">
+
     <img src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}"
          alt="Google Login Button"
          class="google-login-img">
@@ -76,9 +78,8 @@
 {% endblock %}
 
 
-
 <!-- ================================
-     스타일
+     스타일 (페이지 전용)
 ================================ -->
 <style>
 
@@ -89,7 +90,7 @@
   font-size: 14px;
 }
 
-/* Google 로그인 이미지 버튼 */
+/* Google 로그인 버튼 전체 */
 .google-login-btn {
   width: 100%;
   background: none;
@@ -100,19 +101,22 @@
   justify-content: center;
 }
 
-/* 🔥 완전 반응형 Google 로그인 이미지 */
+/* Google 이미지 버튼 */
 .google-login-img {
-  width: 100%;            /* 부모(width:100%) 기준 자동 확장/축소 */
-  max-width: 400px;       /* 너무 커지지 않도록 최대폭 제한 */
-  height: auto;           /* 비율 유지 */
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  border-radius: 10px;
   display: block;
-  border-radius: 8px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
-  transition: opacity 0.2s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
+/* Hover 효과 */
 .google-login-btn:hover .google-login-img {
+  transform: translateY(-3px);
   opacity: 0.95;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.18);
 }
 
 </style>
