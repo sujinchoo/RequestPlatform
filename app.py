@@ -73,17 +73,17 @@ def create_app():
         if not google.authorized:
             flash("Google 인증 실패했습니다.", "error")
             return redirect(url_for("login"))
-
+    
         # 사용자 정보 요청
         resp = google.get("/oauth2/v2/userinfo")
         info = resp.json()
-
+    
         google_id = info["id"]
         email = info.get("email", "")
         name = info.get("name", "")
         profile_img = info.get("picture", "")
-
-        # DB 저장
+    
+        # DB 저장 (users 테이블)
         try:
             result = db.session.execute(
                 text("""
@@ -95,28 +95,46 @@ def create_app():
                 {"gid": google_id, "email": email, "name": name, "pic": profile_img}
             )
             db.session.commit()
-
+    
             new_id = result.fetchone()[0] if result.rowcount > 0 else None
-
+    
             if not new_id:
                 q = db.session.execute(
                     text("SELECT id FROM users WHERE google_id=:gid"),
                     {"gid": google_id}
                 ).fetchone()
                 new_id = q[0]
-
+    
         except Exception as e:
             print("[GOOGLE LOGIN ERROR]", e)
             flash("Google 로그인 저장 중 오류 발생", "error")
             return redirect(url_for("login"))
-
-        # 세션 저장
+    
+        # 🔥 Branch 자동 생성 또는 기존 Branch 매핑
+        branch = Branch.query.filter_by(login_id=google_id).first()
+    
+        if not branch:
+            branch = Branch(
+                login_id=google_id,          # Google ID를 로그인 ID로 사용
+                password_hash="",            # 패스워드는 없음
+                company="GoogleUser",        # 기본 값
+                branch_name=name,            # 구글 이름
+                region="온라인",
+                is_admin=False
+            )
+            db.session.add(branch)
+            db.session.commit()
+    
+        # 🔥 세션 저장 (branch와 google user 모두 반영)
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
+        session["branch_id"] = branch.id
+        session["branch_name"] = branch.branch_name
         session["is_admin"] = False
-
+    
         return redirect(url_for("request_page"))
+
 
     # =========================================================
     # SaaS 데모 대시보드
