@@ -32,6 +32,13 @@
       border: 1px solid #d4d4d8;
       background: #ffffff;
     }
+
+    /* 🔥 추가: 구글 로그인 유저 표시 스타일 */
+    .nav-user {
+      color: #4b5563;
+      font-size: 14px;
+      margin-right: 12px;
+    }
   </style>
 
 </head>
@@ -45,6 +52,13 @@
       </div>
 
       <nav class="nav">
+
+      <!-- 🔥🔥 추가됨: Google 로그인 상태 표시 -->
+      {% if session.get('google_user_id') %}
+        <span class="nav-user">Google 로그인: {{ session.get("google_name") }}</span>
+      {% endif %}
+      <!-- 🔥🔥 끝 -->
+
       {% if session.get('branch_id') %}
         {% if session.get('is_admin') %}
           <a href="{{ url_for('dashboard') }}"
@@ -52,23 +66,16 @@
             요청 현황(본사)
           </a>
            
-          <!-- 주석 처리 잠시, 미 공개.
-          <a href="{{ url_for('dashboard_v2') }}"
-             class="nav-link {% if request.endpoint == 'dashboard_v2' %}active{% endif %}">
-            요청 현황(본사) 대시보드 v2
-          </a>
-          -->
           <a href="{{ url_for('dashboard_demo') }}"
              class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
              Demo Dashboard
           </a>
                   
-        <a href="{{ url_for('dashboard_v3') }}"
+          <a href="{{ url_for('dashboard_v3') }}"
              class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
             카드형 대시보드 v3
           </a>
-    
-          <!-- 🔥 여기 추가됨: DB TEST 메뉴 -->
+
           <a href="{{ url_for('dbtest_page') }}"
              class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
             DB TEST 테스트DB
@@ -114,19 +121,15 @@
 
     <main class="main">
 
-      <!-- 🔥 관리자(admin) 페이지에서만 필터 표시 -->
       {% if session.get('branch_id') and session.get('is_admin') and not disable_filter %}
       <section class="sheet filter-section">
         <div class="filter-bar">
           <select id="filter-company" class="filter-select">
             <option value="all">전체 택배사</option>
-          
             {% for c in company_list %}
               <option value="{{ c }}">{{ c }}</option>
             {% endfor %}
           </select>
-
-
 
           <select id="filter-status" class="filter-select">
             <option value="all">전체 상태</option>
@@ -139,7 +142,6 @@
       </section>
       {% endif %}
 
-      <!-- 🔵 실제 페이지 내용 -->
       {% block content %}{% endblock %}
 
     </main>
@@ -149,26 +151,19 @@
     </footer>
   </div>
 
-  <!-- ====================================================== -->
-  <!-- 🔥 AJAX 필터 스크립트 (관리자 전용) -->
-  <!-- ====================================================== -->
   {% if session.get('branch_id') and session.get('is_admin') %}
-
   <script>
     function loadFilteredData() {
         const company = document.getElementById("filter-company").value;
         const status  = document.getElementById("filter-status").value;
 
         const params = new URLSearchParams({ company, status });
-
-        // URL 적용
         history.pushState({}, "", `?${params.toString()}`);
 
         fetch(`/api/requests?${params.toString()}`)
           .then(res => res.json())
           .then(json => {
 
-              /* 🔥 페이지별 렌더링 함수 분기 */
               {% if request.endpoint == 'dashboard_v3' %}
                   renderCards(json.data);
               {% else %}
@@ -179,11 +174,9 @@
           .catch(err => console.error("API ERROR:", err));
     }
 
-    // 이벤트 등록
     document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
     document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
-    // 처음 로드시
     window.addEventListener("load", () => {
         if (!document.getElementById("filter-company")) return;
 
@@ -196,11 +189,8 @@
 
         loadFilteredData();
     });
-</script>
-
-
+  </script>
   {% endif %}
-  <!-- ====================================================== -->
 
 </body>
 </html>
