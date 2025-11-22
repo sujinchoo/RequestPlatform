@@ -50,7 +50,9 @@ def create_app():
     google_bp = make_google_blueprint(
         client_id=os.getenv("GOOGLE_CLIENT_ID"),
         client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
-        scope=["profile", "email"],
+        scope=["openid",
+        "https://www.googleapis.com/auth/userinfo.email",
+        "https://www.googleapis.com/auth/userinfo.profile"],
         redirect_url="/login/callback/google"   # Google Console과 동일하게 맞춤
     )
 
