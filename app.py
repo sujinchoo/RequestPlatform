@@ -238,7 +238,7 @@ def create_app():
     @login_required
     def request_page():
         branch = Branch.query.get(session["branch_id"]) if "branch_id" in session else None
-
+    
         if request.method == "POST":
             form = request.form
             try:
@@ -262,10 +262,16 @@ def create_app():
                 db.session.rollback()
                 flash("요청 저장 중 오류 발생", "error")
                 print(e)
-
+    
             return redirect(url_for("request_page"))
+    
+        # 🔥🔥 여기가 새로 추가되는 핵심 코드
+        my_requests = Req.query.filter_by(branch_id=session.get("branch_id")).order_by(
+            Req.created_at.desc()
+        ).all()
+    
+        return render_template("request.html", branch=branch, my_requests=my_requests)
 
-        return render_template("request.html", branch=branch)
 
     # =========================================================
     # 통계 함수
