@@ -163,5 +163,22 @@
     </table>
   {% endif %}
 </section>
+<section class="sheet">
+  <h3>📌 등록한 요청 목록</h3>
+
+  {% if my_reqs %}
+    <ul>
+      {% for r in my_reqs %}
+        <li>
+          {{ r.company }} / {{ r.branch_name }} /
+          {{ r.region }} / {{ r.unit_price }}원 /
+          ({{ r.created_at.strftime('%Y-%m-%d') }})
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>아직 등록된 요청이 없습니다.</p>
+  {% endif %}
+</section>
 
 {% endblock %}
