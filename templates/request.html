@@ -107,6 +107,8 @@
   {% if branch_requests|length == 0 %}
     <p style="color:#6b7280;">아직 등록된 요청이 없습니다.</p>
   {% else %}
+  
+  <div class="table-wrapper">
     <table class="table-v2">
       <thead>
         <tr>
@@ -142,8 +144,9 @@
         </tr>
         {% endfor %}
       </tbody>
-
     </table>
+  </div>
+
   {% endif %}
 </section>
 
