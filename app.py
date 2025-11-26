@@ -237,13 +237,13 @@ def create_app():
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
-        branch = Branch.query.get(session["branch_id"]) if "branch_id" in session else None
+        branch = Branch.query.get(session.get("branch_id"))
     
         if request.method == "POST":
             form = request.form
             try:
                 new_req = Req(
-                    branch_id=branch.id if branch else None,
+                    branch_id=branch.id,
                     company=form.get("company"),
                     branch_name=form.get("branch"),
                     region=form.get("region"),
@@ -260,17 +260,19 @@ def create_app():
                 flash("요청이 저장되었습니다.", "success")
             except Exception as e:
                 db.session.rollback()
-                flash("요청 저장 중 오류 발생", "error")
                 print(e)
+                flash("요청 저장 중 오류 발생", "error")
     
             return redirect(url_for("request_page"))
     
-        # 🔥🔥 여기가 새로 추가되는 핵심 코드
-        my_requests = Req.query.filter_by(branch_id=session.get("branch_id")).order_by(
-            Req.created_at.desc()
-        ).all()
+        # ⭐ 여기 추가! → 브랜치별 요청 내역 조회
+        branch_requests = []
+        if branch:
+            branch_requests = Req.query.filter_by(branch_id=branch.id).order_by(Req.created_at.desc()).all()
     
-        return render_template("request.html", branch=branch, my_requests=my_requests)
+        return render_template("request.html",
+                               branch=branch,
+                               branch_requests=branch_requests)
 
 
     # =========================================================
