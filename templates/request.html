@@ -99,44 +99,47 @@
 </script>
 
 <!-- ---------------------------- -->
-<!-- 등록된 요청 목록 -->
+<!-- 📌 등록된 요청 목록 -->
 <!-- ---------------------------- -->
-<section class="sheet" style="margin-top:20px;">
+<section class="sheet sheet-scroll" style="margin-top:20px;">
   <h2 style="margin-bottom:12px;">📌 등록한 요청 목록</h2>
 
   {% if branch_requests|length == 0 %}
     <p style="color:#6b7280;">아직 등록된 요청이 없습니다.</p>
+
   {% else %}
-  
-  <div class="table-wrapper">
-    <table class="table-v2">
+
+  <!-- ⭐ 스크롤 + 헤더 고정 -->
+  <div class="table-wrapper table-fixed">
+    <table class="table-v2 table-compact">
       <thead>
         <tr>
-          <th class="col-id">ID</th>
-          <th class="col-date">등록일</th>
-          <th class="col-company">택배사</th>
-          <th class="col-region">지역</th>
-          <th class="col-vehicle">차종</th>
-          <th class="col-headcount">인원</th>
-          <th class="col-unit">단가</th>
-          <th class="col-volume">월물량</th>
-          <th class="col-delete">삭제</th>
+          <th style="width:60px;">ID</th>
+          <th style="width:110px;">등록일</th>
+          <th style="width:130px;">택배사</th>
+          <th style="width:130px;">지역</th>
+          <th style="width:130px;">차종</th>
+          <th style="width:80px;">인원</th>
+          <th style="width:100px;">단가</th>
+          <th style="width:120px;">월물량</th>
+          <th style="width:80px;">삭제</th>
         </tr>
       </thead>
-    
+
       <tbody>
         {% for r in branch_requests %}
         <tr>
-          <td class="col-id">{{ r.id }}</td>
-          <td class="col-date">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
-          <td class="col-company">{{ r.company }}</td>
-          <td class="col-region">{{ r.region }}</td>
-          <td class="col-vehicle">{{ r.vehicle_type }}</td>
-          <td class="col-headcount">{{ r.headcount }}</td>
-          <td class="col-unit">{{ r.unit_price }}</td>
-          <td class="col-volume">{{ r.volume }}</td>
-          <td class="col-delete">
-            <form method="post" action="/request/delete/{{ r.id }}"
+          <td>{{ r.id }}</td>
+          <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+          <td>{{ r.company }}</td>
+          <td>{{ r.region }}</td>
+          <td>{{ r.vehicle_type }}</td>
+          <td>{{ r.headcount }}</td>
+          <td>{{ r.unit_price }}</td>
+          <td>{{ r.volume }}</td>
+          <td>
+            <form method="post"
+                  action="/request/delete/{{ r.id }}"
                   onsubmit="return confirm('삭제하시겠습니까?');">
               <button class="btn-small" style="background:#dc2626; color:white;">삭제</button>
             </form>
@@ -144,8 +147,8 @@
         </tr>
         {% endfor %}
       </tbody>
-    </table>
 
+    </table>
   </div>
 
   {% endif %}
