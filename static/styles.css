@@ -1000,7 +1000,26 @@ table tbody tr:hover {
     z-index: 10;
 }
 
-/* 가로 스크롤이 필요할 때 쓰는 용도 */
+/* 스크롤 가능한 시트 */
 .sheet-scroll {
   overflow-x: auto !important;
+}
+
+/* 테이블 헤더 고정 */
+.table-fixed {
+  max-height: 600px;
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.table-fixed thead th {
+  position: sticky;
+  top: 0;
+  background: #f8f9fa;
+  z-index: 2;
+}
+
+/* 테이블 최소 폭 (엑셀 느낌) */
+.table-compact {
+  min-width: 1200px;
 }
