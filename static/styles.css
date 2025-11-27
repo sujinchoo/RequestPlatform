@@ -1000,3 +1000,7 @@ table tbody tr:hover {
     z-index: 10;
 }
 
+/* 가로 스크롤이 필요할 때 쓰는 용도 */
+.sheet-scroll {
+  overflow-x: auto !important;
+}
