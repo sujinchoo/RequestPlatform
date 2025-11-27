@@ -112,30 +112,30 @@
     <table class="table-v2">
       <thead>
         <tr>
-          <th>ID</th>
-          <th>택배사</th>
-          <th>지역</th>
-          <th>차종</th>
-          <th>인원</th>
-          <th>단가</th>
-          <th>월물량</th>
-          <th>등록일</th>
-          <th>삭제</th>
+          <th class="col-id">ID</th>
+          <th class="col-date">등록일</th>
+          <th class="col-company">택배사</th>
+          <th class="col-region">지역</th>
+          <th class="col-vehicle">차종</th>
+          <th class="col-headcount">인원</th>
+          <th class="col-unit">단가</th>
+          <th class="col-volume">월물량</th>
+          <th class="col-delete">삭제</th>
         </tr>
       </thead>
-
+    
       <tbody>
         {% for r in branch_requests %}
         <tr>
-          <td>{{ r.id }}</td>
-          <td>{{ r.company }}</td>
-          <td>{{ r.region }}</td>
-          <td>{{ r.vehicle_type }}</td>
-          <td>{{ r.headcount }}</td>
-          <td>{{ r.unit_price }}</td>
-          <td>{{ r.volume }}</td>
-          <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
-          <td>
+          <td class="col-id">{{ r.id }}</td>
+          <td class="col-date">{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+          <td class="col-company">{{ r.company }}</td>
+          <td class="col-region">{{ r.region }}</td>
+          <td class="col-vehicle">{{ r.vehicle_type }}</td>
+          <td class="col-headcount">{{ r.headcount }}</td>
+          <td class="col-unit">{{ r.unit_price }}</td>
+          <td class="col-volume">{{ r.volume }}</td>
+          <td class="col-delete">
             <form method="post" action="/request/delete/{{ r.id }}"
                   onsubmit="return confirm('삭제하시겠습니까?');">
               <button class="btn-small" style="background:#dc2626; color:white;">삭제</button>
@@ -145,6 +145,7 @@
         {% endfor %}
       </tbody>
     </table>
+
   </div>
 
   {% endif %}
