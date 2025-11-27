@@ -955,3 +955,33 @@ table tbody tr:hover {
   background: #f9fafb;   /* 헤더 배경 */
   backdrop-filter: blur(4px);
 }
+
+/* 기본 테이블 스타일 */
+.table-v2 {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;   /* ← 컬럼 폭을 강제로 고정 */
+}
+
+/* 공통 셀 스타일 */
+.table-v2 th,
+.table-v2 td {
+    padding: 10px;
+    border: 1px solid #d4d4d8;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ===  Request Board - 개별 컬럼 사이즈 조정 === */
+.col-id        { width: 60px; }        /* ID */
+.col-company   { width: 100px; }       /* 택배사 */
+.col-region    { width: 100px; }       /* 지역 */
+.col-vehicle   { width: 100px; }       /* 차종 */
+.col-headcount { width: 70px; }        /* 인원 */
+.col-unit      { width: 90px; }        /* 단가 */
+.col-volume    { width: 90px; }        /* 월물량 */
+.col-date      { width: 100px; }       /* 등록일 */
+.col-delete    { width: 60px; }        /* 삭제 */
+
