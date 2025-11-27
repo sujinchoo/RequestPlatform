@@ -985,3 +985,18 @@ table tbody tr:hover {
 .col-date      { width: 100px; }       /* 등록일 */
 .col-delete    { width: 60px; }        /* 삭제 */
 
+.table-wrapper {
+    max-height: 420px;     /* 스크롤 박스 높이 */
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+}
+
+.table-v2 thead th {
+    position: sticky;
+    top: 0;
+    background: #f9fafb;
+    z-index: 10;
+}
+
