@@ -17,6 +17,15 @@
     <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
+</section>
+
+<!-- ⭐ 스크롤 가능하도록 sheet-scroll 추가 -->
+<section class="sheet sheet-scroll">
+
+  <div class="sheet-title-row">
+    <div class="sheet-title">인력 요청 리스트 (실데이터)</div>
+    <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
+  </div>
 
   <!-- 📊 통계 박스 -->
   <div class="stats-box">
@@ -25,21 +34,22 @@
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
 
-  <div class="table-wrapper">
+  <!-- ⭐ 테이블 고정 + 스크롤 -->
+  <div class="table-wrapper table-fixed">
     <table id="request-table" class="table-compact">
       <thead>
         <tr>
-          <th>No</th>
-          <th>지역</th>
-          <th>택배사</th>
-          <th>영업소 / 대리점명</th>
-          <th>단가 (원/건)</th>
-          <th>월 물량 (건)</th>
-          <th>차종</th>
-          <th>필요 인원 (명)</th>
-          <th>기타 사항</th>
-          <th>현재 상태</th>
-          <th>면접일</th>
+          <th style="width:50px;">No</th>
+          <th style="width:120px;">지역</th>
+          <th style="width:120px;">택배사</th>
+          <th style="width:160px;">영업소 / 대리점명</th>
+          <th style="width:120px;">단가</th>
+          <th style="width:120px;">월 물량</th>
+          <th style="width:120px;">차종</th>
+          <th style="width:80px;">인원</th>
+          <th style="width:250px;">기타 사항</th>
+          <th style="width:120px;">현재 상태</th>
+          <th style="width:100px;">면접일</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -47,7 +57,6 @@
   </div>
 
 </section>
-
 <!-- ====================== -->
 <!-- 🔥 상태 변경 Modal -->
 <!-- ====================== -->
