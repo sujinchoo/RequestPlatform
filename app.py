@@ -137,39 +137,55 @@ def create_app():
 
 
     # =========================================================
-    # SaaS 데모 대시보드
+    # SaaS 데모 대시보드 (모바일 전용 요약)
     # =========================================================
     @app.route("/dashboard_demo")
     @login_required
     @admin_required
     def dashboard_demo():
-
+    
+        # 전체 개수
         total = Req.query.count()
-        completed = Req.query.filter_by(status="배차완료").count()
-        active = total - completed
-
-        recent = Req.query.order_by(Req.created_at.desc()).limit(10).all()
-
+    
+        # 상태별 개수
         status_wait = Req.query.filter_by(status="모집중").count()
         status_pre = Req.query.filter_by(status="선탑진행중").count()
         status_interview = Req.query.filter_by(status="면접예정").count()
-        status_done = completed
-
+        status_done = Req.query.filter_by(status="배차완료").count()
+    
+        # 상태 진행률 (배차완료 / 전체)
+        progress_rate = 0
+        if total > 0:
+            progress_rate = round((status_done / total) * 100, 1)
+    
+        # 상태별 비중
         total2 = status_wait + status_pre + status_interview + status_done
         if total2 == 0:
             total2 = 1
-
+    
+        pct_wait = round((status_wait / total2) * 100, 1)
+        pct_pre = round((status_pre / total2) * 100, 1)
+        pct_interview = round((status_interview / total2) * 100, 1)
+        pct_done = round((status_done / total2) * 100, 1)
+    
+        # 최근 요청 5건
+        recent = Req.query.order_by(Req.created_at.desc()).limit(5).all()
+    
         return render_template(
             "dashboard_demo.html",
             total_cases=total,
-            active_cases=active,
-            completed_cases=completed,
+            status_wait=status_wait,
+            status_pre=status_pre,
+            status_interview=status_interview,
+            status_done=status_done,
+            progress_rate=progress_rate,
+            pct_wait=pct_wait,
+            pct_pre=pct_pre,
+            pct_interview=pct_interview,
+            pct_done=pct_done,
             recent=recent,
-            status_wait_pct=(status_wait / total2) * 100,
-            status_pre_pct=(status_pre / total2) * 100,
-            status_interview_pct=(status_interview / total2) * 100,
-            status_done_pct=(status_done / total2) * 100,
         )
+
 
     # =========================================================
     # 초기 Admin 생성
