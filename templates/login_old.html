@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}로그인{% endblock %}
+{% set hide_header = true %}
+
+{% block extra_css %}
+<style>
+  body {
+    background: radial-gradient(circle at 30% 20%, #1e293b, #0f172a);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .login-center {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-card {
+    width: 360px;
+    padding: 40px 34px;
+    background: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.35);
+    color: #e5e7eb;
+    text-align: center;
+  }
+
+  .login-logo {
+    width: 140px;
+    margin-bottom: 20px;
+  }
+
+  .login-input {
+    width: 100%;
+    margin-top: 12px;
+  }
+
+  .login-input input {
+    width: 100%;
+    padding: 12px 14px;
+    background: #2a2a2a;
+    border: 1px solid #3f3f46;
+    border-radius: 6px;
+    color: white;
+    font-size: 15px;
+  }
+
+  .login-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    background: #2563eb;
+    color: white;
+    border: none;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .login-btn:hover {
+    background: #1e4ed8;
+  }
+
+  .google-login-btn {
+    margin-top: 18px;
+  }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div class="login-center">
+
+  <div class="login-card">
+
+    <img class="login-logo"
+         src="{{ url_for('static', filename='images/tpr-banner.png') }}"
+         alt="TPR Logo" />
+
+    <form method="post">
+
+      <div class="login-input">
+        <input type="text" name="login_id" placeholder="대리점/사용자 " required />
+      </div>
+
+      <div class="login-input">
+        <input type="password" name="password" placeholder="비밀번호" required />
+      </div>
+
+      <button class="login-btn" type="submit">로그인</button>
+
+    </form>
+
+    <!-- Google -->
+    <button class="login-btn google-login-btn"
+            onclick="window.location.href='{{ url_for('login_google_start') }}'">
+      Google 계정으로 로그인
+    </button>
+
+  </div>
+</div>
+
+{% endblock %}
