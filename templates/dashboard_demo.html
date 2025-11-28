@@ -52,28 +52,52 @@
     background: #10b981;
   }
 
-  /* 최근 요청 */
-  .recent-list {
-    margin-top: 20px;
+  /* Compact recent card (v3 기반 + 축소 버전) */
+  .recent-card-compact {
+    position: relative;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 14px 18px;
+    margin-bottom: 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    transition: 0.18s ease;
+    cursor: pointer;
   }
 
-  .recent-card {
-    background: white;
-    padding: 14px;
-    border-radius: 10px;
-    border: 1px solid #e5e7eb;
-    margin-bottom: 12px;
+  .recent-card-compact:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
   }
 
   .recent-title {
+    font-size: 15px;
     font-weight: 600;
+    color: #111827;
     margin-bottom: 6px;
   }
 
   .recent-meta {
     font-size: 13px;
-    color: #6b7280;
+    line-height: 1.35;
+    color: #374151;
   }
+
+  .recent-status-tag {
+    position: absolute;
+    top: 12px;
+    right: 14px;
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    color: white;
+  }
+
+  .tag-모집중 { background: #2563eb; }
+  .tag-선탑진행중 { background: #0ea5e9; }
+  .tag-면접예정 { background: #f59e0b; }
+  .tag-배차완료 { background: #059669; }
 </style>
 {% endblock %}
 
@@ -146,39 +170,42 @@
   <!-- ======================== -->
   <!-- 4. 최근 요청 5건 -->
   <!-- ======================== -->
-  <h3 style="margin-top:20px;">📌 최근 요청 5건</h3>
-  <div class="recent-card-compact" onclick="openModal({
-      id: '{{ r.id }}',
-      region: '{{ r.region }}',
-      company: '{{ r.company }}',
-      branch_name: '{{ r.branch_name }}',
-      vehicle_type: '{{ r.vehicle_type }}',
-      headcount: '{{ r.headcount }}',
-      unit_price: '{{ r.unit_price }}',
-      volume: '{{ r.volume }}',
-      etc: '{{ r.etc }}',
-      status: '{{ r.status }}',
-      interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
-      created_at: '{{ r.created_at.strftime("%Y-%m-%d") }}'
-  })">
-  
-    <!-- 상태 태그 (오른쪽 상단) -->
+  <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
+
+  {% for r in recent %}
+
+  <div class="recent-card-compact"
+       onclick="openModal({
+         id: '{{ r.id }}',
+         region: '{{ r.region }}',
+         company: '{{ r.company }}',
+         branch_name: '{{ r.branch_name }}',
+         vehicle_type: '{{ r.vehicle_type }}',
+         headcount: '{{ r.headcount }}',
+         unit_price: '{{ r.unit_price }}',
+         volume: '{{ r.volume }}',
+         etc: '{{ r.etc }}',
+         status: '{{ r.status }}',
+         interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
+         created_at: '{{ r.created_at.strftime("%Y-%m-%d") }}'
+       })">
+
     <span class="recent-status-tag tag-{{ r.status }}">{{ r.status }}</span>
-  
+
     <div class="recent-title">
       {{ r.company }} / {{ r.branch_name }}
     </div>
-  
+
     <div class="recent-meta">
       지역: {{ r.region }}<br>
-      차종: {{ r.vehicle_type }} / 인원: {{ r.headcount }}명<br>
-      단가: {{ '{:,}'.format(r.unit_price) }}원 / 물량: {{ '{:,}'.format(r.volume) }}건<br>
-      등록일: {{ r.created_at.strftime('%Y-%m-%d') }}
+      차종: {{ r.vehicle_type or "-" }} / 인원: {{ r.headcount }}명<br>
+      단가: {{ "{:,}".format(r.unit_price) }}원 / 물량: {{ "{:,}".format(r.volume) }}건<br>
+      등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
     </div>
+
   </div>
 
-
- 
+  {% endfor %}
 
 </section>
 
