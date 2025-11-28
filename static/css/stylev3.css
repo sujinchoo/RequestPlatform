@@ -1,133 +1,176 @@
-/* =========================================
-   🔥 V3 Card Pastel Theme Upgrade
-   ========================================= */
+/* =============================== */
+/* 대시보드 v3 — compact card UI   */
+/* =============================== */
 
-/* 전체 카드 리스트 여백 */
+/* 레이아웃 */
 .card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
 }
 
-/* 카드 기본 스타일 */
+/* 카드 박스 */
 .req-card {
-  background: #f8fafc;                  /* 파스텔 밝은 회색-파랑 */
-  border-radius: 14px;
-  padding: 16px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.06);
-  border: 1px solid #e2e8f0;
-  transition: 0.2s ease;
-  cursor: pointer;
+    position: relative;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 16px 18px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    cursor: pointer;
+    transition: 0.17s ease;
 }
 
-/* Hover 효과 */
 .req-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-  background: #f1f5f9;   /* 살짝 더 강조된 파스텔 톤 */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.12);
+    transform: translateY(-2px);
 }
 
-/* 카드 헤더 */
+/* 카드 상단 */
 .req-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
 }
 
-/* 본문 텍스트 */
-.req-card-body .row {
-  display: flex;
-  justify-content: space-between;
-  padding: 4px 0;
-  font-size: 14px;
-  color: #475569;
+.card-region {
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
 }
 
-/* 푸터 */
-.req-card-footer {
-  margin-top: 12px;
-  font-size: 12px;
-  color: #64748b;
-  border-top: 1px solid #e2e8f0;
-  padding-top: 8px;
+.card-company {
+    font-size: 13px;
+    color: #6b7280;
+    margin-left: 6px;
 }
 
-/* Status 태그 – 파스텔 스타일 */
+/* 상태 태그 */
 .tag-status {
-  padding: 3px 8px;
-  border-radius: 8px;
-  font-size: 12px;
-  color: white;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: white;
 }
 
-
-
-/* ===========================================================
-   Compact Recent Card (v3 디자인 기반 + 사이즈 축소 버전)
-   =========================================================== */
-
-.recent-card-compact {
-  background: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  padding: 14px 18px;
-  margin-bottom: 14px;
-
-  /* v3 스타일 유지 */
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  transition: 0.18s ease;
-  cursor: pointer;
-
-  /* 크기 조절 */
-  width: 100%;
-  min-height: 105px;  /* v3보다 낮게 */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+.tag-모집중 {
+    background: #2563eb;
+}
+.tag-선탑진행중 {
+    background: #0ea5e9;
+}
+.tag-면접예정 {
+    background: #f59e0b;
+}
+.tag-배차완료 {
+    background: #059669;
 }
 
-.recent-card-compact:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-  transform: translateY(-2px);
+/* 카드 본문 */
+.req-card-body {
+    font-size: 13px;
+    color: #374151;
+    line-height: 1.45;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
-/* 카드 제목 (회사 / 지점) */
-.recent-title {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 6px;
+.req-card-body .row {
+    display: flex;
+    justify-content: space-between;
 }
 
-/* 4줄 본문 텍스트 */
-.recent-meta {
-  font-size: 13px;
-  line-height: 1.4;
-  color: #374151;
+.req-card-body .row span {
+    color: #6b7280;
 }
 
-.recent-meta br {
-  line-height: 1.2;
+/* 카드 footer */
+.req-card-footer {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #6b7280;
+    border-top: 1px solid #f3f4f6;
+    padding-top: 8px;
 }
 
-/* 상태 태그 (오른쪽 상단 fixed 느낌) */
-.recent-status-tag {
-  position: absolute;
-  top: 12px;
-  right: 14px;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  font-weight: 600;
-  color: white;
+/* =============================== */
+/* 모달                           */
+/* =============================== */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 50;
 }
 
-/* 색상 */
-.tag-모집중 { background: #2563eb; }
-.tag-선탑진행중 { background: #0ea5e9; }
-.tag-면접예정 { background: #f59e0b; }
-.tag-배차완료 { background: #059669; }
+.modal.hidden {
+    display: none;
+}
 
+.modal-card {
+    background: white;
+    width: 90%;
+    max-width: 340px;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.18);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.modal-title {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.modal-close {
+    font-size: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.modal-input {
+    width: 100%;
+    border: 1px solid #d1d5db;
+    padding: 10px;
+    border-radius: 8px;
+}
+
+.btn-primary {
+    margin-top: 18px;
+    width: 100%;
+    padding: 12px;
+    background: #2563eb;
+    color: white;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background: #1e40af;
+}
