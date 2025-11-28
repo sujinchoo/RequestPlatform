@@ -260,6 +260,8 @@ textarea {
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
+  max-height: 600px;
 }
 
 table {
