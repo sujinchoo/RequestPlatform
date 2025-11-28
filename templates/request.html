@@ -98,6 +98,51 @@
   {% endwith %}
 </script>
 
+<!-- SweetAlert2 -->
+
+
+<script>
+  // ✅ 1) flash 메시지를 SweetAlert로 출력 (저장/삭제 공통)
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, msg in messages %}
+        Swal.fire({
+          icon: "{{ 'success' if category == 'success' else 'error' }}",
+          text: "{{ msg }}",
+          confirmButtonText: "확인"
+        });
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  // ✅ 2) 삭제 버튼 클릭 시 SweetAlert 확인창
+  document.addEventListener("DOMContentLoaded", function () {
+    const deleteForms = document.querySelectorAll(".delete-form");
+
+    deleteForms.forEach(function(form) {
+      form.addEventListener("submit", function(e) {
+        e.preventDefault();  // 기본 제출 막고 → 확인 후 다시 submit
+
+        Swal.fire({
+          title: "삭제하시겠습니까?",
+          text: "삭제 후에는 되돌릴 수 없습니다.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#dc2626",
+          cancelButtonColor: "#6b7280",
+          confirmButtonText: "삭제",
+          cancelButtonText: "취소"
+        }).then((result) => {
+          if (result.isConfirmed) {
+            form.submit();  // 진짜 삭제 요청 날림 (POST /request/delete/ID)
+          }
+        });
+      });
+    });
+  });
+</script>
+
+
 <!-- ---------------------------- -->
 <!-- 📌 등록된 요청 목록 -->
 <!-- ---------------------------- -->
@@ -139,8 +184,8 @@
           <td>{{ r.volume }}</td>
           <td>
             <form method="post"
-                  action="/request/delete/{{ r.id }}"
-                  onsubmit="return confirm('삭제하시겠습니까?');">
+                  action="{{ url_for('delete_request', req_id=r.id) }}"
+                  class="delete-form">
               <button class="btn-small" style="background:#dc2626; color:white;">삭제</button>
             </form>
           </td>
