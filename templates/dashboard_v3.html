@@ -7,87 +7,14 @@
 {% block extra_css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/stylev3.css') }}">
 <style>
-
-/* =============================== */
-/*   🔥 New Recent-Card 스타일     */
-/* =============================== */
-.card-mini {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 16px;
-  margin-bottom: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-  cursor: pointer;
-}
-
-.card-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.card-head-left {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.ch-region {
-  font-size: 15px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.ch-company {
-  font-size: 13px;
-  color: #4b5563;
-}
-
-.card-body {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 14px;
-  color: #374151;
-}
-
-.card-body-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-}
-
-.card-body-row span {
-  font-weight: 500;
-  color: #4b5563;
-}
-
-.card-footer {
-  font-size: 12px;
-  color: #6b7280;
-  text-align: right;
-}
-
-/* 상태 색상 */
-.tag-status {
-  padding: 4px 8px;
-  font-size: 12px;
-  border-radius: 6px;
-  font-weight: 600;
-}
-
-.tag-모집중 { background:#dbeafe; color:#1e3a8a; }
-.tag-선탑진행중 { background:#fef9c3; color:#854d0e; }
-.tag-면접예정 { background:#fef3c7; color:#92400e; }
-.tag-배차완료 { background:#dcfce7; color:#166534; }
-
+  /* v3 전용 여백만 살짝 조정 */
+  .recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
 </style>
 {% endblock %}
-
 
 {% block content %}
 
@@ -103,50 +30,41 @@
     <div class="sheet-sub">최신 요청이 상단에 표시됩니다.</div>
   </div>
 
+  <!-- 🔹 통계 박스 -->
   <div class="stats-box">
     <span class="stat total">전체: {{ total_cases }}개</span>
     <span class="stat active">진행중: {{ active_cases }}개</span>
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
 
-  <div id="card-list">
+  <!-- 🔹 recent-card 스타일 카드 리스트 -->
+  <div id="card-list" class="recent-list">
     {% for r in reqs %}
-    <div class="card-mini"
+    <div class="recent-card"
          onclick="openModal({
-            id: '{{ r.id }}',
-            region: '{{ r.region }}',
-            company: '{{ r.company }}',
-            branch_name: '{{ r.branch_name }}',
-            unit_price: '{{ r.unit_price }}',
-            volume: '{{ r.volume }}',
-            vehicle_type: '{{ r.vehicle_type or "-" }}',
-            headcount: '{{ r.headcount }}',
-            etc: `{{ r.etc or "-" }}`,
-            status: '{{ r.status }}',
-            interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
-            created_at: '{{ r.created_at.isoformat() }}'
+           id: '{{ r.id }}',
+           region: '{{ r.region }}',
+           company: '{{ r.company }}',
+           branch_name: '{{ r.branch_name }}',
+           unit_price: '{{ r.unit_price }}',
+           volume: '{{ r.volume }}',
+           vehicle_type: '{{ r.vehicle_type or '-' }}',
+           headcount: '{{ r.headcount }}',
+           etc: `{{ r.etc or '-' }}`,
+           status: '{{ r.status }}',
+           interview_date: '{{ r.interview_date.isoformat() if r.interview_date else '' }}',
+           created_at: '{{ r.created_at.isoformat() }}'
          })">
 
-      <div class="card-head">
-        <div class="card-head-left">
-          <span class="ch-region">{{ r.region }}</span>
-          <span class="ch-company">{{ r.company }}</span>
-        </div>
-        <span class="tag-status tag-{{ r.status }}">{{ r.status }}</span>
+      <div class="recent-title">
+        {{ r.company }} / {{ r.branch_name }}
       </div>
 
-      <div class="card-body">
-        <div class="card-body-row"><span>영업소</span><div>{{ r.branch_name }}</div></div>
-        <div class="card-body-row"><span>단가</span><div>{{ "{:,}".format(r.unit_price) }}원</div></div>
-        <div class="card-body-row"><span>물량</span><div>{{ "{:,}".format(r.volume) }}건</div></div>
-        <div class="card-body-row"><span>차종</span><div>{{ r.vehicle_type }}</div></div>
-        <div class="card-body-row"><span>인원</span><div>{{ r.headcount }}명</div></div>
-        <div class="card-body-row"><span>기타</span><div>{{ r.etc or "-" }}</div></div>
-        <div class="card-body-row"><span>면접일</span><div>{{ r.interview_date.strftime("%Y-%m-%d") if r.interview_date else "-" }}</div></div>
-      </div>
-
-      <div class="card-footer">
-        등록일: {{ r.created_at.strftime("%Y-%m-%d %H:%M") }}
+      <div class="recent-meta">
+        지역: {{ r.region }}<br>
+        차종: {{ r.vehicle_type or '-' }} / 인원: {{ r.headcount }}명<br>
+        단가: {{ "{:,}".format(r.unit_price) }}원 / 물량: {{ "{:,}".format(r.volume) }}건<br>
+        등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
       </div>
 
     </div>
@@ -155,9 +73,9 @@
 
 </section>
 
-
-
-<!-- 🔥 Modal -->
+<!-- ====================== -->
+<!-- 🔥 상태 변경 Modal -->
+<!-- ====================== -->
 <div id="status-modal" class="modal hidden">
   <div class="modal-card">
 
@@ -180,125 +98,117 @@
     </div>
 
     <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
-
   </div>
 </div>
 
-
-
+<!-- ====================== -->
+<!-- 🔥 JS -->
+<!-- ====================== -->
 <script>
 let currentId = null;
 
-/* ==========================================================
-   1) renderCards — recent-card 구조로 적용
-========================================================== */
+/* -------------------------------------------------
+   1) recent-card 구조로 렌더링 (필터 연동용)
+   ↳ base.html 의 loadFilteredData() 가 이 함수를 호출
+-------------------------------------------------- */
 function renderCards(data) {
-    const list = document.getElementById("card-list");
-    list.innerHTML = "";
+  const list = document.getElementById("card-list");
+  list.innerHTML = "";
 
-    data.forEach(r => {
-        const html = `
-        <div class="card-mini" onclick='openModal(${JSON.stringify(r).replace(/"/g, "&quot;")})'>
-          <div class="card-head">
-            <div class="card-head-left">
-              <span class="ch-region">${r.region}</span>
-              <span class="ch-company">${r.company}</span>
-            </div>
-            <span class="tag-status tag-${r.status}">${r.status}</span>
-          </div>
+  if (!data || data.length === 0) {
+    list.innerHTML = '<p style="color:#6b7280;">등록된 요청이 없습니다.</p>';
+    return;
+  }
 
-          <div class="card-body">
-            <div class="card-body-row"><span>영업소</span><div>${r.branch_name}</div></div>
-            <div class="card-body-row"><span>단가</span><div>${Number(r.unit_price).toLocaleString()}원</div></div>
-            <div class="card-body-row"><span>물량</span><div>${Number(r.volume).toLocaleString()}건</div></div>
-            <div class="card-body-row"><span>차종</span><div>${r.vehicle_type || "-"}</div></div>
-            <div class="card-body-row"><span>인원</span><div>${r.headcount}명</div></div>
-            <div class="card-body-row"><span>기타</span><div>${r.etc || "-"}</div></div>
-            <div class="card-body-row"><span>면접일</span><div>${r.interview_date || "-"}</div></div>
-          </div>
+  data.forEach(r => {
+    const safeObj = JSON.stringify(r).replace(/"/g, '&quot;');
 
-          <div class="card-footer">
-            등록일: ${r.created_at.substring(0, 16).replace("T", " ")}
-          </div>
+    const html = `
+      <div class="recent-card" onclick='openModal(${safeObj})'>
+        <div class="recent-title">
+          ${r.company} / ${r.branch_name}
         </div>
-        `;
-        list.insertAdjacentHTML("beforeend", html);
-    });
+        <div class="recent-meta">
+          지역: ${r.region}<br>
+          차종: ${r.vehicle_type || "-"} / 인원: ${r.headcount}명<br>
+          단가: ${Number(r.unit_price).toLocaleString()}원 / 물량: ${Number(r.volume).toLocaleString()}건<br>
+          등록일: ${r.created_at.substring(0,10)}
+        </div>
+      </div>
+    `;
+    list.insertAdjacentHTML("beforeend", html);
+  });
 }
 
-
-/* ==========================================================
-   필터
-========================================================== */
-function loadFilteredData() {
-    const company = document.getElementById("filter-company").value;
-    const status = document.getElementById("filter-status").value;
-
-    fetch(`/api/requests?company=${company}&status=${status}`)
-        .then(res => res.json())
-        .then(json => renderCards(json.data))
-        .catch(err => console.error(err));
-}
-
-
-/* ==========================================================
-   Modal open/close
-========================================================== */
+/* -------------------------------------------------
+   2) Modal open / close
+-------------------------------------------------- */
 function openModal(r) {
-    currentId = r.id;
+  currentId = r.id;
 
-    document.getElementById("modal-title").innerText =
-        `${r.region} / ${r.company} / ${r.branch_name}`;
+  document.getElementById("modal-title").innerText =
+    `${r.region} / ${r.company} / ${r.branch_name}`;
 
-    document.getElementById("modal-interview").value = r.interview_date || "";
-    document.getElementById("modal-status").value = r.status;
+  document.getElementById("modal-interview").value = r.interview_date || "";
+  document.getElementById("modal-status").value = r.status || "모집중";
 
-    document.getElementById("status-modal").classList.remove("hidden");
+  document.getElementById("status-modal").classList.remove("hidden");
 }
 
 function closeModal() {
-    document.getElementById("status-modal").classList.add("hidden");
+  document.getElementById("status-modal").classList.add("hidden");
 }
 
-
-/* ==========================================================
-   저장
-========================================================== */
+/* -------------------------------------------------
+   3) 상태 저장 후 필터 재로딩
+   ↳ loadFilteredData() 는 base.html 에 이미 정의되어 있음
+-------------------------------------------------- */
 function saveStatus() {
-    const btn = document.querySelector(".modal-save-btn");
-    btn.innerText = "저장중...";
-    btn.disabled = true;
+  const btn = document.querySelector(".modal-save-btn");
+  btn.innerText = "저장중...";
+  btn.disabled = true;
 
-    const payload = {
-        req_id: currentId,
-        interview_date: document.getElementById("modal-interview").value,
-        status: document.getElementById("modal-status").value,
-    };
+  const payload = {
+    req_id: currentId,
+    interview_date: document.getElementById("modal-interview").value,
+    status: document.getElementById("modal-status").value
+  };
 
-    fetch("/api/update-status", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify(payload)
-    })
+  fetch("/api/update-status", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload)
+  })
     .then(res => res.json())
     .then(json => {
-        if (!json.success) {
-            alert("저장 실패");
-            return;
-        }
-        btn.innerText = "저장완료 ✓";
-        btn.style.background = "#059669";
+      if (!json.success) {
+        alert("저장 실패");
+        btn.innerText = "저장";
+        btn.disabled = false;
+        return;
+      }
 
-        setTimeout(() => {
-            closeModal();
-            loadFilteredData();
-            btn.innerText = "저장";
-            btn.style.background = "#2563eb";
-            btn.disabled = false;
-        }, 700);
+      btn.innerText = "저장완료 ✓";
+      btn.style.background = "#059669";
+
+      setTimeout(() => {
+        closeModal();
+        // base.html 에 있는 공통 필터 함수 재사용
+        if (typeof loadFilteredData === "function") {
+          loadFilteredData();
+        }
+        btn.innerText = "저장";
+        btn.style.background = "#2563eb";
+        btn.disabled = false;
+      }, 700);
+    })
+    .catch(err => {
+      console.error("SAVE ERROR:", err);
+      alert("상태 저장 중 오류가 발생했습니다.");
+      btn.innerText = "저장";
+      btn.disabled = false;
     });
 }
-
 </script>
 
 {% endblock %}
