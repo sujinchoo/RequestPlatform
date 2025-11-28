@@ -147,23 +147,38 @@
   <!-- 4. 최근 요청 5건 -->
   <!-- ======================== -->
   <h3 style="margin-top:20px;">📌 최근 요청 5건</h3>
-
-  <div class="recent-list">
-
-    {% for r in recent %}
-    <div class="recent-card">
-      <div class="recent-title">
-        {{ r.company }} / {{ r.branch_name }}
-      </div>
-      <div class="recent-meta">
-        지역: {{ r.region }}<br>
-        차종: {{ r.vehicle_type }} / 인원: {{ r.headcount }}명<br>
-        단가: {{ r.unit_price }}원 / 물량: {{ r.volume }}건<br>
-        등록일: {{ r.created_at.strftime('%Y-%m-%d') }}
-      </div>
+  <div class="recent-card-compact" onclick="openModal({
+      id: '{{ r.id }}',
+      region: '{{ r.region }}',
+      company: '{{ r.company }}',
+      branch_name: '{{ r.branch_name }}',
+      vehicle_type: '{{ r.vehicle_type }}',
+      headcount: '{{ r.headcount }}',
+      unit_price: '{{ r.unit_price }}',
+      volume: '{{ r.volume }}',
+      etc: '{{ r.etc }}',
+      status: '{{ r.status }}',
+      interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}',
+      created_at: '{{ r.created_at.strftime("%Y-%m-%d") }}'
+  })">
+  
+    <!-- 상태 태그 (오른쪽 상단) -->
+    <span class="recent-status-tag tag-{{ r.status }}">{{ r.status }}</span>
+  
+    <div class="recent-title">
+      {{ r.company }} / {{ r.branch_name }}
     </div>
-    {% endfor %}
+  
+    <div class="recent-meta">
+      지역: {{ r.region }}<br>
+      차종: {{ r.vehicle_type }} / 인원: {{ r.headcount }}명<br>
+      단가: {{ '{:,}'.format(r.unit_price) }}원 / 물량: {{ '{:,}'.format(r.volume) }}건<br>
+      등록일: {{ r.created_at.strftime('%Y-%m-%d') }}
+    </div>
   </div>
+
+
+ 
 
 </section>
 
