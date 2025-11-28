@@ -63,68 +63,71 @@
   color: white;
 }
 
-.tag-모집중 { background: #60a5fa; }       /* 파스텔 블루 */
-.tag-선탑진행중 { background: #34d399; }    /* 민트 */
-.tag-면접예정 { background: #fbbf24; }      /* 파스텔 옐로우 */
-.tag-배차완료 { background: #9ca3af; }      /* 파스텔 그레이 */
 
 
+/* ===========================================================
+   Compact Recent Card (v3 디자인 기반 + 사이즈 축소 버전)
+   =========================================================== */
 
-/* ======================= */
-/* recent-card (4줄 스타일) */
-/* ======================= */
-
-.recent-card {
+.recent-card-compact {
   background: #ffffff;
-  padding: 14px 18px;
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  border: 1px solid #f1f1f1;
+  border: 1px solid #e5e7eb;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+
+  /* v3 스타일 유지 */
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: 0.18s ease;
   cursor: pointer;
-  transition: 0.15s ease;
+
+  /* 크기 조절 */
+  width: 100%;
+  min-height: 105px;  /* v3보다 낮게 */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
-.recent-card:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+.recent-card-compact:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
   transform: translateY(-2px);
 }
 
-/* 제목 (회사 / 지점) */
+/* 카드 제목 (회사 / 지점) */
 .recent-title {
+  font-size: 15px;
   font-weight: 600;
-  font-size: 16px;
   color: #111827;
   margin-bottom: 6px;
 }
 
-/* 4줄 요약 텍스트 */
+/* 4줄 본문 텍스트 */
 .recent-meta {
-  font-size: 14px;
+  font-size: 13px;
+  line-height: 1.4;
   color: #374151;
-  line-height: 1.45;
 }
 
-/* 상태 태그 (선태 등 색상) */
-.tag-status {
-  font-size: 12px;
-  font-weight: 600;
+.recent-meta br {
+  line-height: 1.2;
+}
+
+/* 상태 태그 (오른쪽 상단 fixed 느낌) */
+.recent-status-tag {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 11px;
   padding: 3px 8px;
   border-radius: 6px;
+  font-weight: 600;
   color: white;
 }
 
-.tag-모집중 {
-  background: #2563eb;
-}
+/* 색상 */
+.tag-모집중 { background: #2563eb; }
+.tag-선탑진행중 { background: #0ea5e9; }
+.tag-면접예정 { background: #f59e0b; }
+.tag-배차완료 { background: #059669; }
 
-.tag-선탑진행중 {
-  background: #0ea5e9;
-}
-
-.tag-면접예정 {
-  background: #f59e0b;
-}
-
-.tag-배차완료 {
-  background: #059669;
-}
