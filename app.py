@@ -291,6 +291,37 @@ def create_app():
                                branch_requests=branch_requests)
 
 
+        # =========================================================
+        # 요청 삭제 (본인 지점 데이터만 삭제)
+        # =========================================================
+        @app.route("/request/delete/<int:req_id>", methods=["POST"])
+        @login_required
+        def delete_request(req_id):
+            branch_id = session.get("branch_id")
+    
+            # 로그인 안 되어 있으면 방어
+            if not branch_id:
+                flash("로그인 후 이용해주세요.", "error")
+                return redirect(url_for("login"))
+    
+            # 🔒 보안: 내 지점(branch_id)의 데이터만 삭제 가능
+            row = Req.query.filter_by(id=req_id, branch_id=branch_id).first()
+    
+            if not row:
+                flash("삭제할 요청을 찾을 수 없습니다.", "error")
+                return redirect(url_for("request_page"))
+    
+            try:
+                db.session.delete(row)
+                db.session.commit()
+                flash("요청이 삭제되었습니다.", "success")
+            except Exception as e:
+                db.session.rollback()
+                print("[DELETE ERROR]", e)
+                flash("삭제 중 오류가 발생했습니다.", "error")
+    
+            return redirect(url_for("request_page"))
+
     # =========================================================
     # 통계 함수
     # =========================================================
