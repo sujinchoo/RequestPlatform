@@ -1,52 +1,46 @@
-/* =============================== */
-/* 대시보드 v3 — compact card UI   */
-/* =============================== */
+/* ===================================================== */
+/* 📌 대시보드 v3 — recent-card compact 디자인 적용     */
+/* ===================================================== */
 
-/* 레이아웃 */
-.card-list {
+/* 카드 리스트 전체 */
+.recent-list {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    gap: 12px;
 }
 
-/* 카드 박스 */
-.req-card {
-    position: relative;
+/* 최근 카드 (compact style) */
+.recent-card {
     background: #ffffff;
-    border-radius: 12px;
-    padding: 16px 18px;
     border: 1px solid #e5e7eb;
+    padding: 16px 18px;
+    border-radius: 14px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    cursor: pointer;
     transition: 0.17s ease;
+    cursor: pointer;
 }
 
-.req-card:hover {
+.recent-card:hover {
     box-shadow: 0 4px 10px rgba(0,0,0,0.12);
     transform: translateY(-2px);
 }
 
-/* 카드 상단 */
-.req-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px;
-}
-
-.card-region {
-    font-size: 14px;
-    font-weight: 600;
+/* 제목 */
+.recent-title {
+    font-size: 15px;
+    font-weight: 700;
     color: #111827;
+    margin-bottom: 6px;
 }
 
-.card-company {
+/* 메타 정보 */
+.recent-meta {
     font-size: 13px;
-    color: #6b7280;
-    margin-left: 6px;
+    color: #374151;
+    line-height: 1.45;
 }
 
-/* 상태 태그 */
+/* 상태 태그 (기존 v3 유지) */
 .tag-status {
     padding: 4px 10px;
     border-radius: 8px;
@@ -58,48 +52,20 @@
 .tag-모집중 {
     background: #2563eb;
 }
+
 .tag-선탑진행중 {
     background: #0ea5e9;
 }
+
 .tag-면접예정 {
     background: #f59e0b;
 }
+
 .tag-배차완료 {
     background: #059669;
 }
 
-/* 카드 본문 */
-.req-card-body {
-    font-size: 13px;
-    color: #374151;
-    line-height: 1.45;
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.req-card-body .row {
-    display: flex;
-    justify-content: space-between;
-}
-
-.req-card-body .row span {
-    color: #6b7280;
-}
-
-/* 카드 footer */
-.req-card-footer {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #6b7280;
-    border-top: 1px solid #f3f4f6;
-    padding-top: 8px;
-}
-
-/* =============================== */
-/* 모달                           */
-/* =============================== */
-
+/* ============== 모달 디자인 유지 =============== */
 .modal {
     position: fixed;
     top: 0;
@@ -139,9 +105,9 @@
 }
 
 .modal-close {
-    font-size: 20px;
     background: none;
     border: none;
+    font-size: 20px;
     cursor: pointer;
 }
 
@@ -173,4 +139,24 @@
 
 .btn-primary:hover {
     background: #1e40af;
+}
+
+/* 통계 박스 (기존 유지) */
+.stats-box {
+    display: flex;
+    justify-content: space-between;
+    background: #f9fafb;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.stat {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.stat.done {
+    color: #059669;
 }
