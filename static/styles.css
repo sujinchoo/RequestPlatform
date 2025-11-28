@@ -257,12 +257,6 @@ textarea {
 
 /* ===== 테이블 (엑셀 시트 느낌) ===== */
 
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 600px;
-}
 
 table {
   width: 100%;
@@ -392,12 +386,7 @@ tbody tr:nth-child(even) {
     height: 38px;
   }
 }
-/* 🔹 가로 스크롤 전체 래퍼 */
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-}
+
 
 /* 🔹 테이블 컴팩트 모드 (행 간격 줄임) */
 .table-compact th,
@@ -632,13 +621,14 @@ table tbody tr:hover {
    🔥 V1 DASHBOARD FINAL PATCH (2025.11.20)
    Compact + Readability + Column Optimization
    ============================================================ */
-
-/* 전체 wrapper는 그대로 두지만 padding 약간 줄임 */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
-  padding-bottom: 4px;
+  overflow-y: auto;
+  max-height: 600px;
+  -webkit-overflow-scrolling: touch;
 }
+
 
 /* v1 컴팩트 테이블 핵심 설정 */
 .table-compact {
@@ -942,12 +932,7 @@ table tbody tr:hover {
 .stats-box .total { color: #111827; }          /* 기본: 진한 회색 */
 .stats-box .active { color: #2563eb; }         /* 파란색 강조 */
 .stats-box .done { color: #059669; }           /* 녹색(배차완료) */
-/* 🔥 테이블 wrapper — 스크롤 허용 */
-.table-wrapper {
-  max-height: 600px;   /* 원하는 높이 */
-  overflow-y: auto;     /* 세로 스크롤 */
-  overflow-x: auto;     /* 가로 스크롤 */
-}
+
 
 /* 🔥 헤더 sticky */
 .table-compact thead th {
@@ -987,13 +972,9 @@ table tbody tr:hover {
 .col-date      { width: 70px; }       /* 등록일 */
 .col-delete    { width: 40px; }        /* 삭제 */
 
-.table-wrapper {
-    max-height: 420px;     /* 스크롤 박스 높이 */
-    overflow-y: auto;
-    overflow-x: hidden;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-}
+
+
+
 
 .table-v2 thead th {
     position: sticky;
