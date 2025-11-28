@@ -44,7 +44,8 @@
 </head>
 
 <body>
-  <header class="top-header">
+  <header class="top-header" {% if hide_header %}style="display:none"{% endif %}>
+
     <div class="header-inner">
       <div class="logo-wrap">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
