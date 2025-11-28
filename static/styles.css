@@ -975,15 +975,15 @@ table tbody tr:hover {
 }
 
 /* ===  Request Board - 개별 컬럼 사이즈 조정 === */
-.col-id        { width: 60px; }        /* ID */
-.col-company   { width: 100px; }       /* 택배사 */
-.col-region    { width: 100px; }       /* 지역 */
+.col-id        { width: 40px; }        /* ID */
+.col-company   { width: 70px; }       /* 택배사 */
+.col-region    { width: 70px; }       /* 지역 */
 .col-vehicle   { width: 100px; }       /* 차종 */
-.col-headcount { width: 70px; }        /* 인원 */
-.col-unit      { width: 90px; }        /* 단가 */
+.col-headcount { width: 40px; }        /* 인원 */
+.col-unit      { width: 45px; }        /* 단가 */
 .col-volume    { width: 90px; }        /* 월물량 */
-.col-date      { width: 100px; }       /* 등록일 */
-.col-delete    { width: 60px; }        /* 삭제 */
+.col-date      { width: 70px; }       /* 등록일 */
+.col-delete    { width: 40px; }        /* 삭제 */
 
 .table-wrapper {
     max-height: 420px;     /* 스크롤 박스 높이 */
