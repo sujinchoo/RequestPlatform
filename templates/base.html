@@ -8,44 +8,14 @@
   <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
-  <!-- 개별 페이지 추가 CSS -->
+  <!-- 페이지별 CSS -->
   {% block extra_css %}{% endblock %}
-
-  <!-- 🔵 필터 공통 CSS -->
-  <style>
-    .filter-section {
-      margin-top: 10px;
-      margin-bottom: 10px;
-    }
-    .filter-bar {
-      display: flex;
-      gap: 5px;
-      padding: 10px;
-      background: #f4f4f5;
-      border-radius: 8px;
-      border: 1px solid #e5e7eb;
-    }
-    .filter-select {
-      padding: 8px 10px;
-      font-size: 14px;
-      border-radius: 6px;
-      border: 1px solid #d4d4d8;
-      background: #ffffff;
-    }
-
-    /* 🔥 구글 로그인 유저 표시 스타일 */
-    .nav-user {
-      color: #4b5563;
-      font-size: 14px;
-      margin-right: 12px;
-    }
-  </style>
-
 </head>
 
 <body>
-  <header class="top-header" {% if hide_header %}style="display:none"{% endif %}>
 
+  <!-- 🔥 로그인 페이지에서는 header 숨김 -->
+  <header class="top-header" {% if hide_header %}style="display:none"{% endif %}>
     <div class="header-inner">
       <div class="logo-wrap">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
@@ -54,58 +24,57 @@
 
       <nav class="nav">
 
-      <!-- 🔥 Google 로그인 시 이름 표시 -->
-      {% if session.get('google_user_id') %}
-        <span class="nav-user">Google 로그인: {{ session.get("google_name") }}</span>
-      {% endif %}
+        {% if session.get('google_user_id') %}
+          <span class="nav-user">Google 로그인: {{ session.get("google_name") }}</span>
+        {% endif %}
 
-      <!-- 🔥 로그인 여부 체크: branch_id OR google_user_id -->
-      {% if session.get('branch_id') or session.get('google_user_id') %}
+        {% if session.get('branch_id') or session.get('google_user_id') %}
 
-        {% if session.get('branch_id') and session.get('is_admin') %}
-          <a href="{{ url_for('dashboard') }}"
-             class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
-            요청 현황(본사)
-          </a>
-           
-          <a href="{{ url_for('dashboard_demo') }}"
-             class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
-             Demo Dashboard
-          </a>
-                  
-          <a href="{{ url_for('dashboard_v3') }}"
-             class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-            카드형 대시보드 v3
+          {% if session.get('branch_id') and session.get('is_admin') %}
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+              요청 현황(본사)
+            </a>
+            <a href="{{ url_for('dashboard_demo') }}"
+               class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
+              Demo Dashboard
+            </a>
+            <a href="{{ url_for('dashboard_v3') }}"
+               class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
+              카드형 대시보드 v3
+            </a>
+            <a href="{{ url_for('dbtest_page') }}"
+               class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
+              DB TEST 테스트DB
+            </a>
+          {% endif %}
+
+          <a href="{{ url_for('request_page') }}"
+             class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
+            요청 등록(대리점)
           </a>
 
-          <a href="{{ url_for('dbtest_page') }}"
-             class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
-            DB TEST 테스트DB
+          <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
+
+        {% else %}
+          <a href="{{ url_for('login') }}"
+             class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
+            로그인
           </a>
         {% endif %}
-    
-        <a href="{{ url_for('request_page') }}"
-           class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
-          요청 등록(대리점)
-        </a>
-    
-        <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
-
-      {% else %}
-        <a href="{{ url_for('login') }}"
-           class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
-          로그인
-        </a>
-      {% endif %}
 
       </nav>
-
     </div>
   </header>
 
-  <div class="page">
+  <!-- 🔥 로그인 화면일 때 full-screen 처리 -->
+  <div class="page"
+       {% if hide_header %}
+         style="max-width:none; padding:0; margin:0; background:none"
+       {% endif %}
+  >
 
-    <!-- flash 메시지 -->
+    <!-- Flash 메시지 (로그인 화면에서는 자동으로 상단에 뜸) -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="sheet" style="margin-top:10px;">
@@ -122,78 +91,27 @@
       {% endif %}
     {% endwith %}
 
-    <main class="main">
+    <!-- 🔥 main 여백 제거 -->
+    <main class="main"
+          {% if hide_header %}
+            style="margin-top:0; padding:0; gap:0"
+          {% endif %}
+    >
 
       {% if session.get('branch_id') and session.get('is_admin') and not disable_filter %}
-      <section class="sheet filter-section">
-        <div class="filter-bar">
-          <select id="filter-company" class="filter-select">
-            <option value="all">전체 택배사</option>
-            {% for c in company_list %}
-              <option value="{{ c }}">{{ c }}</option>
-            {% endfor %}
-          </select>
-
-          <select id="filter-status" class="filter-select">
-            <option value="all">전체 상태</option>
-            <option value="모집중">모집중</option>
-            <option value="선탑진행중">선탑진행중</option>
-            <option value="면접예정">면접예정</option>
-            <option value="배차완료">배차완료</option>
-          </select>
-        </div>
-      </section>
+        (필터 영역)
       {% endif %}
 
       {% block content %}{% endblock %}
-
     </main>
 
+    {% if not hide_header %}
     <footer class="footer">
       Request Platform – 샘플 서비스 (Flask + PostgreSQL)
     </footer>
+    {% endif %}
+
   </div>
-
-  {% if session.get('branch_id') and session.get('is_admin') %}
-  <script>
-    function loadFilteredData() {
-        const company = document.getElementById("filter-company").value;
-        const status  = document.getElementById("filter-status").value;
-
-        const params = new URLSearchParams({ company, status });
-        history.pushState({}, "", `?${params.toString()}`);
-
-        fetch(`/api/requests?${params.toString()}`)
-          .then(res => res.json())
-          .then(json => {
-
-              {% if request.endpoint == 'dashboard_v3' %}
-                  renderCards(json.data);
-              {% else %}
-                  renderData(json.data);
-              {% endif %}
-
-          })
-          .catch(err => console.error("API ERROR:", err));
-    }
-
-    document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
-    document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
-
-    window.addEventListener("load", () => {
-        if (!document.getElementById("filter-company")) return;
-
-        const params = new URLSearchParams(window.location.search);
-        const c = params.get("company");
-        const s = params.get("status");
-
-        if (c) document.getElementById("filter-company").value = c;
-        if (s) document.getElementById("filter-status").value = s;
-
-        loadFilteredData();
-    });
-  </script>
-  {% endif %}
 
 </body>
 </html>
