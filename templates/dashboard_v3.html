@@ -58,11 +58,13 @@
 
       <div class="recent-title">
         {{ r.company }} / {{ r.branch_name }}
+         <!-- 🔥 상태 배지 추가 -->
+        <span class="tag-status tag-{{ r.status }}">
+            {{ r.status }}
+        </span>
       </div>
-      <!-- 🔥 상태 배지 추가 -->
-      <span class="tag-status tag-{{ r.status }}">
-          {{ r.status }}
-      </span>
+        
+       
 
       <div class="recent-meta">
         지역: {{ r.region }}<br>
