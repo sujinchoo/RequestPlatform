@@ -16,9 +16,12 @@
 
 <body>
 
-  <!-- 🔥 로그인 페이지에서는 header 숨김 -->
+  <!-- ======================================== -->
+  <!-- 🔵 HEADER (로그인 페이지는 숨김) -->
+  <!-- ======================================== -->
   <header class="top-header" {% if hide_header %}style="display:none"{% endif %}>
     <div class="header-inner">
+
       <div class="logo-wrap">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
         <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
@@ -37,14 +40,17 @@
                class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
               요청 현황(본사)
             </a>
+
             <a href="{{ url_for('dashboard_demo') }}"
                class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
               Demo Dashboard
             </a>
+
             <a href="{{ url_for('dashboard_v3') }}"
                class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
               카드형 대시보드 v3
             </a>
+
             <a href="{{ url_for('dbtest_page') }}"
                class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
               DB TEST 테스트DB
@@ -69,14 +75,17 @@
     </div>
   </header>
 
-  <!-- 🔥 로그인 화면일 때 full-screen 처리 -->
+
+  <!-- ======================================== -->
+  <!-- 🔵 PAGE WRAPPER — 로그인 전용 옵션 적용 -->
+  <!-- ======================================== -->
   <div class="page"
        {% if hide_header %}
          style="max-width:none; padding:0; margin:0; background:none"
        {% endif %}
   >
 
-    <!-- Flash 메시지 (로그인 화면에서는 자동으로 상단에 뜸) -->
+    <!-- Flash 메시지 -->
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         <div class="sheet" style="margin-top:10px;">
@@ -93,17 +102,15 @@
       {% endif %}
     {% endwith %}
 
-    <!-- 🔥 main 여백 제거 -->
+
+    <!-- ======================================== -->
+    <!-- 🔵 MAIN — 로그인 페이지 여백 제거 지원 -->
+    <!-- ======================================== -->
     <main class="main"
           {% if hide_header %}
             style="margin-top:0; padding:0; gap:0"
           {% endif %}
     >
-
-      {% if session.get('branch_id') and session.get('is_admin') and not disable_filter %}
-        (필터 영역)
-      {% endif %}
-
       {% block content %}{% endblock %}
     </main>
 
@@ -114,6 +121,55 @@
     {% endif %}
 
   </div>
+
+
+  <!-- ===================================================================== -->
+  <!-- ⭐ 관리자(admin=True) + 대시보드 페이지에서만 데이터 자동 로딩 실행 ⭐ -->
+  <!-- ===================================================================== -->
+  {% if session.get('is_admin') 
+        and request.endpoint in [
+          'dashboard',
+          'dashboard_v1',
+          'dashboard_v2',
+          'dashboard_v3',
+          'dashboard_demo'
+        ]
+  %}
+  <script>
+
+      function loadFilteredData() {
+
+          const company = document.getElementById("filter-company")?.value || "all";
+          const status  = document.getElementById("filter-status")?.value || "all";
+
+          const params = new URLSearchParams({ company, status });
+
+          fetch(`/api/requests?${params.toString()}`)
+            .then(res => res.json())
+            .then(json => {
+
+                // v3: 카드형 대시보드
+                if (typeof renderCards === "function") {
+                    renderCards(json.data);
+
+                // v1, v2, demo: 테이블 렌더링
+                } 
+                else if (typeof renderData === "function") {
+                    renderData(json.data);
+                }
+            })
+            .catch(err => console.error("API ERROR:", err));
+      }
+
+      // 필터 UI가 있는 페이지(v2, v3)
+      document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
+      document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
+
+      // 페이지 로드시 자동 로딩
+      window.addEventListener("load", loadFilteredData);
+
+  </script>
+  {% endif %}
 
 </body>
 </html>
