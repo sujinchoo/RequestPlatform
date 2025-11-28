@@ -67,3 +67,64 @@
 .tag-선탑진행중 { background: #34d399; }    /* 민트 */
 .tag-면접예정 { background: #fbbf24; }      /* 파스텔 옐로우 */
 .tag-배차완료 { background: #9ca3af; }      /* 파스텔 그레이 */
+
+
+
+/* ======================= */
+/* recent-card (4줄 스타일) */
+/* ======================= */
+
+.recent-card {
+  background: #ffffff;
+  padding: 14px 18px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  border: 1px solid #f1f1f1;
+  cursor: pointer;
+  transition: 0.15s ease;
+}
+
+.recent-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+  transform: translateY(-2px);
+}
+
+/* 제목 (회사 / 지점) */
+.recent-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+/* 4줄 요약 텍스트 */
+.recent-meta {
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.45;
+}
+
+/* 상태 태그 (선태 등 색상) */
+.tag-status {
+  font-size: 12px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 6px;
+  color: white;
+}
+
+.tag-모집중 {
+  background: #2563eb;
+}
+
+.tag-선탑진행중 {
+  background: #0ea5e9;
+}
+
+.tag-면접예정 {
+  background: #f59e0b;
+}
+
+.tag-배차완료 {
+  background: #059669;
+}
