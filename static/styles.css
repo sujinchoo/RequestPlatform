@@ -972,7 +972,11 @@ table tbody tr:hover {
 .col-date      { width: 70px; }       /* 등록일 */
 .col-delete    { width: 40px; }        /* 삭제 */
 
-
+/* login banner full size */
+.banner-full {
+    width: 100%;      /* 로그인 버튼과 동일한 가로폭 */
+    border-radius: 6px;  /* 선택: 로그인 카드와 자연스럽게 어울림 */
+}
 
 
 
@@ -1006,3 +1010,5 @@ table tbody tr:hover {
 .table-compact {
   min-width: 1200px;
 }
+
+
