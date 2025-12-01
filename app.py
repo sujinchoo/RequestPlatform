@@ -10,7 +10,7 @@ from models import db, Branch, Request as Req
 
 # Google OAuth
 from flask_dance.contrib.google import make_google_blueprint, google
-from sqlalchemy import text
+from sqlalchemy import text, extract, func
 import os
 
 
@@ -188,7 +188,31 @@ def create_app():
             region_count[key] = int(cnt)
     
         # ============================================
-    
+       
+
+        # ============================================
+        # 월별 요청 수 집계 (Line Chart 용)
+        # ============================================
+        monthly_rows = (
+            db.session.query(
+                extract('year', Req.created_at).label("year"),
+                extract('month', Req.created_at).label("month"),
+                func.count(Req.id)
+            )
+            .group_by("year", "month")
+            .order_by("year", "month")
+            .all()
+        )
+        
+        # 데이터 정제
+        monthly_labels = []
+        monthly_values = []
+        
+        for y, m, cnt in monthly_rows:
+            label = f"{int(y)}-{int(m):02d}"   # 예: 2025-01
+            monthly_labels.append(label)
+            monthly_values.append(int(cnt))
+
         return render_template(
             "dashboard_demo.html",
             total_cases=total,
@@ -203,6 +227,8 @@ def create_app():
             pct_done=pct_done,
             recent=recent,
             region_count=region_count,
+            monthly_labels=monthly_labels,
+            monthly_values=monthly_values
         )
 
 
