@@ -177,14 +177,28 @@
   <!-- ======================== -->
   <!-- 4. 지역별 요청 파이 차트 -->
   <!-- ======================== -->
+
+  <!-- ======================== -->
+  <!-- 5. 파이 + 라인차트 (반응형 2열) -->
+  <!-- ======================== -->
   <div class="card" style="margin-top:16px;">
-    <div class="card-title" style="margin-bottom:10px;">
-      지역별 요청 비율
+    
+    <div class="chart-grid">
+    
+      <!-- Pie Chart -->
+      <div class="chart-card">
+        <div class="card-title" style="margin-bottom:10px;">지역별 요청 비율</div>
+        <canvas id="regionPieChart"></canvas>
+      </div>
+    
+      <!-- Line Chart -->
+      <div class="chart-card">
+        <div class="card-title" style="margin-bottom:10px;">월별 요청 추세</div>
+        <canvas id="monthlyLineChart"></canvas>
+      </div>
+
     </div>
 
-    <div class="chart-container">
-      <canvas id="regionPieChart"></canvas>
-    </div>
   </div>
 
 
