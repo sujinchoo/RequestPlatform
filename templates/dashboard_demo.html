@@ -127,6 +127,16 @@
       grid-template-columns: 1fr 1fr;
     }
   }
+  .chart-card canvas {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  display: block;
+
+  /* 👇 추가: 두 차트의 높이 맞추기 */
+  height: 320px !important; 
+}
+
 
 </style>
 {% endblock %}
