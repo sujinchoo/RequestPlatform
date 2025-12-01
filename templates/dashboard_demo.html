@@ -98,6 +98,14 @@
   .tag-선탑진행중 { background: #0ea5e9; }
   .tag-면접예정 { background: #f59e0b; }
   .tag-배차완료 { background: #059669; }
+
+    /* Pie Chart 용 컨테이너 */
+  .chart-container {
+    width: 100%;
+    max-width: 360px;
+    margin: 0 auto 10px;
+  }
+
 </style>
 {% endblock %}
 
@@ -165,10 +173,24 @@
     <div>면접 예정: <b>{{ pct_interview }}%</b></div>
     <div>배차 완료: <b>{{ pct_done }}%</b></div>
   </div>
+  
+  <!-- ======================== -->
+  <!-- 4. 지역별 요청 파이 차트 -->
+  <!-- ======================== -->
+  <div class="card" style="margin-top:16px;">
+    <div class="card-title" style="margin-bottom:10px;">
+      지역별 요청 비율
+    </div>
+
+    <div class="chart-container">
+      <canvas id="regionPieChart"></canvas>
+    </div>
+  </div>
+
 
 
   <!-- ======================== -->
-  <!-- 4. 최근 요청 5건 -->
+  <!-- 5. 최근 요청 5건 -->
   <!-- ======================== -->
   <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
 
@@ -206,6 +228,43 @@
   </div>
 
   {% endfor %}
+  <!-- ======================== -->
+  <!-- Chart.js CDN -->
+  <!-- ======================== -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <!-- ======================== -->
+  <!-- 지역별 Pie Chart 생성 -->
+  <!-- ======================== -->
+  <script>
+    const regionData = {{ region_count | tojson | safe }};
+  
+    const regionLabels = Object.keys(regionData);
+    const regionValues = Object.values(regionData);
+  
+    if (regionLabels.length > 0) {
+      const ctx = document.getElementById('regionPieChart').getContext('2d');
+  
+      new Chart(ctx, {
+        type: 'pie',
+        data: {
+          labels: regionLabels,
+          datasets: [{
+            data: regionValues,
+            borderWidth: 1,
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: {
+              position: 'bottom'
+            }
+          }
+        }
+      });
+    }
+  </script>
 
 </section>
 
