@@ -36,24 +36,24 @@
         {% if session.get('branch_id') or session.get('google_user_id') %}
 
           {% if session.get('branch_id') and session.get('is_admin') %}
-            <a href="{{ url_for('dashboard') }}"
-               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
-              요청 현황(본사)
-            </a>
-
             <a href="{{ url_for('dashboard_demo') }}"
                class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
-              Demo Dashboard
+              TPR Dashboard
             </a>
-
+        
+            <a href="{{ url_for('dashboard') }}"
+               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+              요청 현황(엑셀뷰)
+            </a>
+          
             <a href="{{ url_for('dashboard_v3') }}"
                class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-              카드형 대시보드 v3
+              CARD Dashboard
             </a>
 
             <a href="{{ url_for('dbtest_page') }}"
                class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
-              DB TEST 테스트DB
+              DB TEST 입력
             </a>
           {% endif %}
 
@@ -116,7 +116,7 @@
 
     {% if not hide_header %}
     <footer class="footer">
-      Request Platform – 샘플 서비스 (Flask + PostgreSQL)
+      Truck People Request Platform – (주) 씨앤제이컴퍼니 2025
     </footer>
     {% endif %}
 
