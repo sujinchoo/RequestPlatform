@@ -99,12 +99,13 @@
   .tag-면접예정 { background: #f59e0b; }
   .tag-배차완료 { background: #059669; }
 
-    /* Pie Chart 용 컨테이너 */
+  /* Pie Chart 용 컨테이너 */
   .chart-container {
     width: 100%;
     max-width: 360px;
     margin: 0 auto 10px;
   }
+
   /* PC에서 가로 2개, 모바일에서 세로 1개 */
   .chart-grid {
     display: grid;
@@ -135,7 +136,6 @@
     }
   }
 
-
 </style>
 {% endblock %}
 
@@ -145,42 +145,16 @@
 
   <h2 style="margin-bottom:16px;">📊 오늘의 요청 처리 현황</h2>
 
-  <!-- ======================== -->
   <!-- 1. 상단 통계 카드 -->
-  <!-- ======================== -->
   <div class="summary-box">
-
-    <div class="card">
-      <div class="card-title">총 요청 수</div>
-      <div class="card-value">{{ total_cases }}</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">모집중</div>
-      <div class="card-value">{{ status_wait }}</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">선탑 진행중</div>
-      <div class="card-value">{{ status_pre }}</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">면접 예정</div>
-      <div class="card-value">{{ status_interview }}</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">배차 완료</div>
-      <div class="card-value" style="color:#059669;">{{ status_done }}</div>
-    </div>
-
+    <div class="card"><div class="card-title">총 요청 수</div><div class="card-value">{{ total_cases }}</div></div>
+    <div class="card"><div class="card-title">모집중</div><div class="card-value">{{ status_wait }}</div></div>
+    <div class="card"><div class="card-title">선탑 진행중</div><div class="card-value">{{ status_pre }}</div></div>
+    <div class="card"><div class="card-title">면접 예정</div><div class="card-value">{{ status_interview }}</div></div>
+    <div class="card"><div class="card-title">배차 완료</div><div class="card-value" style="color:#059669;">{{ status_done }}</div></div>
   </div>
 
-
-  <!-- ======================== -->
   <!-- 2. 진행률 -->
-  <!-- ======================== -->
   <div class="progress-wrap">
     <div class="progress-label">
       상태 진행률 (배차완료 기준): <b>{{ progress_rate }}%</b>
@@ -191,36 +165,25 @@
     </div>
   </div>
 
-
-  <!-- ======================== -->
-  <!-- 3. 상태별 비중 (텍스트 표시) -->
-  <!-- ======================== -->
+  <!-- 3. 상태별 비중 -->
   <div class="card" style="margin-top:10px;">
     <div class="card-title" style="margin-bottom:10px;">상태별 비중</div>
-
     <div>모집중: <b>{{ pct_wait }}%</b></div>
     <div>선탑 진행중: <b>{{ pct_pre }}%</b></div>
     <div>면접 예정: <b>{{ pct_interview }}%</b></div>
     <div>배차 완료: <b>{{ pct_done }}%</b></div>
   </div>
-  
-  <!-- ======================== -->
-  <!-- 4. 지역별 요청 파이 차트 -->
-  <!-- ======================== -->
 
-  <!-- ======================== -->
-  <!-- 5. 파이 + 라인차트 (반응형 2열) -->
-  <!-- ======================== -->
+  <!-- 4 & 5. Pie + Line Chart (반응형 두 개) -->
   <div class="card" style="margin-top:16px;">
-    
     <div class="chart-grid">
-    
+
       <!-- Pie Chart -->
       <div class="chart-card">
         <div class="card-title" style="margin-bottom:10px;">지역별 요청 비율</div>
         <canvas id="regionPieChart"></canvas>
       </div>
-    
+
       <!-- Line Chart -->
       <div class="chart-card">
         <div class="card-title" style="margin-bottom:10px;">월별 요청 추세</div>
@@ -228,18 +191,12 @@
       </div>
 
     </div>
-
   </div>
 
-
-
-  <!-- ======================== -->
-  <!-- 5. 최근 요청 5건 -->
-  <!-- ======================== -->
+  <!-- 6. 최근 요청 -->
   <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
 
   {% for r in recent %}
-
   <div class="recent-card-compact"
        onclick="openModal({
          id: '{{ r.id }}',
@@ -258,9 +215,7 @@
 
     <span class="recent-status-tag tag-{{ r.status }}">{{ r.status }}</span>
 
-    <div class="recent-title">
-      {{ r.company }} / {{ r.branch_name }}
-    </div>
+    <div class="recent-title">{{ r.company }} / {{ r.branch_name }}</div>
 
     <div class="recent-meta">
       지역: {{ r.region }}<br>
@@ -270,41 +225,61 @@
     </div>
 
   </div>
-
   {% endfor %}
-  <!-- ======================== -->
-  <!-- Chart.js CDN -->
-  <!-- ======================== -->
+
+  <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  
-  <!-- ======================== -->
-  <!-- 지역별 Pie Chart 생성 -->
-  <!-- ======================== -->
+
+  <!-- Pie Chart Script -->
   <script>
     const regionData = {{ region_count | tojson | safe }};
-  
     const regionLabels = Object.keys(regionData);
     const regionValues = Object.values(regionData);
-  
+
     if (regionLabels.length > 0) {
       const ctx = document.getElementById('regionPieChart').getContext('2d');
-  
+
       new Chart(ctx, {
         type: 'pie',
         data: {
           labels: regionLabels,
           datasets: [{
             data: regionValues,
-            borderWidth: 1,
+            borderWidth: 1
           }]
         },
         options: {
           responsive: true,
-          plugins: {
-            legend: {
-              position: 'bottom'
-            }
-          }
+          plugins: { legend: { position: 'bottom' } }
+        }
+      });
+    }
+  </script>
+
+  <!-- Line Chart Script -->
+  <script>
+    const monthlyLabels = {{ monthly_labels | tojson }};
+    const monthlyValues = {{ monthly_values | tojson }};
+
+    if (monthlyLabels.length > 0) {
+      const ctx2 = document.getElementById('monthlyLineChart').getContext('2d');
+
+      new Chart(ctx2, {
+        type: 'line',
+        data: {
+          labels: monthlyLabels,
+          datasets: [{
+            label: '요청 수',
+            data: monthlyValues,
+            fill: false,
+            tension: 0.35,
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { display: false } },
+          scales: { y: { beginAtZero: true } }
         }
       });
     }
