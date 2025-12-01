@@ -69,28 +69,31 @@
   .google-login-btn {
     margin-top: 18px;
   }
-  .login-error {
-  font-size: 13px;
-  margin-bottom: 16px;
-  color: #f87171; /* 빨강 */
-  text-align: left;
-}
 
+  .login-error {
+    font-size: 13px;
+    margin-bottom: 16px;
+    color: #f87171; /* 빨강 */
+    text-align: left;
+  }
 </style>
 {% endblock %}
 
 {% block content %}
 
 <div class="login-center">
-
   <div class="login-card">
 
-    {% if error %}
-    
-    <div class="login-error">
-      ID 또는 비밀번호를 확인하세요.
-    </div>
-    {% endif %}
+    <!-- 🔥 Flash 메시지를 카드 안에서 직접 표시 -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, msg in messages %}
+          <div class="login-error">
+            {{ msg }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
 
     <img class="login-logo banner-full"
          src="{{ url_for('static', filename='images/TPR _banner_full.png') }}"
@@ -117,6 +120,5 @@
 
   </div>
 </div>
-
 
 {% endblock %}
