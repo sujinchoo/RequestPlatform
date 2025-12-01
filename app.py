@@ -170,14 +170,25 @@ def create_app():
     
         # 최근 요청 5건
         recent = Req.query.order_by(Req.created_at.desc()).limit(5).all()
-
-        # 지역별 개수 집계 (Pie Chart용)
+    
+        # ============================================
+        # ⭐ 지역별 개수 집계 (Pie Chart 용)
+        # ============================================
         region_count = {}
-        all_regions = db.session.query(Req.region).all()   # [('서울'), ('경기'), ...] 형태
-
-    for r in all_regions:
-        region = r[0] if isinstance(r, tuple) else r
-        region_count[region] = region_count.get(region, 0) + 1
+    
+        region_rows = (
+            db.session.query(Req.region, db.func.count(Req.id))
+            .group_by(Req.region)
+            .all()
+        )
+        # region_rows 예: [("서울", 5), ("경기", 3), (None, 1)]
+    
+        for region, cnt in region_rows:
+            key = region or "미기입"
+            region_count[key] = int(cnt)
+    
+        # ============================================
+    
         return render_template(
             "dashboard_demo.html",
             total_cases=total,
@@ -191,8 +202,9 @@ def create_app():
             pct_interview=pct_interview,
             pct_done=pct_done,
             recent=recent,
-            region_count=region_count
+            region_count=region_count,
         )
+
 
 
     # =========================================================
