@@ -10,8 +10,8 @@
 <!-- 🏪 대리점 프로필 카드 (신규 추가) -->
 <!-- ============================= -->
 <div class="agency-header">
-  <div class="agency-name">🏪 {{ google_user.name }}</div>
-  <div class="agency-email">{{ google_user.email }}</div>
+  <div class="agency-name">🏪 {{ session.get("google_name") }}</div>
+  <div class="agency-email">{{ session.get("google_email") }}</div>
 </div>
 
 <!-- ============================= -->
