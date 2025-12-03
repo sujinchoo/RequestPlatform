@@ -9,19 +9,19 @@
 <!-- ============================= -->
 <!-- 🏪 대리점 프로필 카드 (신규 추가) -->
 <!-- ============================= -->
-<div class="agency-header">
-  <div class="agency-name">🏪 {{ session.get("google_name") }}</div>
-  <div class="agency-email">{{ session.get("google_email") }}</div>
+<div class="agency-card">
+  <div class="agency-info">
+    <div class="agency-name">🏪 {{ session.get("google_name") }}</div>
+    <div class="agency-email">{{ session.get("google_email") }}</div>
+  </div>
+
+  <div class="agency-menu">
+    <button onclick="scrollToSection('register')">요청 등록</button>
+    <button onclick="scrollToSection('status')">내 요청 현황</button>
+    <button onclick="window.location.href='/logout'">로그아웃</button>
+  </div>
 </div>
 
-<!-- ============================= -->
-<!-- 📌 메뉴 버튼 3개 (신규 추가) -->
-<!-- ============================= -->
-<div class="agency-menu">
-  <button onclick="scrollToSection('register')">요청 등록</button>
-  <button onclick="scrollToSection('status')">내 요청 현황</button>
-  <button onclick="window.location.href='/logout'">로그아웃</button>
-</div>
 
 
 <section class="sheet sheet-hero">
