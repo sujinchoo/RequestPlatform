@@ -102,22 +102,6 @@
   </form>
 </section>
 
-<!-- SweetAlert -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script>
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% for category, msg in messages %}
-      Swal.fire({
-        icon: "{{ 'success' if category=='success' else 'error' }}",
-        text: "{{ msg }}",
-        confirmButtonText: "확인"
-      });
-    {% endfor %}
-  {% endwith %}
-</script>
-
-<!-- SweetAlert2 -->
-
 
 <script>
   // ✅ 1) flash 메시지를 SweetAlert로 출력 (저장/삭제 공통)
@@ -217,7 +201,7 @@
   {% endif %}
 </section>
 
-{% endblock %}
+
 <!-- ============================= -->
 <!-- JS: 스크롤 이동 기능 (신규 추가) -->
 <!-- ============================= -->
@@ -236,3 +220,4 @@ function scrollToSection(type) {
   }
 }
 </script>
+{% endblock %}
