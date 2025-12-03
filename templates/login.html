@@ -62,24 +62,27 @@
     cursor: pointer;
   }
 
+  /* OAuth 공통 버튼 */
   .oauth-btn {
     width: 100%;
     height: 48px;
     border-radius: 10px;
     border: none;
     margin-top: 12px;
-    font-size: 16px;
-    font-weight: 600;
+    padding: 0;
+    background: none;   /* 배경 제거 (이미지 자체 배경 사용) */
+    cursor: pointer;
+  
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    cursor: pointer;
   }
 
   .oauth-btn img {
-    width: 24px;
-    height: 24px;
+    width: 100%;
+    idth: auto;            /* 비율 유지 */
+    border-radius: 10px;    /* 동일한 둥근 형태 */
+    object-fit: contain;    /* 이미지 잘림 방지 */
   }
 
   .btn-google {
