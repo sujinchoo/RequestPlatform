@@ -1020,52 +1020,39 @@ table tbody tr:hover {
 }
 
 
-/* ============================
-   대리점 상단 프로필 헤더
-============================ */
-.agency-header {
-  background: #f8fafc;
-  border: 1px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin: 12px 14px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+/* Page 컨테이너 규칙을 agency-card에 그대로 적용 */
+.agency-card {
+  width: 100%;
+  max-width: 1080px;
+  margin: 20px auto;  /* page 중앙정렬과 동일하게 */
+  padding: 22px;
+  
+  background: white;
+  border-radius: 14px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
 
-.agency-name {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
-}
-
-.agency-email {
-  font-size: 14px;
-  color: #6b7280;
-  margin-top: 4px;
-}
-
-/* ============================
-   메뉴 버튼 3개
-============================ */
+/* 내부 메뉴 버튼 */
 .agency-menu {
+  margin-top: 16px;
   display: flex;
-  justify-content: space-around;
-  margin: 10px 0 16px 0;
+  justify-content: space-between;
+  gap: 10px;
 }
 
 .agency-menu button {
-  padding: 10px 14px;
-  border-radius: 20px;
-  border: 1px solid #cbd5e1;
-  background: white;
-  font-size: 14px;
-  color: #334155;
-  font-weight: 500;
+  flex: 1;
+  padding: 11px 0;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: #f8fafc;
+  font-size: 15px;
+  color: #111827;
+  transition: 0.2s;
 }
 
 .agency-menu button:hover {
-  background: #2563eb;
-  color: white;
-  border-color: #2563eb;
-  transition: 0.2s;
+  background: #e5edff;
+  color: #2563eb;
+  border-color: #3b82f6;
 }
