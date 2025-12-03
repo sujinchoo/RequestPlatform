@@ -136,6 +136,13 @@
       <button class="login-btn" type="submit">로그인</button>
     </form>
 
+     <!-- Kakao Login -->
+    <button class="oauth-btn btn-kakao"
+            onclick="alert('카카오 로그인 예정입니다.')">
+      <img class="oauth-img"
+           src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
+    </button>
+    
     <!-- Google Login -->
     <button class="oauth-btn btn-google"
             onclick="window.location.href='{{ url_for('login_google_start') }}'">
@@ -143,12 +150,7 @@
            src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}">
     </button>
 
-    <!-- Kakao Login -->
-    <button class="oauth-btn btn-kakao"
-            onclick="alert('카카오 로그인 예정입니다.')">
-      <img class="oauth-img"
-           src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
-    </button>
+   
   </div>
 </div>
 
