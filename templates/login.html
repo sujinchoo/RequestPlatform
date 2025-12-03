@@ -99,6 +99,21 @@
     color: #f87171;
     text-align: left;
   }
+  /* Google 버튼 배경 (흰색) */
+  .btn-google {
+      background: #ffffff;     /* 화이트 배경 */
+      color: #111;             /* 기본 글씨 */
+      border: none;
+      border-radius: 10px;
+  }
+  
+  /* 텍스트 색상을 분리 */
+  .google-text {
+      font-size: 16px;
+      color: #111 !important;   /* 검은 글씨고정 */
+      font-weight: 600;
+  }
+
 
 </style>
 {% endblock %}
@@ -140,15 +155,15 @@
     <!-- Google Login (아래) -->
     <button class="oauth-btn btn-google"
             onclick="window.location.href='{{ url_for('login_google_start') }}'">
-      <!-- 아이콘 -->
+    
       <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
            style="width:26px; height:26px; border-radius:6px; object-fit:contain;">
-      <!-- 텍스트 -->
-      <span style="font-size:16px; color:#111; font-weight:600;">
-        Google 로그인
-      </span>    
+    
+      <span class="google-text">Google 로그인</span>
+    
     </button>
     
+        
   </div>
 </div>
 
