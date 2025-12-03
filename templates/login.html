@@ -32,10 +32,14 @@
   }
 
   .login-logo {
-    width: 180px;
-    margin-bottom: 28px;
-    border-radius: 10px;
+      width: 100%;             /* 카드 내부 콘텐츠 폭(패딩 제외) 100% */
+      max-width: 100%;         /* 카드 최대폭을 넘지 않도록 */
+      height: auto;            /* 원본 비율 유지 */
+      margin-bottom: 28px;
+      border-radius: 10px;
+      object-fit: cover;       /* contain → cover가 더 자연스러운 화면 */
   }
+
 
   .login-input input {
     width: 100%;
