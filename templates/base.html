@@ -19,7 +19,11 @@
   <!-- ======================================== -->
   <!-- 🔵 HEADER (로그인 페이지는 숨김) -->
   <!-- ======================================== -->
-  <header class="top-header" {% if hide_header %}style="display:none"{% endif %}>
+  <header class="top-header"
+    {% if hide_header or request.endpoint == 'request_page' %}
+      style="display:none"
+    {% endif %}
+  >
     <div class="header-inner">
 
       <div class="logo-wrap">
