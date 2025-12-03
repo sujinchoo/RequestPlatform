@@ -1012,4 +1012,9 @@ table tbody tr:hover {
   min-width: 1200px;
 }
 
-
+/* status bar padding 주기 */
+@media (max-width: 768px) {
+  body {
+    padding-top: 28px !important;
+  }
+}
