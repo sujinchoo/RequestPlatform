@@ -149,10 +149,11 @@
     <!-- Kakao OAuth (Long Button) - 아직 비활성 -->
     <div class="oauth-btn-wrapper">
       <button onclick="alert('카카오 로그인은 추후 지원 예정입니다.');">
-        <img src="https://developers.kakao.com/tool/resource/static/img/button/kakaologin/kr/kakao_login_large_wide.png"
+        <img src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}"
              alt="Login with Kakao" />
       </button>
     </div>
+
 
   </div>
 </div>
