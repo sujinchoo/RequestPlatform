@@ -106,7 +106,7 @@
 
 <div class="login-center">
   <div class="login-card">
-
+    
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, msg in messages %}
@@ -132,17 +132,16 @@
     <!-- Google Login -->
     <button class="oauth-btn btn-google"
             onclick="window.location.href='{{ url_for('login_google_start') }}'">
-      <img src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}">
-      Google 로그인
+      <img class="oauth-img"
+           src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}">
     </button>
 
     <!-- Kakao Login -->
     <button class="oauth-btn btn-kakao"
             onclick="alert('카카오 로그인 예정입니다.')">
-      <img src="{{ url_for('static', filename='images/kakao_icon.png') }}">
-      카카오 로그인
+      <img class="oauth-img"
+           src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
     </button>
-
   </div>
 </div>
 
