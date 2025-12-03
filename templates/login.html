@@ -29,7 +29,7 @@
   .login-card {
     width: 360px;
     padding: 40px 34px;
-    background: #111; /* 더 다크하게 */
+    background: #111;
     border-radius: 16px;
     box-shadow: 0 6px 25px rgba(0,0,0,0.45);
     color: #e5e7eb;
@@ -76,16 +76,31 @@
     background: #1e4ed8;
   }
 
-  .google-login-btn {
-    margin-top: 18px;
-  }
-
   .login-error {
     font-size: 14px;
     margin-bottom: 12px;
     color: #f87171;
     text-align: left;
   }
+
+  /* OAuth button wrappers */
+  .oauth-btn-wrapper {
+    margin-top: 18px;
+  }
+
+  .oauth-btn-wrapper button {
+    width: 100%;
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
+  }
+
+  .oauth-btn-wrapper img {
+    width: 100%;
+    max-width: 300px;
+  }
+
 </style>
 {% endblock %}
 
@@ -103,10 +118,12 @@
       {% endif %}
     {% endwith %}
 
+    <!-- Banner Logo -->
     <img class="login-logo"
          src="{{ url_for('static', filename='images/TPR _banner_full.png') }}"
          alt="TPR Logo" />
 
+    <!-- Login Form -->
     <form id="loginForm" method="post">
 
       <div class="login-input">
@@ -121,10 +138,21 @@
 
     </form>
 
-    <button class="login-btn google-login-btn"
-            onclick="window.location.href='{{ url_for('login_google_start') }}'">
-      Google 계정으로 로그인
-    </button>
+    <!-- Google OAuth (Long Button - Dark Version) -->
+    <div class="oauth-btn-wrapper">
+      <button onclick="window.location.href='{{ url_for('login_google_start') }}'">
+        <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png"
+             alt="Sign in with Google" />
+      </button>
+    </div>
+
+    <!-- Kakao OAuth (Long Button) - 아직 비활성 -->
+    <div class="oauth-btn-wrapper">
+      <button onclick="alert('카카오 로그인은 추후 지원 예정입니다.');">
+        <img src="https://developers.kakao.com/tool/resource/static/img/button/kakaologin/kr/kakao_login_large_wide.png"
+             alt="Login with Kakao" />
+      </button>
+    </div>
 
   </div>
 </div>
@@ -141,7 +169,7 @@
   // ID 입력 → Enter → PW로 포커스 이동
   idInput.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
-      e.preventDefault(); // WebView에서 /n 입력 방지
+      e.preventDefault();
       pwInput.focus();
     }
   });
@@ -149,7 +177,7 @@
   // PW 입력 → Enter → 로그인 실행
   pwInput.addEventListener("keydown", function(e) {
     if (e.key === "Enter") {
-      e.preventDefault();  // Android WebView에서 행바꿈 방지
+      e.preventDefault();
       form.submit();
     }
   });
