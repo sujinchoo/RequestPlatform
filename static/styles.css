@@ -1023,7 +1023,7 @@ table tbody tr:hover {
 /* Page 컨테이너 규칙을 agency-card에 그대로 적용 */
 .agency-card {
   width: 100%;
-  max-width: 1080px;
+  max-width: 1600px;
   margin: 20px auto;  /* page 중앙정렬과 동일하게 */
   padding: 22px;
   
