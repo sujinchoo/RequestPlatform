@@ -31,16 +31,17 @@
     text-align: center;
   }
 
+  /* 반응형 배너 로고 */
   .login-logo {
-      width: 100%;             /* 카드 내부 콘텐츠 폭(패딩 제외) 100% */
-      max-width: 100%;         /* 카드 최대폭을 넘지 않도록 */
-      height: auto;            /* 원본 비율 유지 */
+      width: 100%;
+      max-width: 100%;
+      height: auto;
       margin-bottom: 28px;
       border-radius: 10px;
-      object-fit: cover;       /* contain → cover가 더 자연스러운 화면 */
+      object-fit: cover;
   }
 
-
+  /* 기본 로그인 input */
   .login-input input {
     width: 100%;
     height: 48px;
@@ -53,6 +54,7 @@
     font-size: 16px;
   }
 
+  /* 기본 로그인 버튼 */
   .login-btn {
     width: 100%;
     height: 48px;
@@ -66,7 +68,7 @@
     cursor: pointer;
   }
 
-  /* OAuth 공통 버튼 */
+  /* Kakao / Google 공통 버튼 */
   .oauth-btn {
     width: 100%;
     height: 48px;
@@ -74,31 +76,23 @@
     border: none;
     margin-top: 12px;
     padding: 0;
-    background: none;   /* 배경 제거 (이미지 자체 배경 사용) */
+    background: none;
     cursor: pointer;
-  
+
     display: flex;
     justify-content: center;
     align-items: center;
   }
 
+  /* Kakao image-only wide 버튼 */
   .oauth-btn img {
     width: 100%;
-    idth: auto;            /* 비율 유지 */
-    border-radius: 10px;    /* 동일한 둥근 형태 */
-    object-fit: contain;    /* 이미지 잘림 방지 */
+    height: 100%;
+    border-radius: 10px;
+    object-fit: cover;
   }
 
-  .btn-google {
-    background: #ffffff;
-    color: #111;
-  }
-
-  .btn-kakao {
-    background: #FEE500;
-    color: #111;
-  }
-
+  /* 에러 메시지 */
   .login-error {
     font-size: 14px;
     margin-bottom: 12px;
@@ -136,21 +130,25 @@
       <button class="login-btn" type="submit">로그인</button>
     </form>
 
-     <!-- Kakao Login -->
-    <button class="oauth-btn btn-kakao"
+    <!-- Kakao Login (위) -->
+    <button class="oauth-btn"
             onclick="alert('카카오 로그인 예정입니다.')">
-      <img class="oauth-img"
-           src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
-    </button>
-    
-    <!-- Google Login -->
-    <button class="oauth-btn btn-google"
-            onclick="window.location.href='{{ url_for('login_google_start') }}'">
-      <img class="oauth-img"
-           src="{{ url_for('static', filename='images/GOOGLE_LOGO_SIGN.png') }}">
+      <img src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
     </button>
 
-   
+ 
+    <!-- Google Login (아래) -->
+    <button class="oauth-btn btn-google"
+            onclick="window.location.href='{{ url_for('login_google_start') }}'">
+      <!-- 아이콘 -->
+      <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+           style="width:26px; height:26px; border-radius:6px; object-fit:contain;">
+      <!-- 텍스트 -->
+      <span style="font-size:16px; color:#111; font-weight:600;">
+        Google 로그인
+      </span>    
+    </button>
+    
   </div>
 </div>
 
@@ -160,11 +158,17 @@
   const form = document.getElementById("loginForm");
 
   idInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") { e.preventDefault(); pwInput.focus(); }
+    if (e.key === "Enter") { 
+      e.preventDefault(); 
+      pwInput.focus(); 
+    }
   });
 
   pwInput.addEventListener("keydown", e => {
-    if (e.key === "Enter") { e.preventDefault(); form.submit(); }
+    if (e.key === "Enter") { 
+      e.preventDefault(); 
+      form.submit();
+    }
   });
 </script>
 
