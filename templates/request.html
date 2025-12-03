@@ -6,6 +6,24 @@
 
 {% block content %}
 
+<!-- ============================= -->
+<!-- 🏪 대리점 프로필 카드 (신규 추가) -->
+<!-- ============================= -->
+<div class="agency-header">
+  <div class="agency-name">🏪 {{ google_user.name }}</div>
+  <div class="agency-email">{{ google_user.email }}</div>
+</div>
+
+<!-- ============================= -->
+<!-- 📌 메뉴 버튼 3개 (신규 추가) -->
+<!-- ============================= -->
+<div class="agency-menu">
+  <button onclick="scrollToSection('register')">요청 등록</button>
+  <button onclick="scrollToSection('status')">내 요청 현황</button>
+  <button onclick="window.location.href='/logout'">로그아웃</button>
+</div>
+
+
 <section class="sheet sheet-hero">
   <div class="hero-title">전국 택배 대리점 인력 요청</div>
   <p class="hero-sub">
@@ -200,3 +218,21 @@
 </section>
 
 {% endblock %}
+<!-- ============================= -->
+<!-- JS: 스크롤 이동 기능 (신규 추가) -->
+<!-- ============================= -->
+<script>
+function scrollToSection(type) {
+  let target;
+
+  if (type === "register") {
+    target = document.querySelector(".sheet:not(.sheet-scroll)");
+  } else if (type === "status") {
+    target = document.querySelector(".sheet.sheet-scroll");
+  }
+
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+</script>
