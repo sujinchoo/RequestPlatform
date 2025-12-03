@@ -1018,3 +1018,54 @@ table tbody tr:hover {
     padding-top: 28px !important;
   }
 }
+
+
+/* ============================
+   대리점 상단 프로필 헤더
+============================ */
+.agency-header {
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 16px 18px;
+  margin: 12px 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+}
+
+.agency-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+}
+
+.agency-email {
+  font-size: 14px;
+  color: #6b7280;
+  margin-top: 4px;
+}
+
+/* ============================
+   메뉴 버튼 3개
+============================ */
+.agency-menu {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0 16px 0;
+}
+
+.agency-menu button {
+  padding: 10px 14px;
+  border-radius: 20px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.agency-menu button:hover {
+  background: #2563eb;
+  color: white;
+  border-color: #2563eb;
+  transition: 0.2s;
+}
