@@ -1027,7 +1027,11 @@ table tbody tr:hover {
   margin: 20px auto;  /* page 중앙정렬과 동일하게 */
   padding: 22px;
   
-  background: white;
+  background: linear-gradient(
+  180deg,
+  #F5FAFF 0%,
+  #EEF6FF 100%
+);
   border-radius: 14px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
