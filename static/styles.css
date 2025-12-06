@@ -108,9 +108,15 @@ body {
   margin-bottom: 4px !important;
 }
 
+/* 시트 위쪽 여백 초밀착 */
 .sheet-hero {
   border-left: 4px solid #2563eb;
-  margin-top: 4px !important;
+
+  /* 🔥 기존 4px → 2px */
+  margin-top: 2px !important;
+
+  /* 🔥 위쪽 내부 공간도 약간 축소 */
+  padding-top: 6px !important;
 }
 
 .hero-title {
@@ -1024,14 +1030,18 @@ table tbody tr:hover {
 .agency-card {
   width: 100%;
   max-width: 1600px;
-  margin: 20px auto;  /* page 중앙정렬과 동일하게 */
-  padding: 22px;
-  
+
+  /* 🔥 기존 20px → 0 : status bar 바로 아래 붙이기 */
+  margin: 0 auto !important;
+
+  /* 🔥 내부 여백도 줄여서 컴팩트하게 */
+  padding: 14px 22px 16px !important;
+
   background: linear-gradient(
-  180deg,
-  #F5FAFF 0%,
-  #EEF6FF 100%
-);
+    180deg,
+    #F5FAFF 0%,
+    #EEF6FF 100%
+  );
   border-radius: 14px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
