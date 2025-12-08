@@ -10,6 +10,12 @@
   <!-- SweetAlert2 먼저 로드 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+  <!-- 🔵 Bootstrap 5 CSS 추가 (반드시 styles.css보다 위에 있어야 함) -->
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+  >
+
   <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
@@ -113,7 +119,7 @@
 
 
     <!-- ======================================== -->
-    <!-- 🔵 MAIN — 로그인 페이지 여백 제거 지원 -->
+    <!-- 🔵 MAIN -->
     <!-- ======================================== -->
     <main class="main"
           {% if hide_header %}
@@ -157,29 +163,29 @@
             .then(res => res.json())
             .then(json => {
 
-                // v3: 카드형 대시보드
                 if (typeof renderCards === "function") {
                     renderCards(json.data);
 
-                // v1, v2, demo: 테이블 렌더링
-                } 
-                else if (typeof renderData === "function") {
+                } else if (typeof renderData === "function") {
                     renderData(json.data);
                 }
             })
             .catch(err => console.error("API ERROR:", err));
       }
 
-      // 필터 UI가 있는 페이지(v2, v3)
       document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
       document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
-      // 페이지 로드시 자동 로딩
       window.addEventListener("load", loadFilteredData);
 
   </script>
   {% endif %}
-  
+
+
+  <!-- 🔵 Bootstrap Bundle JS 추가 (Popper 포함) -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  ></script>
 
 </body>
 </html>
