@@ -7,12 +7,15 @@
   <title>{% block title %}Request Platform{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
+  <!-- SweetAlert2 먼저 로드 -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
-  <!-- 페이지별 CSS -->
   {% block extra_css %}{% endblock %}
 </head>
+
 
 <body>
 
@@ -176,8 +179,7 @@
 
   </script>
   {% endif %}
-  <!-- SweetAlert2 (공통 로드) -->
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  
 
 </body>
 </html>
