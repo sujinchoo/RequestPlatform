@@ -104,26 +104,30 @@
 
 
 <script>
-  // ✅ 1) flash 메시지를 SweetAlert로 출력 (저장/삭제 공통)
+  // flash 메시지를 SweetAlert Toast로 표시
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       {% for category, msg in messages %}
         Swal.fire({
+          toast: true,
+          position: "top-end",
           icon: "{{ 'success' if category == 'success' else 'error' }}",
-          text: "{{ msg }}",
-          confirmButtonText: "확인"
+          title: "{{ msg }}",
+          showConfirmButton: false,
+          timer: 1200,
+          timerProgressBar: true
         });
       {% endfor %}
     {% endif %}
   {% endwith %}
-
-  // ✅ 2) 삭제 버튼 클릭 시 SweetAlert 확인창
+  
+  // 삭제 버튼 클릭 시 SweetAlert 확인창
   document.addEventListener("DOMContentLoaded", function () {
     const deleteForms = document.querySelectorAll(".delete-form");
 
     deleteForms.forEach(function(form) {
       form.addEventListener("submit", function(e) {
-        e.preventDefault();  // 기본 제출 막고 → 확인 후 다시 submit
+        e.preventDefault();
 
         Swal.fire({
           title: "삭제하시겠습니까?",
@@ -136,13 +140,14 @@
           cancelButtonText: "취소"
         }).then((result) => {
           if (result.isConfirmed) {
-            form.submit();  // 진짜 삭제 요청 날림 (POST /request/delete/ID)
+            form.submit();
           }
         });
       });
     });
   });
 </script>
+
 
 
 <!-- ---------------------------- -->
