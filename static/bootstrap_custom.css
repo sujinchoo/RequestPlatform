@@ -1,0 +1,130 @@
+/* ===========================================
+   Bootstrap Custom Helper Layer for TPR System
+   기존 styles.css를 변경하지 않는 안전한 Layer
+   =========================================== */
+
+/* Container-like padding for pages using bootstrap */
+.tpr-bs-container {
+  padding: 1rem;
+}
+
+/* Bootstrap Card 스타일 보정 */
+.tpr-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+/* Form label and input alignment */
+.tpr-form label {
+  font-weight: 500;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.tpr-form .form-control,
+.tpr-form .form-select,
+.tpr-form textarea {
+  font-size: 14px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #d4d4d8;
+}
+
+.tpr-form .form-control:focus,
+.tpr-form .form-select:focus,
+.tpr-form textarea:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, .25) !important;
+}
+
+/* Primary button override */
+.btn-tpr-primary {
+  background: #2563eb;
+  border-color: #2563eb;
+  color: #ffffff;
+  font-weight: 500;
+  padding: 0.6rem 1rem;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.btn-tpr-primary:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.btn-tpr-danger {
+  background: #dc2626;
+  border-color: #b91c1c;
+  color: white;
+  padding: 0.45rem 0.75rem;
+  font-size: 13px;
+  border-radius: 6px;
+}
+
+.btn-tpr-danger:hover {
+  background: #b91c1c;
+}
+
+/* Table compact override for Bootstrap tables */
+.table-tpr thead th {
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+}
+
+.table-tpr td, 
+.table-tpr th {
+  padding: 0.45rem 0.55rem;
+  vertical-align: middle;
+  border-color: #d4d4d8;
+  font-size: 13px;
+}
+
+/* Hover effect */
+.table-tpr tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* Card-like Agency Profile */
+.agency-card-bs {
+  border-radius: 12px;
+  border: 1px solid #dbeafe;
+  background: linear-gradient(180deg, #F5FAFF 0%, #EEF6FF 100%);
+  padding: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.agency-card-bs .agency-name {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.agency-card-bs .agency-email {
+  font-size: 13px;
+  color: #4b5563;
+}
+
+.agency-card-bs .btn-group {
+  margin-top: 1rem;
+}
+
+.agency-card-bs button {
+  border-radius: 6px !important;
+}
+
+/* SweetAlert Toast top-right container spacing */
+.swal2-container {
+  margin-top: 65px !important; /* header와 겹치지 않게 */
+}
+
+/* Smooth spacing for sheet sections */
+.sheet-bs {
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
