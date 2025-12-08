@@ -17,7 +17,8 @@ body {
   width: 100%;
   max-width: 1600px;   /* PC 최대 넓이 */
   margin: 0 auto;
-  padding: 16px 14px 40px;
+   /* 🔥 기존: padding: 16px 14px 40px; */
+  padding: 1px 14px 40px !important;   /* 상단을 1px로 축소 */
 }
 
 /* ===== 상단 헤더 (엑셀 리본 상단 느낌) ===== */
@@ -1026,16 +1027,15 @@ table tbody tr:hover {
 }
 
 
-/* Page 컨테이너 규칙을 agency-card에 그대로 적용 */
 .agency-card {
   width: 100%;
   max-width: 1600px;
 
-  /* 🔥 기존 20px → 0 : status bar 바로 아래 붙이기 */
+  /* 🔥 기존 margin: 20px auto → 완전 제거 */
   margin: 0 auto !important;
 
-  /* 🔥 내부 여백도 줄여서 컴팩트하게 */
-  padding: 14px 22px 16px !important;
+  /* 🔥 내부 padding도 컴팩트하게 축소 */
+  padding: 12px 20px 14px !important;
 
   background: linear-gradient(
     180deg,
@@ -1045,6 +1045,7 @@ table tbody tr:hover {
   border-radius: 14px;
   box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 }
+
 
 /* 내부 메뉴 버튼 */
 .agency-menu {
