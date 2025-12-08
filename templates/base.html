@@ -88,24 +88,26 @@
          style="max-width:none; padding:0; margin:0; background:none"
        {% endif %}
   >
-    {% if not hide_header %}
-    <!-- Flash 메시지 -->
+   {% if not hide_header %}
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        <div class="sheet" style="margin-top:10px;">
+        <script>
           {% for category, msg in messages %}
-            <div style="font-size:12px; margin-bottom:4px; color:
-              {% if category == 'error' %}#b91c1c
-              {% elif category == 'success' %}#166534
-              {% else %}#374151{% endif %};
-            ">
-              {{ msg }}
-            </div>
+          Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "{{ 'success' if category == 'success' else 'error' }}",
+            title: "{{ msg }}",
+            showConfirmButton: false,
+            timer: 1200,
+            timerProgressBar: true
+          });
           {% endfor %}
-        </div>
+        </script>
       {% endif %}
     {% endwith %}
-    {% endif %}
+  {% endif %}
+
 
     <!-- ======================================== -->
     <!-- 🔵 MAIN — 로그인 페이지 여백 제거 지원 -->
