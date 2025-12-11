@@ -11,8 +11,6 @@
   <p class="hero-sub">행(row)을 클릭하면 상태 변경 팝업이 열립니다.</p>
 </section>
 
-
-<!-- ⭐ 스크롤 가능하도록 sheet-scroll 추가 -->
 <section class="sheet sheet-scroll">
 
   <div class="sheet-title-row">
@@ -20,14 +18,12 @@
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
-  <!-- 📊 통계 박스 -->
   <div class="stats-box">
     <span class="stat total">전체: {{ total_cases }}개</span>
     <span class="stat active">진행중: {{ active_cases }}개</span>
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
 
-  <!-- ⭐ 테이블 고정 + 스크롤 -->
   <div class="table-wrapper table-fixed">
     <table id="request-table" class="table-compact">
       <thead>
@@ -50,6 +46,7 @@
   </div>
 
 </section>
+
 <!-- ====================== -->
 <!-- 🔥 상태 변경 Modal -->
 <!-- ====================== -->
@@ -78,14 +75,14 @@
   </div>
 </div>
 
-<!-- ===================================================== -->
-<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 로직 -->
-<!-- ===================================================== -->
+<!-- ============================================================== -->
+<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 + 데이터 자동 로딩          -->
+<!-- ============================================================== -->
 <script>
 let currentId = null;
 
 /* =========================================================
-   🔵 테이블 렌더링 — (ID 누락 문제 해결!)
+   🔵 테이블 렌더링
 ========================================================= */
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
@@ -116,7 +113,6 @@ function renderData(data) {
             <td>${r.interview_date || "-"}</td>
         `;
 
-        /* 🔥 FIXED — ID 포함해서 openModal에 전달 */
         row.onclick = () => openModal({
             id: r.id,
             region: r.region,
@@ -130,18 +126,33 @@ function renderData(data) {
     });
 }
 
+/* =========================================================
+   🔥 Dashboard 데이터 자동 로딩(fetch)
+========================================================= */
+function loadDashboardData() {
+    fetch("/api/requests")
+        .then(res => res.json())
+        .then(json => {
+            if (json.data) {
+                renderData(json.data);
+            }
+        })
+        .catch(err => console.error("데이터 로딩 실패:", err));
+}
+
+window.addEventListener("DOMContentLoaded", loadDashboardData);
 
 /* =========================================================
-   🔵 Modal 열기 — 이제 값이 정상적으로 들어옴
+   🔵 Modal 열기
 ========================================================= */
 function openModal(r) {
-    currentId = r.id;   // 🔥 FIXED: undefined였던 문제 해결됨
+    currentId = r.id;
 
     document.getElementById("modal-title").innerText =
         `${r.region} / ${r.company} / ${r.branch_name}`;
 
     document.getElementById("modal-interview").value =
-        r.interview_date || "";  // 🔥 "-" 들어가던 문제 해결
+        r.interview_date || "";
 
     document.getElementById("modal-status").value =
         r.status || "모집중";
@@ -149,9 +160,8 @@ function openModal(r) {
     document.getElementById("status-modal").classList.remove("hidden");
 }
 
-
 /* =========================================================
-   🔥 저장 요청 (AJAX + 성공 UI)
+   🔥 저장 요청
 ========================================================= */
 function saveStatus() {
 
@@ -182,14 +192,8 @@ function saveStatus() {
         btn.style.background = "#059669";
         btn.style.borderColor = "#059669";
 
-        // 🔥 안전하게 처리 — v1에는 loadFilteredData 없음
-        try {
-            if (typeof loadFilteredData === "function") {
-                loadFilteredData();
-            }
-        } catch (e) {
-            console.warn("loadFilteredData 없음 — OK");
-        }
+        // 저장 후 리스트 새로고침
+        loadDashboardData();
 
         setTimeout(() => {
             closeModal();
@@ -197,7 +201,7 @@ function saveStatus() {
             btn.disabled = false;
             btn.style.background = "#2563eb";
             btn.style.borderColor = "#2563eb";
-        }, 800);   // 반응성 향상 0.8초 추천
+        }, 800);
     })
     .catch(err => {
         alert("오류 발생: " + err);
@@ -205,17 +209,14 @@ function saveStatus() {
         btn.disabled = false;
     });
 }
+
 /* =========================================================
-   🔵 Modal 닫기 (필수!)
+   🔵 Modal 닫기
 ========================================================= */
 function closeModal() {
     const modal = document.getElementById("status-modal");
-    if (modal) {
-        modal.classList.add("hidden");
-    }
+    if (modal) modal.classList.add("hidden");
 }
-  
-
 </script>
 
 {% endblock %}
