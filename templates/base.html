@@ -7,28 +7,119 @@
   <title>{% block title %}Request Platform{% endblock %}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
 
-  <!-- SweetAlert2 먼저 로드 -->
+  <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- 🔵 Bootstrap 5 CSS 추가 (반드시 styles.css보다 먼저) -->
-  <link
-    href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-    rel="stylesheet"
-  >
+  <!-- Bootstrap 5 (기능만 사용, 디자인은 거의 오버라이드됨) -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
   <!-- 기본 스타일 -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
   {% block extra_css %}{% endblock %}
+
+  <style>
+    /* =============================== */
+    /*   GLOBAL (품고 스타일 베이스)   */
+    /* =============================== */
+    body {
+      background: #ffffff !important;
+      margin: 0;
+      font-family: 'Pretendard', sans-serif;
+      color: #111827;
+    }
+
+    .page {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    /* =============================== */
+    /*             HEADER              */
+    /* =============================== */
+    .top-header {
+      width: 100%;
+      background: #ffffff;
+      border-bottom: 1px solid #E5E7EB;
+      padding: 14px 18px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .header-inner {
+      width: 100%;
+      max-width: 900px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* 🔵 로고 영역 (포커스: 품고처럼 심플한 느낌) */
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0064E6;
+      margin-left: 6px;
+    }
+
+    .logo-square {
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      background: #0064E6;
+    }
+
+    .nav {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .nav-link {
+      font-size: 14px;
+      font-weight: 500;
+      color: #374151;
+      text-decoration: none;
+      padding: 4px 8px;
+    }
+
+    .nav-link.active {
+      color: #0064E6;
+      font-weight: 700;
+    }
+
+    .nav-user {
+      font-size: 13px;
+      color: #0064E6;
+      font-weight: 600;
+    }
+
+    /* =============================== */
+    /*             FOOTER              */
+    /* =============================== */
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      margin-top: 40px;
+      padding-bottom: 20px;
+      color: #9CA3AF;
+    }
+
+    /* =============================== */
+    /*              MAIN               */
+    /* =============================== */
+    .main {
+      margin-top: 20px;
+    }
+
+  </style>
 </head>
-
-
 
 <body>
 
-  <!-- ======================================== -->
-  <!-- 🔵 HEADER (로그인 페이지는 숨김) -->
-  <!-- ======================================== -->
+  <!-- HEADER (로그인 숨김) -->
   <header class="top-header"
     {% if hide_header or request.endpoint == 'request_page' %}
       style="display:none"
@@ -36,7 +127,7 @@
   >
     <div class="header-inner">
 
-      <div class="logo-wrap">
+      <div class="logo-wrap d-flex align-items-center">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
         <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
       </div>
@@ -50,37 +141,31 @@
         {% if session.get('branch_id') or session.get('google_user_id') %}
 
           {% if session.get('branch_id') and session.get('is_admin') %}
-            <a href="{{ url_for('dashboard_demo') }}"
-               class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
+            <a href="{{ url_for('dashboard_demo') }}" class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
               TPR Dashboard
             </a>
-        
-            <a href="{{ url_for('dashboard') }}"
-               class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
+
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
               요청 현황(엑셀뷰)
             </a>
-          
-            <a href="{{ url_for('dashboard_v3') }}"
-               class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
+
+            <a href="{{ url_for('dashboard_v3') }}" class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
               CARD Dashboard
             </a>
 
-            <a href="{{ url_for('dbtest_page') }}"
-               class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
+            <a href="{{ url_for('dbtest_page') }}" class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
               DB TEST 입력
             </a>
           {% endif %}
 
-          <a href="{{ url_for('request_page') }}"
-             class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
+          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
             요청 등록(대리점)
           </a>
 
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
 
         {% else %}
-          <a href="{{ url_for('login') }}"
-             class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
+          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
             로그인
           </a>
         {% endif %}
@@ -89,39 +174,34 @@
     </div>
   </header>
 
-
-  <!-- ======================================== -->
-  <!-- 🔵 PAGE WRAPPER — 로그인 전용 옵션 적용 -->
-  <!-- ======================================== -->
+  <!-- PAGE WRAPPER -->
   <div class="page"
        {% if hide_header %}
          style="max-width:none; padding:0; margin:0; background:none"
        {% endif %}
   >
-   {% if not hide_header %}
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <script>
-          {% for category, msg in messages %}
-          Swal.fire({
-            toast: true,
-            position: "top-end",
-            icon: "{{ 'success' if category == 'success' else 'error' }}",
-            title: "{{ msg }}",
-            showConfirmButton: false,
-            timer: 1200,
-            timerProgressBar: true
-          });
-          {% endfor %}
-        </script>
-      {% endif %}
-    {% endwith %}
-  {% endif %}
 
+    {% if not hide_header %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <script>
+            {% for category, msg in messages %}
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "{{ 'success' if category == 'success' else 'error' }}",
+              title: "{{ msg }}",
+              showConfirmButton: false,
+              timer: 1200,
+              timerProgressBar: true
+            });
+            {% endfor %}
+          </script>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
 
-    <!-- ======================================== -->
-    <!-- 🔵 MAIN -->
-    <!-- ======================================== -->
+    <!-- MAIN -->
     <main class="main"
           {% if hide_header %}
             style="margin-top:0; padding:0; gap:0"
@@ -135,13 +215,9 @@
       Truck People Request Platform – (주) 씨앤제이컴퍼니 2025
     </footer>
     {% endif %}
-
   </div>
 
-
-  <!-- ===================================================================== -->
-  <!-- ⭐ 관리자(admin=True) + 대시보드 페이지에서만 데이터 자동 로딩 실행 ⭐ -->
-  <!-- ===================================================================== -->
+  <!-- 관리자 페이지 자동 로딩 -->
   {% if session.get('is_admin') 
         and request.endpoint in [
           'dashboard',
@@ -152,9 +228,7 @@
         ]
   %}
   <script>
-
       function loadFilteredData() {
-
           const company = document.getElementById("filter-company")?.value || "all";
           const status  = document.getElementById("filter-status")?.value || "all";
 
@@ -163,13 +237,8 @@
           fetch(`/api/requests?${params.toString()}`)
             .then(res => res.json())
             .then(json => {
-
-                if (typeof renderCards === "function") {
-                    renderCards(json.data);
-
-                } else if (typeof renderData === "function") {
-                    renderData(json.data);
-                }
+                if (typeof renderCards === "function") renderCards(json.data);
+                else if (typeof renderData === "function") renderData(json.data);
             })
             .catch(err => console.error("API ERROR:", err));
       }
@@ -178,15 +247,11 @@
       document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
 
       window.addEventListener("load", loadFilteredData);
-
   </script>
   {% endif %}
 
-
-  <!-- 🔵 Bootstrap Bundle JS 추가 (Popper 포함) -->
-  <script
-    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-  ></script>
+  <!-- Bootstrap JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
