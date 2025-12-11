@@ -1265,3 +1265,14 @@ main, .sheet-scroll, .table-wrapper {
   z-index: 20;
 }
 
+.nav.open {
+  text-align: left !important;
+}
+
+.nav.open a.nav-link,
+.nav.open .nav-user {
+  display: block !important;
+  text-align: left !important;
+  width: 100%;
+  padding-left: 12px !important;
+}
