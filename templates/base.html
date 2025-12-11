@@ -180,31 +180,54 @@
 
       <!-- NAV -->
       <nav class="nav">
-
+      
         {% if session.get("google_user_id") %}
           <span class="nav-user">로그인: {{ session.get("google_name") }}</span>
         {% endif %}
-
+      
         {% if session.get('branch_id') or session.get('google_user_id') %}
-
+      
           {% if session.get('branch_id') and session.get('is_admin') %}
-            <a href="{{ url_for('dashboard_demo') }}" class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">TPR Dashboard</a>
-
-            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">요청 현황(엑셀뷰)</a>
-
-            <a href="{{ url_for('dashboard_v3') }}" class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">CARD Dashboard</a>
-
-            <a href="{{ url_for('dbtest_page') }}" class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">DB TEST 입력</a>
+            <a href="{{ url_for('dashboard_demo') }}"
+               class="btn-nav {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
+              TPR Dashboard
+            </a>
+      
+            <a href="{{ url_for('dashboard') }}"
+               class="btn-nav {% if request.endpoint == 'dashboard' %}active{% endif %}">
+              요청 현황(엑셀뷰)
+            </a>
+      
+            <a href="{{ url_for('dashboard_v3') }}"
+               class="btn-nav {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
+              CARD Dashboard
+            </a>
+      
+            <a href="{{ url_for('dbtest_page') }}"
+               class="btn-nav {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
+              DB TEST 입력
+            </a>
           {% endif %}
-
-          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">요청 등록(대리점)</a>
-
-          <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
-
+      
+          <a href="{{ url_for('request_page') }}"
+             class="btn-nav {% if request.endpoint == 'request_page' %}active{% endif %}">
+            요청 등록(대리점)
+          </a>
+      
+          <a href="{{ url_for('logout') }}"
+             class="btn-nav danger">
+            로그아웃
+          </a>
+      
         {% else %}
-          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">로그인</a>
+          <a href="{{ url_for('login') }}"
+             class="btn-nav {% if request.endpoint == 'login' %}active{% endif %}">
+            로그인
+          </a>
         {% endif %}
+      
       </nav>
+
     </div>
   </header>
 
