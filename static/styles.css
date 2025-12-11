@@ -1256,3 +1256,12 @@ table tbody tr:hover {
 .request-wrapper {
   margin-top: 8px !important;   /* 기존 카드와의 간격 줄이기 */
 }
+.nav {
+  z-index: 10;
+}
+
+main, .sheet-scroll, .table-wrapper {
+  position: relative;
+  z-index: 20;
+}
+
