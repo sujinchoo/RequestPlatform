@@ -84,11 +84,12 @@ body {
 }
 
 .nav-link.active {
-  background: #2563eb;
-  border-color: #2563eb;
-  color: #ffffff;
-  font-weight: 600;
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700;
 }
+
 
 /* ===== 메인 / 시트 ===== */
 
@@ -1188,5 +1189,47 @@ table tbody tr:hover {
   margin-top: 10px;
   font-size: 13px;
   color: #6B7280;
+}
+/* ===========================
+   🟦 Request Page Mobile Fix
+   =========================== */
+
+@media (max-width: 640px) {
+
+  .request-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 16px 14px !important;
+  }
+
+  /* 카드 내부 padding 모바일 최적화 */
+  .request-card {
+    padding: 16px !important;
+  }
+
+  /* 입력 폼 2열 → 1열 */
+  .request-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* 버튼 여백 조정 */
+  .request-btn-main {
+    font-size: 15px !important;
+    padding: 12px 0 !important;
+  }
+}
+/* ===========================
+   🟦 Mobile Header Padding Fix
+   =========================== */
+@media (max-width: 768px) {
+  .top-header {
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  body {
+    padding-top: 36px !important;   /* 28px → 헤더 높이에 맞게 36px */
+  }
 }
 
