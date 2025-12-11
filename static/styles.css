@@ -1071,3 +1071,122 @@ table tbody tr:hover {
   color: #2563eb;
   border-color: #3b82f6;
 }
+
+/* =============================== */
+/*  🔵 REQUEST PAGE — 품고 스타일   */
+/* =============================== */
+
+/* 전체 페이지 배경은 화이트 */
+.request-wrapper {
+  background: #ffffff;
+  padding: 22px 18px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+.request-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0064E6;
+  margin-bottom: 8px;
+}
+
+.request-sub {
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 24px;
+}
+.request-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #E5E7EB;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  margin-bottom: 22px;
+}
+
+.request-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 14px;
+}
+.request-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.request-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.request-input,
+.request-select,
+.request-textarea {
+  padding: 10px 12px;
+  font-size: 14px;
+  background: #ffffff;
+  border-radius: 10px;
+  border: 1px solid #D5DAE1;
+  outline: none;
+  transition: 0.15s;
+}
+
+.request-input:focus,
+.request-select:focus,
+.request-textarea:focus {
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
+}
+
+.request-textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+.request-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 640px) {
+  .request-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.request-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  background: #22C55E;
+  color: white;
+  border-radius: 999px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.request-btn-main {
+  width: 100%;
+  padding: 14px 0;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(90deg, #0064E6 0%, #24D37A 100%);
+  color: #ffffff;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: 0.15s;
+}
+
+.request-btn-main:hover {
+  opacity: 0.92;
+}
+.request-help {
+  margin-top: 10px;
+  font-size: 13px;
+  color: #6B7280;
+}
+
