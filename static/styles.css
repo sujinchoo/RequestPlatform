@@ -630,12 +630,20 @@ table tbody tr:hover {
    🔥 V1 DASHBOARD FINAL PATCH (2025.11.20)
    Compact + Readability + Column Optimization
    ============================================================ */
-.table-wrapper {
-  width: 100%;
+
+.sheet-scroll {
+  display: block;
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 600px;
-  -webkit-overflow-scrolling: touch;
+  min-height: 400px; /* 테이블 반드시 보이도록 */
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 6px;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
 }
 
 
