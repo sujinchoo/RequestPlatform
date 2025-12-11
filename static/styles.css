@@ -1233,3 +1233,17 @@ table tbody tr:hover {
   }
 }
 
+/* Request Form 간격 축소 */
+.request-form-row {
+  margin-bottom: 10px !important;   /* 기존 24px → 10px */
+}
+
+.request-form-row .col-md-6,
+.request-form-row .col-md-4,
+.request-form-row .col-md-8 {
+  margin-bottom: 8px;
+}
+
+.form-label {
+  margin-bottom: 3px !important;    /* 라벨과 입력창 간격 축소 */
+}
