@@ -1247,3 +1247,12 @@ table tbody tr:hover {
 .form-label {
   margin-bottom: 3px !important;    /* 라벨과 입력창 간격 축소 */
 }
+/* 페이지 상단 여백 축소 */
+.page {
+  padding-top: 10px !important;  /* 기존 24~32px → 10px */
+}
+
+/* request-wrapper 상단 여백 축소 */
+.request-wrapper {
+  margin-top: 8px !important;   /* 기존 카드와의 간격 줄이기 */
+}
