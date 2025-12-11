@@ -1276,3 +1276,44 @@ main, .sheet-scroll, .table-wrapper {
   width: 100%;
   padding-left: 12px !important;
 }
+/* ==========================================
+   공용 네비/카드 버튼 스타일 (통합 디자인)
+   ========================================== */
+.btn-nav {
+  display: inline-block;
+  padding: 6px 14px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  text-decoration: none;
+  transition: 0.18s ease-in-out;
+  cursor: pointer;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn-nav:hover {
+  background: #eef6ff;
+  border-color: #c3dafc;
+  color: #1d4ed8;
+}
+
+.btn-nav.active,
+.btn-nav:active {
+  background: #1d4ed8 !important;
+  border-color: #1d4ed8 !important;
+  color: white !important;
+  font-weight: 600;
+}
+.btn-nav.danger {
+  border-color: #dc2626;
+  color: #dc2626;
+}
+
+.btn-nav.danger:hover {
+  background: #fee2e2;
+  border-color: #dc2626;
+}
