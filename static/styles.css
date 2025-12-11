@@ -996,9 +996,13 @@ table tbody tr:hover {
     z-index: 10;
 }
 
-/* 스크롤 가능한 시트 */
 .sheet-scroll {
+  display: block !important;
   overflow-x: auto !important;
+  overflow-y: auto !important;
+  height: auto !important;
+  max-height: none !important;
+  min-height: 400px !important;  /* 테이블 반드시 보이게 */
 }
 
 /* 테이블 헤더 고정 */
