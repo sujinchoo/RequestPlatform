@@ -7,126 +7,171 @@
 {% block content %}
 
 <!-- ============================= -->
-<!-- 🏪 대리점 프로필 카드 (Bootstrap 카드 적용) -->
+<!-- 🔵 1) 프로필 카드 (품고 스타일) -->
 <!-- ============================= -->
-<div class="card shadow-sm mb-4 p-3">
-  <div class="d-flex justify-content-between align-items-center">
-    
-    <div>
-      <h5 class="mb-1">🏪 {{ session.get("google_name") }}</h5>
-      <div class="text-muted small">{{ session.get("google_email") }}</div>
-    </div>
+<div class="request-wrapper">
 
-    <div class="d-flex gap-2">
-      <button class="btn btn-outline-primary btn-sm" onclick="scrollToSection('register')">요청 등록</button>
-      <button class="btn btn-outline-secondary btn-sm" onclick="scrollToSection('status')">내 요청 현황</button>
-      <button class="btn btn-danger btn-sm" onclick="window.location.href='/logout'">로그아웃</button>
-    </div>
+  <div class="request-card mb-4">
+    <div class="request-card-title">대리점 정보</div>
 
+    <div class="profile-box">
+      <div class="profile-left">
+        <div class="profile-name">{{ session.get("google_name") }}</div>
+        <div class="profile-email">{{ session.get("google_email") }}</div>
+      </div>
+
+      <div class="profile-buttons">
+        <button class="profile-btn" onclick="scrollToSection('register')">요청 등록</button>
+        <button class="profile-btn secondary" onclick="scrollToSection('status')">내 요청 현황</button>
+        <button class="profile-btn danger" onclick="window.location.href='/logout'">로그아웃</button>
+      </div>
+    </div>
   </div>
+
+
+
+  <!-- ============================= -->
+  <!-- 🔵 2) 헤더 섹션 -->
+  <!-- ============================= -->
+  <div class="request-title">인력 요청 등록</div>
+  <div class="request-sub">대리점 기준으로 신규 인력 요청을 등록합니다.</div>
+
+
+
+  <!-- ============================= -->
+  <!-- 🔵 3) 요청 등록 카드 -->
+  <!-- ============================= -->
+  <div class="request-card" id="register">
+
+    <div class="request-card-title">요청 정보 입력</div>
+
+    <form method="post" id="req-form">
+
+      <div class="request-grid">
+
+        <div class="request-field">
+          <label>택배사</label>
+          <select name="company" class="request-select" required>
+            <option value="">선택하세요</option>
+            <option value="CJ대한통운">CJ대한통운</option>
+            <option value="롯데택배">롯데택배</option>
+            <option value="한진택배">한진택배</option>
+            <option value="로젠택배">로젠택배</option>
+            <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <div class="request-field">
+          <label>영업소 / 대리점명</label>
+          <input name="branch" type="text" class="request-input" placeholder="예: 인천 계양영업소" required>
+        </div>
+
+        <div class="request-field">
+          <label>지역 (시/군/구)</label>
+          <input name="region" type="text" class="request-input" placeholder="예: 인천 계양구" required>
+        </div>
+
+        <div class="request-field">
+          <label>차종</label>
+          <input name="vehicle_type" type="text" class="request-input" placeholder="예: 1톤 카고">
+        </div>
+
+        <div class="request-field">
+          <label>필요 인원 (명)</label>
+          <input name="headcount" type="number" min="1" step="1" class="request-input" required>
+        </div>
+
+        <div class="request-field">
+          <label>단가 (원/건)</label>
+          <input name="unit_price" type="number" min="0" step="10" class="request-input" required>
+        </div>
+
+        <div class="request-field">
+          <label>월 물량 (건)</label>
+          <input name="volume" type="number" min="0" step="100" class="request-input" required>
+        </div>
+
+      </div>
+
+      <div class="request-field">
+        <label>기타 사항</label>
+        <textarea name="etc" class="request-textarea" placeholder="예: 군필 우대, 외국인 불가, 야간 가능자 등"></textarea>
+      </div>
+
+      <button type="submit" class="request-btn-main">요청 등록하기</button>
+
+    </form>
+  </div>
+
+
+
+
+  <!-- ============================= -->
+  <!-- 🔵 4) 등록된 요청 목록 -->
+  <!-- ============================= -->
+  <div class="request-card mt-4" id="status">
+    <div class="request-card-title">등록한 요청 목록</div>
+
+    {% if branch_requests|length == 0 %}
+      <p class="request-empty">아직 등록된 요청이 없습니다.</p>
+
+    {% else %}
+
+      <div class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>등록일</th>
+              <th>택배사</th>
+              <th>지역</th>
+              <th>차종</th>
+              <th>인원</th>
+              <th>단가</th>
+              <th>월물량</th>
+              <th>삭제</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for r in branch_requests %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+              <td>{{ r.company }}</td>
+              <td>{{ r.region }}</td>
+              <td>{{ r.vehicle_type }}</td>
+              <td>{{ r.headcount }}</td>
+              <td>{{ r.unit_price }}</td>
+              <td>{{ r.volume }}</td>
+
+              <td>
+                <form method="post" action="{{ url_for('delete_request', req_id=r.id) }}" class="delete-form">
+                  <button class="btn btn-danger btn-sm">삭제</button>
+                </form>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+    {% endif %}
+  </div>
+
 </div>
 
 
 
-<section class="sheet sheet-hero">
-  <h3 class="hero-title fw-bold">전국 택배 대리점 인력 요청</h3>
-  <p class="hero-sub text-muted">
-    로그인된 대리점 기준으로 인력 요청을 등록합니다.
-  </p>
-</section>
-
 
 <!-- ============================= -->
-<!-- 📌 요청 등록 폼 (Bootstrap 버전) -->
-<!-- ============================= -->
-<div class="card p-4 shadow-sm mb-4">
-  <form method="post" id="req-form">
-
-    <!-- 1행 -->
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="form-label">택배사</label>
-        <select id="company" name="company" class="form-select" required>
-          <option value="">선택하세요</option>
-          <option value="CJ대한통운">CJ대한통운</option>
-          <option value="롯데택배">롯데택배</option>
-          <option value="한진택배">한진택배</option>
-          <option value="로젠택배">로젠택배</option>
-          <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
-          <option value="기타">기타</option>
-        </select>
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">영업소 / 대리점명</label>
-        <input id="branch" name="branch" type="text" class="form-control"
-               placeholder="예: 인천 계양영업소" required>
-      </div>
-    </div>
-
-    <!-- 2행 -->
-    <div class="row mb-3">
-      <div class="col-md-6">
-        <label class="form-label">지역 (시/군/구)</label>
-        <input id="region" name="region" type="text" class="form-control"
-               placeholder="예: 인천 계양구" required>
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">차종</label>
-        <input id="vehicle-type" name="vehicle_type" type="text" class="form-control"
-               placeholder="예: 1톤 카고">
-      </div>
-    </div>
-
-    <!-- 3행 -->
-    <div class="row mb-3">
-      <div class="col-md-4">
-        <label class="form-label">필요 인원 (명)</label>
-        <input id="headcount" name="headcount" type="number"
-               class="form-control" min="1" step="1" required>
-      </div>
-
-      <div class="col-md-8">
-        <label class="form-label">기타사항</label>
-        <textarea id="etc" name="etc" class="form-control"
-          placeholder="예: 군필 우대, 외국인 불가, 야간 가능자 등"></textarea>
-      </div>
-    </div>
-
-    <!-- 4행 -->
-    <div class="row mb-4">
-      <div class="col-md-6">
-        <label class="form-label">단가 (원/건)</label>
-        <input id="unit-price" name="unit_price" type="number"
-               class="form-control" min="0" step="10" required>
-      </div>
-
-      <div class="col-md-6">
-        <label class="form-label">월 물량 (건)</label>
-        <input id="volume" name="volume" type="number"
-               class="form-control" min="0" step="100" required>
-      </div>
-    </div>
-
-    <button type="submit" class="btn btn-primary w-100 py-2 fw-bold">
-      인력 요청 등록
-    </button>
-  </form>
-</div>
-
-
-
-<!-- ============================= -->
-<!-- 🗑 삭제 확인 SweetAlert -->
+<!-- 🔵 삭제 확인 팝업 -->
 <!-- ============================= -->
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-
-  const deleteForms = document.querySelectorAll(".delete-form");
-
-  deleteForms.forEach(function(form) {
-    form.addEventListener("submit", function(e) {
+document.addEventListener("DOMContentLoaded", () => {
+  document.querySelectorAll(".delete-form").forEach(form => {
+    form.addEventListener("submit", (e) => {
       e.preventDefault();
 
       Swal.fire({
@@ -138,84 +183,27 @@ document.addEventListener("DOMContentLoaded", function () {
         cancelButtonColor: "#6b7280",
         confirmButtonText: "삭제",
         cancelButtonText: "취소"
-      }).then((result) => {
+      }).then(result => {
         if (result.isConfirmed) form.submit();
       });
+
     });
   });
-
 });
 </script>
 
 
-
 <!-- ============================= -->
-<!-- 📌 등록된 요청 목록 -->
-<!-- ============================= -->
-<section class="sheet sheet-scroll mt-4">
-  <h4 class="mb-3 fw-bold">📌 등록한 요청 목록</h4>
-
-  {% if branch_requests|length == 0 %}
-    <p class="text-muted">아직 등록된 요청이 없습니다.</p>
-
-  {% else %}
-
-  <div class="table-responsive">
-    <table class="table table-bordered table-hover align-middle">
-      <thead class="table-light">
-        <tr>
-          <th>ID</th>
-          <th>등록일</th>
-          <th>택배사</th>
-          <th>지역</th>
-          <th>차종</th>
-          <th>인원</th>
-          <th>단가</th>
-          <th>월물량</th>
-          <th>삭제</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for r in branch_requests %}
-        <tr>
-          <td>{{ r.id }}</td>
-          <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
-          <td>{{ r.company }}</td>
-          <td>{{ r.region }}</td>
-          <td>{{ r.vehicle_type }}</td>
-          <td>{{ r.headcount }}</td>
-          <td>{{ r.unit_price }}</td>
-          <td>{{ r.volume }}</td>
-          <td>
-            <form method="post"
-                  action="{{ url_for('delete_request', req_id=r.id) }}"
-                  class="delete-form">
-              <button class="btn btn-danger btn-sm">삭제</button>
-            </form>
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </div>
-
-  {% endif %}
-</section>
-
-
-
-<!-- ============================= -->
-<!-- JS: 스크롤 이동 기능 -->
+<!-- 🔵 스크롤 이동 -->
 <!-- ============================= -->
 <script>
 function scrollToSection(type) {
   let target;
 
   if (type === "register") {
-    target = document.querySelector(".card");
+    target = document.querySelector("#register");
   } else if (type === "status") {
-    target = document.querySelector(".sheet.sheet-scroll");
+    target = document.querySelector("#status");
   }
 
   target?.scrollIntoView({ behavior: "smooth", block: "start" });
