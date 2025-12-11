@@ -5,23 +5,23 @@
 <head>
   <meta charset="UTF-8" />
   <title>{% block title %}Request Platform{% endblock %}</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- SweetAlert2 -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  <!-- Bootstrap 5 (기능만 사용, 디자인은 거의 오버라이드됨) -->
+  <!-- Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-  <!-- 기본 스타일 -->
+  <!-- Custom CSS -->
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 
   {% block extra_css %}{% endblock %}
 
   <style>
-    /* =============================== */
-    /*   GLOBAL (품고 스타일 베이스)   */
-    /* =============================== */
+    /* ============================ */
+    /* GLOBAL */
+    /* ============================ */
     body {
       background: #ffffff !important;
       margin: 0;
@@ -33,12 +33,12 @@
       width: 100%;
       max-width: 900px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 10px; /* 🔥 기존보다 축소 → request-wrapper와 간격 줄임 */
     }
 
-    /* =============================== */
-    /*             HEADER              */
-    /* =============================== */
+    /* ============================ */
+    /* HEADER */
+    /* ============================ */
     .top-header {
       width: 100%;
       background: #ffffff;
@@ -46,6 +46,9 @@
       padding: 14px 18px;
       display: flex;
       justify-content: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
     .header-inner {
@@ -54,14 +57,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      position: relative;
     }
 
-    /* 🔵 로고 영역 (포커스: 품고처럼 심플한 느낌) */
-    .logo-text {
-      font-size: 20px;
-      font-weight: 800;
-      color: #0064E6;
-      margin-left: 6px;
+    .logo-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .logo-square {
@@ -71,6 +73,15 @@
       background: #0064E6;
     }
 
+    .logo-text {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0064E6;
+    }
+
+    /* ============================ */
+    /* NAV */
+    /* ============================ */
     .nav {
       display: flex;
       gap: 16px;
@@ -90,36 +101,67 @@
       font-weight: 700;
     }
 
-    .nav-user {
-      font-size: 13px;
-      color: #0064E6;
-      font-weight: 600;
+    /* ============================ */
+    /*   MOBILE HAMBURGER NAV       */
+    /* ============================ */
+    .nav-toggle {
+      display: none;
+      font-size: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #111827;
     }
 
-    /* =============================== */
-    /*             FOOTER              */
-    /* =============================== */
+    @media (max-width: 768px) {
+      .nav {
+        display: none;
+        flex-direction: column;
+        background: white;
+        position: absolute;
+        top: 58px;
+        right: 0;
+        width: 180px;
+        padding: 12px;
+        border: 1px solid #E5E7EB;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      }
+
+      .nav.open {
+        display: flex;
+      }
+
+      .nav-toggle {
+        display: block;
+      }
+    }
+
+    /* ============================ */
+    /* MAIN */
+    /* ============================ */
+    .main {
+      margin-top: 8px; /* 🔥 간격 줄임 */
+      padding-top: 0 !important;
+    }
+
+    /* FOOTER */
     .footer {
       text-align: center;
       font-size: 13px;
-      margin-top: 40px;
+      margin-top: 30px;
       padding-bottom: 20px;
       color: #9CA3AF;
     }
-
-    /* =============================== */
-    /*              MAIN               */
-    /* =============================== */
-    .main {
-      margin-top: 20px;
-    }
-
   </style>
+
 </head>
 
 <body>
 
-  <!-- HEADER (로그인 숨김) -->
+  <!-- ============================ -->
+  <!-- HEADER -->
+  <!-- ============================ -->
   <header class="top-header"
     {% if hide_header or request.endpoint == 'request_page' %}
       style="display:none"
@@ -127,60 +169,52 @@
   >
     <div class="header-inner">
 
-      <div class="logo-wrap d-flex align-items-center">
+      <!-- LOGO -->
+      <div class="logo-wrap">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
         <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
       </div>
 
+      <!-- Hamburger Button -->
+      <button class="nav-toggle" onclick="toggleNav()">☰</button>
+
+      <!-- NAV -->
       <nav class="nav">
 
-        {% if session.get('google_user_id') %}
-          <span class="nav-user">Google 로그인: {{ session.get("google_name") }}</span>
+        {% if session.get("google_user_id") %}
+          <span class="nav-user">로그인: {{ session.get("google_name") }}</span>
         {% endif %}
 
         {% if session.get('branch_id') or session.get('google_user_id') %}
 
           {% if session.get('branch_id') and session.get('is_admin') %}
-            <a href="{{ url_for('dashboard_demo') }}" class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
-              TPR Dashboard
-            </a>
+            <a href="{{ url_for('dashboard_demo') }}" class="nav-link {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">TPR Dashboard</a>
 
-            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">
-              요청 현황(엑셀뷰)
-            </a>
+            <a href="{{ url_for('dashboard') }}" class="nav-link {% if request.endpoint == 'dashboard' %}active{% endif %}">요청 현황(엑셀뷰)</a>
 
-            <a href="{{ url_for('dashboard_v3') }}" class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-              CARD Dashboard
-            </a>
+            <a href="{{ url_for('dashboard_v3') }}" class="nav-link {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">CARD Dashboard</a>
 
-            <a href="{{ url_for('dbtest_page') }}" class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
-              DB TEST 입력
-            </a>
+            <a href="{{ url_for('dbtest_page') }}" class="nav-link {% if request.endpoint == 'dbtest_page' %}active{% endif %}">DB TEST 입력</a>
           {% endif %}
 
-          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">
-            요청 등록(대리점)
-          </a>
+          <a href="{{ url_for('request_page') }}" class="nav-link {% if request.endpoint == 'request_page' %}active{% endif %}">요청 등록(대리점)</a>
 
           <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
 
         {% else %}
-          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">
-            로그인
-          </a>
+          <a href="{{ url_for('login') }}" class="nav-link {% if request.endpoint == 'login' %}active{% endif %}">로그인</a>
         {% endif %}
-
       </nav>
     </div>
   </header>
 
-  <!-- PAGE WRAPPER -->
+
+  <!-- PAGE -->
   <div class="page"
-       {% if hide_header %}
-         style="max-width:none; padding:0; margin:0; background:none"
-       {% endif %}
+    {% if hide_header %} style="max-width:none; padding:0; margin:0; background:none" {% endif %}
   >
 
+    <!-- Flash Message -->
     {% if not hide_header %}
       {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
@@ -192,8 +226,7 @@
               icon: "{{ 'success' if category == 'success' else 'error' }}",
               title: "{{ msg }}",
               showConfirmButton: false,
-              timer: 1200,
-              timerProgressBar: true
+              timer: 1200
             });
             {% endfor %}
           </script>
@@ -202,56 +235,23 @@
     {% endif %}
 
     <!-- MAIN -->
-    <main class="main"
-          {% if hide_header %}
-            style="margin-top:0; padding:0; gap:0"
-          {% endif %}
-    >
+    <main class="main">
       {% block content %}{% endblock %}
     </main>
 
     {% if not hide_header %}
-    <footer class="footer">
-      Truck People Request Platform – (주) 씨앤제이컴퍼니 2025
-    </footer>
+      <footer class="footer">
+        Truck People Request Platform – (주) 씨앤제이컴퍼니 2025
+      </footer>
     {% endif %}
   </div>
 
-  <!-- 관리자 페이지 자동 로딩 -->
-  {% if session.get('is_admin') 
-        and request.endpoint in [
-          'dashboard',
-          'dashboard_v1',
-          'dashboard_v2',
-          'dashboard_v3',
-          'dashboard_demo'
-        ]
-  %}
+  <!-- MOBILE NAV SCRIPT -->
   <script>
-      function loadFilteredData() {
-          const company = document.getElementById("filter-company")?.value || "all";
-          const status  = document.getElementById("filter-status")?.value || "all";
-
-          const params = new URLSearchParams({ company, status });
-
-          fetch(`/api/requests?${params.toString()}`)
-            .then(res => res.json())
-            .then(json => {
-                if (typeof renderCards === "function") renderCards(json.data);
-                else if (typeof renderData === "function") renderData(json.data);
-            })
-            .catch(err => console.error("API ERROR:", err));
-      }
-
-      document.getElementById("filter-company")?.addEventListener("change", loadFilteredData);
-      document.getElementById("filter-status")?.addEventListener("change", loadFilteredData);
-
-      window.addEventListener("load", loadFilteredData);
+    function toggleNav() {
+      document.querySelector(".nav").classList.toggle("open");
+    }
   </script>
-  {% endif %}
-
-  <!-- Bootstrap JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
