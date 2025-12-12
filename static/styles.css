@@ -15,8 +15,8 @@ body {
 
 .page {
   width: 100%;
-  max-width: 1600px;   /* PC 최대 넓이 */
-  margin: 0 auto;
+  max-width: 100%;   /* PC 최대 넓이 */
+  margin: 0 ;
    /* 🔥 기존: padding: 16px 14px 40px; */
   padding: 1px 14px 40px !important;   /* 상단을 1px로 축소 */
 }
