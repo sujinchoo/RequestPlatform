@@ -37,7 +37,7 @@
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
 
-  <!-- 🔹 recent-card 스타일 카드 리스트 -->
+  <!-- 🔹 카드 리스트 -->
   <div id="card-list" class="recent-list">
     {% for r in reqs %}
     <div class="recent-card"
@@ -58,17 +58,18 @@
 
       <div class="recent-title">
         {{ r.company }} / {{ r.branch_name }}
-          
       </div>
-   
-    
-        
-       
+
+      <!-- ✅ [FIX 1] 서버 렌더링 상태 배지 추가 (공백 제거) -->
+      <span class="tag-status tag-{{ r.status | replace(' ', '') }}">
+        {{ r.status }}
+      </span>
 
       <div class="recent-meta">
         지역: {{ r.region }}<br>
         차종: {{ r.vehicle_type or '-' }} / 인원: {{ r.headcount }}명<br>
-        단가: {{ "{:,}".format(r.unit_price) }}원 / 물량: {{ "{:,}".format(r.volume) }}건<br>
+        단가: {{ "{:,}".format(r.unit_price) }}원 /
+        물량: {{ "{:,}".format(r.volume) }}건<br>
         등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
       </div>
 
@@ -113,8 +114,7 @@
 let currentId = null;
 
 /* -------------------------------------------------
-   1) recent-card 구조로 렌더링 (필터 연동용)
-   ↳ base.html 의 loadFilteredData() 가 이 함수를 호출
+   1) 카드 렌더링 (필터 연동)
 -------------------------------------------------- */
 function renderCards(data) {
   const list = document.getElementById("card-list");
@@ -127,16 +127,17 @@ function renderCards(data) {
 
   data.forEach(r => {
     const safeObj = JSON.stringify(r).replace(/"/g, '&quot;');
+    const statusClass = r.status.replace(/\s/g, ""); // ✅ [FIX 2]
 
     const html = `
       <div class="recent-card" onclick='openModal(${safeObj})'>
-        
+
         <div class="recent-title">
           ${r.company} / ${r.branch_name}
         </div>
 
-        <!-- 🔥 상태 배지 (필수!!) -->
-        <span class="tag-status tag-${r.status}">
+        <!-- ✅ 상태 배지 -->
+        <span class="tag-status tag-${statusClass}">
           ${r.status}
         </span>
 
@@ -153,7 +154,6 @@ function renderCards(data) {
     list.insertAdjacentHTML("beforeend", html);
   });
 }
-
 
 /* -------------------------------------------------
    2) Modal open / close
@@ -175,8 +175,7 @@ function closeModal() {
 }
 
 /* -------------------------------------------------
-   3) 상태 저장 후 필터 재로딩
-   ↳ loadFilteredData() 는 base.html 에 이미 정의되어 있음
+   3) 상태 저장
 -------------------------------------------------- */
 function saveStatus() {
   const btn = document.querySelector(".modal-save-btn");
@@ -194,35 +193,33 @@ function saveStatus() {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
   })
-    .then(res => res.json())
-    .then(json => {
-      if (!json.success) {
-        alert("저장 실패");
-        btn.innerText = "저장";
-        btn.disabled = false;
-        return;
-      }
-
-      btn.innerText = "저장완료 ✓";
-      btn.style.background = "#059669";
-
-      setTimeout(() => {
-        closeModal();
-        // base.html 에 있는 공통 필터 함수 재사용
-        if (typeof loadFilteredData === "function") {
-          loadFilteredData();
-        }
-        btn.innerText = "저장";
-        btn.style.background = "#2563eb";
-        btn.disabled = false;
-      }, 700);
-    })
-    .catch(err => {
-      console.error("SAVE ERROR:", err);
-      alert("상태 저장 중 오류가 발생했습니다.");
+  .then(res => res.json())
+  .then(json => {
+    if (!json.success) {
+      alert("저장 실패");
       btn.innerText = "저장";
       btn.disabled = false;
-    });
+      return;
+    }
+
+    btn.innerText = "저장완료 ✓";
+    btn.style.background = "#059669";
+
+    setTimeout(() => {
+      closeModal();
+      if (typeof loadFilteredData === "function") {
+        loadFilteredData();
+      }
+      btn.innerText = "저장";
+      btn.style.background = "#2563eb";
+      btn.disabled = false;
+    }, 700);
+  })
+  .catch(() => {
+    alert("상태 저장 중 오류가 발생했습니다.");
+    btn.innerText = "저장";
+    btn.disabled = false;
+  });
 }
 </script>
 
