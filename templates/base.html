@@ -162,74 +162,32 @@
   <!-- ============================ -->
   <!-- HEADER -->
   <!-- ============================ -->
-  <header class="top-header"
-    {% if hide_header or request.endpoint == 'request_page' %}
-      style="display:none"
-    {% endif %}
-  >
+  <header class="top-header">
     <div class="header-inner">
-
-      <!-- LOGO -->
+  
       <div class="logo-wrap">
         <div class="logo-square {% block logo_color %}{% endblock %}"></div>
-        <div class="logo-text">{% block header_title %}인력 요청 플랫폼{% endblock %}</div>
+        <div class="logo-text">{% block header_title %}{% endblock %}</div>
       </div>
-
-      <!-- Hamburger Button -->
+  
+      <!-- 🔥 햄버거 버튼 (PC/모바일 공통) -->
       <button class="nav-toggle" onclick="toggleNav()">☰</button>
-
-      <!-- NAV -->
-      <nav class="nav">
-      
+  
+      <nav class="nav" id="mainNav">
         {% if session.get("google_user_id") %}
-          <span class="nav-user">로그인: {{ session.get("google_name") }}</span>
+          <span class="nav-user">{{ session.get("google_name") }}</span>
         {% endif %}
-      
-        {% if session.get('branch_id') or session.get('google_user_id') %}
-      
-          {% if session.get('branch_id') and session.get('is_admin') %}
-            <a href="{{ url_for('dashboard_demo') }}"
-               class="btn-nav {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
-              TPR Dashboard
-            </a>
-      
-            <a href="{{ url_for('dashboard') }}"
-               class="btn-nav {% if request.endpoint == 'dashboard' %}active{% endif %}">
-              요청 현황(엑셀뷰)
-            </a>
-      
-            <a href="{{ url_for('dashboard_v3') }}"
-               class="btn-nav {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-              CARD Dashboard
-            </a>
-      
-            <a href="{{ url_for('dbtest_page') }}"
-               class="btn-nav {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
-              DB TEST 입력
-            </a>
-          {% endif %}
-      
-          <a href="{{ url_for('request_page') }}"
-             class="btn-nav {% if request.endpoint == 'request_page' %}active{% endif %}">
-            요청 등록(대리점)
-          </a>
-      
-          <a href="{{ url_for('logout') }}"
-             class="btn-nav danger">
-            로그아웃
-          </a>
-      
-        {% else %}
-          <a href="{{ url_for('login') }}"
-             class="btn-nav {% if request.endpoint == 'login' %}active{% endif %}">
-            로그인
-          </a>
-        {% endif %}
-      
+  
+        <a href="{{ url_for('dashboard_demo') }}" class="nav-link">TPR Dashboard</a>
+        <a href="{{ url_for('dashboard') }}" class="nav-link">요청 현황</a>
+        <a href="{{ url_for('dashboard_v3') }}" class="nav-link">CARD Dashboard</a>
+        <a href="{{ url_for('request_page') }}" class="nav-link">요청 등록</a>
+        <a href="{{ url_for('logout') }}" class="nav-link">로그아웃</a>
       </nav>
-
+  
     </div>
   </header>
+
 
 
   <!-- PAGE -->
@@ -275,6 +233,12 @@
       document.querySelector(".nav").classList.toggle("open");
     }
   </script>
+  <script>
+  function toggleNav() {
+    document.getElementById("mainNav").classList.toggle("open");
+  }
+  </script>
+
 
 </body>
 </html>
