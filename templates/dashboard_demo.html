@@ -174,22 +174,27 @@
 
   <!-- 4 & 5. Pie Chart + Bar Chart -->
   <div class="card" style="margin-top:16px;">
-    <div class="chart-grid">
+     <div class="chart-grid">
+   
+       <!-- 지역별 Pie -->
+       <div class="chart-card">
+         <div class="card-title" style="margin-bottom:10px;">
+           지역별 요청 비율 (TOP 5)
+         </div>
+         <canvas id="regionPieChart"></canvas>
+       </div>
+   
+       <!-- 택배사별 Pie -->
+       <div class="chart-card">
+         <div class="card-title" style="margin-bottom:10px;">
+           택배사별 요청 비율 (TOP 5)
+         </div>
+         <canvas id="carrierPieChart"></canvas>
+       </div>
+   
+     </div>
+   </div>
 
-      <!-- Pie Chart -->
-      <div class="chart-card">
-        <div class="card-title" style="margin-bottom:10px;">지역별 요청 비율 (TOP 5)</div>
-        <canvas id="regionPieChart"></canvas>
-      </div>
-
-      <!-- Bar Chart -->
-      <!<div class="chart-card">-->
-      <!  <div class="card-title" style="margin-bottom:10px;">월별 요청 추세 (Bar Chart)</div>-->
-      <!  <canvas id="monthlyChart"></canvas>-->
-      <!</div>-->
-
-    </div>
-  </div>
 
   <!-- 6. Recent -->
   <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
