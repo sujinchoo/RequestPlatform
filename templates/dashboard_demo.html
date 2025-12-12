@@ -235,44 +235,43 @@
       });
     }
   </script>
-
-  <!-- Bar Chart (월별 요청 + 숫자 표시) -->
+  <!-- 택배사별 Pie Chart (TOP 5 + DataLabel) -->
   <script>
-    const monthlyLabels = {{ monthly_labels | tojson }};
-    const monthlyValues = {{ monthly_values | tojson }};
+     const carrierData = {{ carrier_count | tojson | safe }};
+     const carrierLabels = Object.keys(carrierData);
+     const carrierValues = Object.values(carrierData);
+   
+     if (carrierLabels.length > 0) {
+       new Chart(document.getElementById('carrierPieChart'), {
+         type: 'pie',
+         data: {
+           labels: carrierLabels,
+           datasets: [{
+             data: carrierValues
+           }]
+         },
+         plugins: [ChartDataLabels],
+         options: {
+           responsive: true,
+           plugins: {
+             legend: {
+               position: 'bottom'
+             },
+             datalabels: {
+               color: '#000',
+               font: {
+                 size: 11
+               },
+               formatter: (value) => value
+             }
+           }
+         }
+       });
+     }
+</script>
+ 
 
-    if (monthlyLabels.length > 0) {
-      new Chart(document.getElementById('monthlyChart'), {
-        type: 'bar',
-        data: {
-          labels: monthlyLabels,
-          datasets: [{
-            label: '요청 수',
-            data: monthlyValues,
-            backgroundColor: '#3b82f6',
-            borderRadius: 4
-          }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { display: false },
-            datalabels: {
-              anchor: 'end',
-              align: 'end',
-              color: '#111',
-              font: { size: 10 },
-              formatter: (v) => v
-            }
-          },
-          scales: {
-            y: { beginAtZero: true }
-          }
-        }
-      });
-    }
-  </script>
+
 
 </section>
 {% endblock %}
