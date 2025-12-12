@@ -6,167 +6,136 @@
 
 {% block extra_css %}
 <style>
-  .summary-box {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 10px;
-  }
-
-  .card {
-    background: white;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  }
-
-  .card-title {
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 4px;
-  }
-
-  .card-value {
-    font-size: 22px;
-    font-weight: 700;
-    color: #111827;
-  }
-
-  /* Progress bar */
-  .progress-wrap {
-    margin: 20px 0;
-  }
-  .progress-label {
-    margin-bottom: 4px;
-    font-size: 13px;
-  }
-  .progress-bar {
-    background: #e5e7eb;
-    height: 10px;
-    border-radius: 6px;
-    overflow: hidden;
-  }
-  .progress-fill {
-    height: 100%;
-    background: #10b981;
-  }
-
-  /* Compact recent card */
-  .recent-card-compact {
-    position: relative;
-    background: white;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    padding: 14px 18px;
-    margin-bottom: 14px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-    transition: 0.18s ease;
-    cursor: pointer;
-  }
-
-  .recent-card-compact:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-    transform: translateY(-2px);
-  }
-
-  .recent-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: #111827;
-    margin-bottom: 6px;
-  }
-
-  .recent-meta {
-    font-size: 13px;
-    line-height: 1.35;
-    color: #374151;
-  }
-
-  .recent-status-tag {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    font-size: 11px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    font-weight: 600;
-    color: white;
-  }
-
-  .tag-모집중 { background: #2563eb; }
-  .tag-선탑진행중 { background: #0ea5e9; }
-  .tag-면접예정 { background: #f59e0b; }
-  .tag-배차완료 { background: #059669; }
-
-  /* Chart Containers */
-  .chart-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 16px;
-    margin-top: 16px;
-  }
-
-  .chart-card {
-    background: white;
-    padding: 16px;
-    border-radius: 12px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-  }
-
-  .chart-card canvas {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    display: block;
-  }
-
-  @media (min-width: 1024px) {
-    .chart-grid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-  .chart-card canvas {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
-  display: block;
-
-  /* 👇 추가: 두 차트의 높이 맞추기 */
-  height: 320px !important; 
+/* ===============================
+   Summary
+=============================== */
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 10px;
 }
 
-  /* =============================== */
-  /* 🔥 Dashboard Status Tag Restore */
-  /* =============================== */
-  
-  .recent-status-tag {
-    display: inline-block !important;
-    padding: 3px 8px !important;
-    border-radius: 6px !important;
-    font-weight: 600 !important;
-    font-size: 11px !important;
-    color: white !important;
-    white-space: nowrap !important;
-  }
-  
-  .recent-status-tag.tag-모집중 {
-    background: #2563eb !important;
-  }
-  
-  .recent-status-tag.tag-선탑진행중 {
-    background: #0ea5e9 !important;
-  }
-  
-  .recent-status-tag.tag-면접예정 {
-    background: #f59e0b !important;
-  }
-  
-  .recent-status-tag.tag-배차완료 {
-    background: #059669 !important;
-  }
+.card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
 
+.card-title {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 4px;
+}
+
+.card-value {
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+}
+
+/* ===============================
+   Progress
+=============================== */
+.progress-wrap { margin: 20px 0; }
+.progress-label { font-size: 13px; margin-bottom: 4px; }
+
+.progress-bar {
+  background: #e5e7eb;
+  height: 10px;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: #10b981;
+}
+
+/* ===============================
+   Recent Card
+=============================== */
+.recent-card-compact {
+  position: relative;
+  background: #fff;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  padding: 14px 18px;
+  margin-bottom: 14px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  transition: 0.18s ease;
+  cursor: pointer;
+}
+
+.recent-card-compact:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
+  transform: translateY(-2px);
+}
+
+.recent-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.recent-meta {
+  font-size: 13px;
+  line-height: 1.35;
+  color: #374151;
+}
+
+/* ===============================
+   ✅ Status Tag (정상 동작 핵심)
+=============================== */
+.recent-status-tag {
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 11px;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.recent-status-tag.tag-모집중       { background: #2563eb; }
+.recent-status-tag.tag-선탑진행중   { background: #0ea5e9; }
+.recent-status-tag.tag-면접예정     { background: #f59e0b; }
+.recent-status-tag.tag-배차완료     { background: #059669; }
+
+/* ===============================
+   Charts
+=============================== */
+.chart-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+@media (min-width: 1024px) {
+  .chart-grid { grid-template-columns: 1fr 1fr; }
+}
+
+.chart-card {
+  background: #fff;
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.chart-card canvas {
+  width: 100%;
+  max-width: 420px;
+  height: 320px !important;
+  margin: 0 auto;
+  display: block;
+}
 </style>
 {% endblock %}
 
