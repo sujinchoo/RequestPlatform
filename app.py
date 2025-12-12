@@ -200,25 +200,38 @@ def create_app():
             region_count[label] = cnt         # value는 숫자 그대로 전달
     
         # -----------------------------------------------
-        # 4) 월별 요청 수 집계 (Bar Chart)
+        # 4) ⭐ 택배사별 요청 비율 집계 (TOP 5 + 기타)
         # -----------------------------------------------
-        monthly_rows = (
-            db.session.query(
-                extract('year', Req.created_at).label("year"),
-                extract('month', Req.created_at).label("month"),
-                func.count(Req.id)
-            )
-            .group_by("year", "month")
-            .order_by("year", "month")
+        carrier_rows = (
+            db.session.query(Req.company, func.count(Req.id))
+            .group_by(Req.company)
             .all()
         )
-    
-        monthly_labels = []
-        monthly_values = []
         
-        for y, m, cnt in monthly_rows:
-            monthly_labels.append(f"{int(y)}-{int(m):02d}")  # 2025-01
-            monthly_values.append(int(cnt))
+        carrier_temp = {
+            (c or "미기입"): int(cnt)
+            for c, cnt in carrier_rows
+        }
+        
+        # 요청 수 기준 내림차순
+        sorted_carriers = sorted(
+            carrier_temp.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+        
+        top5_carriers = sorted_carriers[:5]
+        others_carrier_total = sum(cnt for _, cnt in sorted_carriers[5:])
+        
+        carrier_count = {}
+        
+        for name, cnt in top5_carriers:
+            label = f"{name} ({cnt})"
+            carrier_count[label] = cnt
+        
+        if others_carrier_total > 0:
+            carrier_count[f"기타 ({others_carrier_total})"] = others_carrier_total
+
     
         # -----------------------------------------------
         # 5) 템플릿 전달
@@ -237,8 +250,7 @@ def create_app():
             pct_done=pct_done,
             recent=recent,
             region_count=region_count,      # ← 라벨(숫자) 포함 + Top5 구조
-            monthly_labels=monthly_labels,
-            monthly_values=monthly_values
+            carrier_count=carrier_count      # ⭐ 택배사별 Pie
         )
 
 
