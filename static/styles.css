@@ -1,45 +1,56 @@
-/* ===== 기본 공통 ===== */
+/* =========================================================
+   TPR BOARD – styles.css (Unified / PC + Mobile / Hamburger)
+   ========================================================= */
+
+/* ===== Reset ===== */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
+/* ===== Base ===== */
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
-  background: #e5e7eb; /* 엑셀 배경처럼 연한 회색 */
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+               Roboto, "Noto Sans KR", sans-serif;
+  background: #e5e7eb;
   color: #111827;
   line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
 }
 
+/* ===== Page Wrapper ===== */
 .page {
   width: 100%;
-  max-width: 1600px;   /* PC 최대 넓이 */
+  max-width: 1600px;       /* PC full width */
   margin: 0 auto;
-   /* 🔥 기존: padding: 16px 14px 40px; */
-  padding: 1px 14px 40px !important;   /* 상단을 1px로 축소 */
+  padding: 10px 24px 40px;
 }
 
-/* ===== 상단 헤더 (엑셀 리본 상단 느낌) ===== */
+@media (max-width: 768px) {
+  .page {
+    padding: 10px 14px 32px; /* Mobile auto shrink */
+  }
+}
+
+/* ===== Header ===== */
 .top-header {
   position: sticky;
   top: 0;
-  z-index: 10;
+  z-index: 1000;
   background: #f3f4f6;
   border-bottom: 1px solid #d4d4d8;
 }
 
 .header-inner {
-  max-width: 1600px;   /* 페이지와 동일하게 확장 */
+  max-width: 1600px;
   margin: 0 auto;
-  padding: 8px 14px;
+  padding: 8px 16px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
 }
 
+/* Logo */
 .logo-wrap {
   display: flex;
   align-items: center;
@@ -49,273 +60,122 @@ body {
 .logo-square {
   width: 14px;
   height: 14px;
-  border-radius: 2px;
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  box-shadow: 0 0 0 1px #15803d;
-}
-
-.logo-square-green {
+  border-radius: 3px;
   background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-  box-shadow: 0 0 0 1px #1d4ed8;
 }
 
 .logo-text {
   font-size: 14px;
-  font-weight: 600;
-  color: #111827;
+  font-weight: 700;
+}
+
+/* ===== Navigation ===== */
+.nav-toggle {
+  font-size: 22px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: block; /* PC + Mobile 동일 */
 }
 
 .nav {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  align-items: center;
+  position: absolute;
+  top: 100%;
+  right: 16px;
+  display: none;
+  flex-direction: column;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #d4d4d8;
+  border-radius: 14px;
+  padding: 10px;
+  min-width: 220px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.15);
 }
 
-.nav-link {
-  font-size: 11px;
-  padding: 4px 10px;
+.nav.open {
+  display: flex;
+}
+
+.nav-link,
+.nav-user {
+  display: block;
+  padding: 8px 12px;
   border-radius: 999px;
-  border: 1px solid #d4d4d8;
-  background: #ffffff;
-  color: #4b5563;
+  font-size: 13px;
   text-decoration: none;
+  color: #374151;
   white-space: nowrap;
 }
 
+.nav-link:hover {
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
 .nav-link.active {
-  background: #2563eb !important;
-  border-color: #2563eb !important;
-  color: #ffffff !important;
-  font-weight: 700;
-}
-
-
-/* ===== 메인 / 시트 ===== */
-
-.main {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-top: 10px;
-}
-
-/* 엑셀 시트 같은 흰 바탕 박스 */
-.sheet {
-  background: #ffffff;
-  border-radius: 4px;
-  border: 1px solid #d4d4d8;
-  padding: 8px 12px 6px;
-  box-shadow: 0 1px 0 rgba(15, 23, 42, 0.05);
-  margin-bottom: 4px !important;
-}
-
-/* 시트 위쪽 여백 초밀착 */
-.sheet-hero {
-  border-left: 4px solid #2563eb;
-
-  /* 🔥 기존 4px → 2px */
-  margin-top: 2px !important;
-
-  /* 🔥 위쪽 내부 공간도 약간 축소 */
-  padding-top: 6px !important;
-}
-
-.hero-title {
-  font-size: 15px;
-  font-weight: 700;
-  margin-bottom: 4px;
-}
-
-.hero-sub {
-  font-size: 12px;
-  color: #4b5563;
-}
-
-.sheet-title-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 8px;
-  margin-bottom: 6px;
-}
-
-.sheet-title {
-  font-size: 13px;
+  background: #2563eb;
+  color: #ffffff;
   font-weight: 600;
 }
 
-.sheet-sub {
-  font-size: 11px;
-  color: #6b7280;
-}
-
-/* ===== 폼 / 그리드 ===== */
-
-.grid-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  margin-bottom: 8px;
-}
-
-@media (max-width: 640px) {
-  .grid-row {
-    grid-template-columns: 1fr;
-  }
-}
-
-.field {
+/* ===== Main / Sheet ===== */
+.main {
   display: flex;
   flex-direction: column;
-  gap: 3px;
+  gap: 8px;
 }
 
-.field-full {
-  grid-column: 1 / -1;
-}
-
-label {
-  font-size: 11px;
-  color: #4b5563;
-}
-
-input,
-select,
-textarea {
-  border-radius: 3px;
-  border: 1px solid #d4d4d8;
-  padding: 6px 7px;
-  font-size: 12px;
-  color: #111827;
+.sheet {
   background: #ffffff;
-  outline: none;
-}
-
-input:focus,
-select:focus,
-textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.25);
-}
-
-textarea {
-  min-height: 60px;
-  resize: vertical;
-}
-
-/* 엑셀 셀 느낌의 간단 인풋/셀 */
-.cell-input,
-.cell-select {
-  width: 100%;
-  padding: 4px 6px;
-  font-size: 11px;
-  border-radius: 2px;
   border: 1px solid #d4d4d8;
-  background: #ffffff;
+  border-radius: 6px;
+  padding: 10px 14px;
 }
 
-/* 버튼 */
-.btn-primary {
-  width: 100%;
-  margin-top: 6px;
-  border-radius: 3px;
-  padding: 8px;
-  border: 1px solid #2563eb;
-  background: #2563eb;
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-.btn-primary:active {
-  transform: translateY(1px);
-}
-
-/* 힌트 텍스트 */
-.hint {
-  font-size: 11px;
-  color: #6b7280;
-  margin-top: 6px;
-}
-
-/* ===== 최근 등록 리스트 (index 아래쪽) ===== */
-
+/* ===== Dashboard v3 Cards ===== */
 .recent-list {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  font-size: 11px;
+  gap: 10px;
 }
 
-.recent-row {
-  display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
-  gap: 4px;
-  padding: 4px 6px;
+.recent-card {
+  position: relative;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-radius: 12px;
+  padding: 14px 16px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .recent-row {
-    grid-template-columns: 1fr;
-  }
+.recent-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
 }
 
-/* ===== 테이블 (엑셀 시트 느낌) ===== */
-
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 11px;
-}
-
-thead {
-  background: #f3f4f6;
-  border-bottom: 2px solid #d4d4d8;
-}
-
-th,
-td {
-  border: 1px solid #d4d4d8;
-  padding: 5px 6px;
-  text-align: left;
-  vertical-align: middle;
-}
-
-th {
-  font-weight: 500;
+.recent-meta {
+  font-size: 12px;
   color: #374151;
+  line-height: 1.4;
 }
 
-tbody tr:nth-child(even) {
-  background: #f9fafb;
-}
-
-/* 브랜치 / 상태 태그 */
-.badge-branch {
-  display: inline-block;
-  margin-top: 2px;
-  padding: 2px 5px;
-  border-radius: 999px;
-  border: 1px solid #d4d4d8;
-  background: #f9fafb;
-  font-size: 10px;
-  color: #4b5563;
-}
-
+/* Status Badge */
 .tag-status {
-  display: inline-block;
-  padding: 2px 6px;
+  position: absolute;
+  top: 12px;
+  right: 14px;
+  font-size: 11px;
+  padding: 3px 10px;
   border-radius: 999px;
   border: 1px solid #d4d4d8;
-  font-size: 10px;
+  font-weight: 500;
+  white-space: nowrap;
 }
 
-/* 상태별 색상 (살짝만 강조, 엑셀 조건부서식 느낌) */
+/* Status Colors */
 .tag-모집중 {
   background: #ffffff;
   color: #111827;
@@ -339,993 +199,58 @@ tbody tr:nth-child(even) {
   border-color: #bbf7d0;
 }
 
-/* ===== 푸터 ===== */
-
-.footer {
-  margin-top: 16px;
-  font-size: 10px;
-  color: #6b7280;
-  text-align: center;
-}
-/* TPR System banner */
-.tpr-banner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  border-radius: 999px;
-  background: #e8f3ff;          /* 연한 파스텔 블루 */
-  border: 1px solid #d4e4ff;
-  margin-bottom: 16px;
-}
-
-.tpr-banner-img {
-  width: 44px;
-  height: 44px;
-  object-fit: contain;
-}
-
-.tpr-banner-text {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.tpr-banner-title {
-  font-size: 16px;
-  font-weight: 700;
-  color: #2563eb;               /* 살짝 진한 파란색 포인트 */
-}
-
-.tpr-banner-sub {
-  font-size: 12px;
-  color: #4b5563;               /* 중간 톤 그레이 */
-}
-
-/* 모바일에서 좌우 여백 조금 줄이기 */
-@media (max-width: 480px) {
-  .tpr-banner {
-    padding: 8px 10px;
-  }
-  .tpr-banner-title {
-    font-size: 15px;
-  }
-  .tpr-banner-img {
-    width: 38px;
-    height: 38px;
-  }
-}
-
-
-/* 🔹 테이블 컴팩트 모드 (행 간격 줄임) */
-.table-compact th,
-.table-compact td {
-  padding: 4px 6px !important;
-  font-size: 12px !important;
-  line-height: 1.2 !important;
-}
-
-.table-compact .badge-branch {
-  display: inline-block;
-  padding: 2px 6px;
-  background: #eef2ff;
-  border-radius: 6px;
-  font-size: 11px;
-  color: #4f46e5;
-}
-
-.table-compact .tag-status {
-  padding: 2px 8px;
-  font-size: 11px;
-  border-radius: 8px;
-}
-
-.table-compact .cell-input,
-.table-compact .cell-select {
-  padding: 2px 4px;
-  font-size: 11px;
-  height: 26px;
-}
-
-
-/*2025.11.19 수정 */
-/* 🔥 글자 잘림 방지 (ellipsis 제거 핵심) */
-th, td {
-  white-space: normal !important;
-  word-break: keep-all;  /* 한국어 단어 깨짐 방지 */
-}
-
-/* 🔥 엑셀처럼 테이블 펼치기 (모바일은 가로 스크롤) */
-table {
-  min-width: 1200px; /* 또는 1400px, 필요하면 조정 */
-}
-
-
-/* ===========================
-   Dashboard v3 — 카드 리스트 UI
-   =========================== */
-
-.card-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.req-card {
-  background: #ffffff;
-  border-radius: 8px;
-  padding: 14px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-.req-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
-.card-region {
-  background: #eef2ff;
-  color: #4338ca;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-  margin-right: 6px;
-}
-
-.card-company {
-  background: #f0fdf4;
-  color: #166534;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-/* 카드 본문 row */
-.req-card-body .row {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
-  font-size: 12px;
-}
-
-.req-card-body .row span {
-  width: 90px;
-  font-weight: 600;
-  color: #374151;
-}
-
-/* 입력 박스 */
-.card-input, .card-select {
-  width: 160px;
-  padding: 4px 6px;
-  font-size: 12px;
-  border-radius: 4px;
-  border: 1px solid #d4d4d8;
-}
-
-.req-card-footer {
-  margin-top: 12px;
-  font-size: 11px;
-  color: #6b7280;
-  text-align: right;
-}
-
-/* 모바일 UI */
-@media (max-width: 640px) {
-  .req-card-body .row {
-    flex-direction: column;
-    gap: 4px;
-  }
-  .req-card-body .row span {
-    width: 100%;
-  }
-  .card-input, .card-select {
-    width: 100%;
-  }
-}
-
-/* ===============================
-   🔵 Dashboard V2 자동 폭 조절 테이블
-   =============================== */
-
-.table-responsive-auto {
-  width: 100%;
-  overflow-x: hidden;   /* 스크롤 없음 */
-}
-
-.table-auto {
-  width: 100%;
-  border-collapse: collapse;
-  table-layout: auto;   /* 모든 컬럼 자동 폭 */
-}
-
-/* 공통 */
-.table-auto th,
-.table-auto td {
-  border: 1px solid #d4d4d8;
-  padding: 6px 8px;
-  font-size: 12px;
-  white-space: nowrap;      /* 줄바꿈 금지 */
-  overflow: hidden;
-  text-overflow: ellipsis;  /* 그래도 넘치면 ... */
-}
-
-/* ✨ 주요 컬럼 최소 너비 설정 */
-.table-auto th:nth-child(1), /* No */
-.table-auto td:nth-child(1) {
-  width: 40px; 
-}
-
-.table-auto th:nth-child(2), /* 지역 */
-.table-auto td:nth-child(2) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(3), /* 택배사 */
-.table-auto td:nth-child(3) {
-  min-width: 90px;
-}
-
-.table-auto th:nth-child(4), /* 영업소/대리점명 */
-.table-auto td:nth-child(4) {
-  min-width: 150px;
-}
-
-.table-auto th:nth-child(5),
-.table-auto td:nth-child(5) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(6),
-.table-auto td:nth-child(6) {
-  min-width: 70px;
-}
-
-.table-auto th:nth-child(7),
-.table-auto td:nth-child(7) {
-  min-width: 80px;
-}
-
-.table-auto th:nth-child(8),
-.table-auto td:nth-child(8) {
-  min-width: 55px;
-}
-
-.table-auto th:nth-child(9),
-.table-auto td:nth-child(9) {
-  min-width: 120px;
-}
-
-.table-auto th:nth-child(10), /* 현재 상태 */
-.table-auto td:nth-child(10) {
-  min-width: 80px;
-}
-
-.table-auto th:nth-child(11), /* 면접일 */
-.table-auto td:nth-child(11) {
-  min-width: 90px;
-}
-
-
-/* 🔥 저장 버튼 있는 마지막 컬럼은 절대 짤리면 안됨 */
-.table-auto th:nth-child(12),
-.table-auto td:nth-child(12) {
-  min-width: 120px;
-  width: 120px;
-  white-space: nowrap;
-}
-/* ==========================================
-   🔵 v1 — Row Hover Highlight (Excel-like)
-   ========================================== */
-
-table tbody tr:hover {
-  background: #eef2ff !important;   /* 연한 블루 하이라이트 */
-  transition: background 0.15s ease-in-out;
-}
-
-/* ============================================================
-   🔥 V1 DASHBOARD FINAL PATCH (2025.11.20)
-   Compact + Readability + Column Optimization
-   ============================================================ */
-
+/* ===== Table / Excel View ===== */
 .sheet-scroll {
-  display: block;
   overflow-x: auto;
   overflow-y: auto;
-  min-height: 400px; /* 테이블 반드시 보이도록 */
-  background: #ffffff;
-  padding: 10px;
-  border-radius: 6px;
+  min-height: 400px;
 }
 
-.table-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-}
-
-
-/* v1 컴팩트 테이블 핵심 설정 */
-.table-compact {
-  width: 100% !important;
-  min-width: 1100px !important; /* 기존 1200~1400보다 살짝 줄임 */
+table {
+  width: 100%;
+  min-width: 1200px;
   border-collapse: collapse;
-  table-layout: fixed; /* 모든 컬럼 자동 비율로 */
   font-size: 11px;
 }
 
-/* 공통 셀 스타일 (높이 감소) */
-.table-compact th,
-.table-compact td {
-  padding: 4px 6px !important;
-  line-height: 1.25 !important;
-  white-space: normal !important; /* 긴 글 자동 줄바꿈 */
-  word-break: break-word !important;
+th, td {
+  border: 1px solid #d4d4d8;
+  padding: 5px 6px;
   vertical-align: middle;
 }
 
-/* 헤더 스타일 유지 + 컴팩트 */
-.table-compact thead tr {
-  background: #f3f4f6;
-  font-weight: 600;
-  height: 32px;
-}
-
-/* 행 stripe + hover 유지 */
-.table-compact tbody tr:nth-child(even) {
-  background: #f9fafb !important;
-}
-.table-compact tbody tr:hover {
-  background: #eef2ff !important;
-}
-
-/* ============================================================ 
-   🔻 Column Width Optimization (지역/택배사 35% 축소 + 상태 확장)
-   ============================================================ */
-
-/* No */
-.table-compact th:nth-child(1),
-.table-compact td:nth-child(1) {
-  min-width: 30px;
-  width: 30px;
-  max-width: 35px;
-}
-
-/* 지역 — 기존 42px → 30px */
-.table-compact th:nth-child(2),
-.table-compact td:nth-child(2) {
-  min-width: 40px;
-  width: 42px;
-  }
-
-/* 택배사 — 기존 45px → 30px */
-.table-compact th:nth-child(3),
-.table-compact td:nth-child(3) {
-  min-width: 40px;
-  width: 42px;
-}
-
-/* 영업소/대리점명 */
-.table-compact th:nth-child(4),
-.table-compact td:nth-child(4) {
-  min-width: 80px;
-  width: 105px;
-  max-width: 120px;
-}
-
-/* 단가, 월물량 */
-.table-compact th:nth-child(5),
-.table-compact td:nth-child(5),
-.table-compact th:nth-child(6),
-.table-compact td:nth-child(6) {
-  min-width: 50px !important;
-  width: 50px !important;
-  text-align: right;
-}
-
-/* 차종 */
-.table-compact th:nth-child(7),
-.table-compact td:nth-child(7) {
-  min-width: 55px;
-  width: 80px;
-}
-
-/* 인원 */
-.table-compact th:nth-child(8),
-.table-compact td:nth-child(8) {
-  min-width: 55px;
-}
-
-/* 기타 */
-.table-compact th:nth-child(9),
-.table-compact td:nth-child(9) {
-  min-width: 100px;
-  width: 110px
-}
-
-/* 현재 상태 — 기존 115px → 120px */
-.table-compact th:nth-child(10),
-.table-compact td:nth-child(10) {
-  min-width: 120px;
-  width: 125px;
-  max-width: 130px;
-}
-
-/* 면접일 */
-.table-compact th:nth-child(11),
-.table-compact td:nth-child(11) {
-  min-width: 85px;
-}
-
-/* 상태 변경 (반으로 축소 유지) */
-.table-compact th:nth-child(12),
-.table-compact td:nth-child(12) {
-  width: 95px !important;
-  min-width: 95px !important;
-  white-space: nowrap !important;
-}
-
-/* 내부 요소 */
-.table-compact .cell-input,
-.table-compact .cell-select {
-  font-size: 11px !important;
-  padding: 2px 4px !important;
-  height: 26px !important;
-}
-
-.table-compact button {
-  padding: 4px 6px !important;
-  font-size: 11px !important;
-  border-radius: 3px !important;
-}
-
-
-/* ================================
-   Modal Popup (카드형)
-================================ */
-
-.modal.hidden {
-  display: none;
-}
-
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(15, 23, 42, 0.35); /* 반투명 블랙 */
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 2000;
-  padding: 20px;
-}
-
-.modal-card {
-  width: 320px;
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 18px 20px;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
-  animation: modalPop 0.22s ease-out;
-}
-
-@keyframes modalPop {
-  0% { transform: scale(0.92); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 14px;
-}
-
-.modal-title {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
-}
-
-.modal-close {
-  background: none;
-  border: none;
-  font-size: 18px;
-  color: #6b7280;
-  cursor: pointer;
-}
-
-.modal-body {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.modal-body label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.modal-input {
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d4d4d8;
-  font-size: 13px;
-}
-
-
-/* ============================================================
-   🔥 FINAL PATCH — Column Optimization + Status Tag Restore
-   2025-11-20
-   ============================================================ */
-
-/* ============================================================
-   1) Column Width Optimization (필요 인원 / 상태 / 면접일)
-   ============================================================ */
-
-/* 필요 인원 (명) → 최소폭 48px로 더 줄임 */
-.table-compact th:nth-child(8),
-.table-compact td:nth-child(8) {
-  width: 48px !important;
-  min-width: 48px !important;
-  text-align: center !important;
-}
-
-/* 현재 상태 → 태그 자체가 있으므로 적당히 좁게 */
-.table-compact th:nth-child(10),
-.table-compact td:nth-child(10) {
-  width: 70px !important;
-  min-width: 70px !important;
-}
-
-/* 면접일 → 날짜 형식이므로 80px로 축소 */
-.table-compact th:nth-child(11),
-.table-compact td:nth-child(11) {
-  width: 80px !important;
-  min-width: 80px !important;
-}
-
-/* ============================================================
-   2) 상태 태그 색상 복구 (table global reset override 방지)
-   ============================================================ */
-
-.table-compact .tag-status {
-  display: inline-block;
-  padding: 2px 8px !important;
-  font-size: 11px !important;
-  border-radius: 8px !important;
-  font-weight: 500 !important;
-  border: 1px solid #d4d4d8 !important;
-  white-space: nowrap !important;
-}
-
-/* 모집중 */
-.table-compact .tag-모집중 {
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-/* 선탑진행중 */
-.table-compact .tag-선탑진행중 {
-  background: #dbeafe !important;
-  color: #1d4ed8 !important;
-  border-color: #bfdbfe !important;
-}
-
-/* 면접예정 */
-.table-compact .tag-면접예정 {
-  background: #fef9c3 !important;
-  color: #b45309 !important;
-  border-color: #fde68a !important;
-}
-
-/* 배차완료 */
-.table-compact .tag-배차완료 {
-  background: #dcfce7 !important;
-  color: #166534 !important;
-  border-color: #bbf7d0 !important;
-}
-/* 📊 통계 박스 */
-.stats-box {
-  margin: 10px 0 18px;
-  display: flex;
-  gap: 12px;
-  font-size: 13px;
-}
-
-.stats-box .stat {
-  padding: 4px 10px;
-  background: #f3f4f6;
-  border-radius: 6px;
-  font-weight: 500;
-}
-
-.stats-box .total { color: #111827; }          /* 기본: 진한 회색 */
-.stats-box .active { color: #2563eb; }         /* 파란색 강조 */
-.stats-box .done { color: #059669; }           /* 녹색(배차완료) */
-
-
-/* 🔥 헤더 sticky */
-.table-compact thead th {
+thead th {
   position: sticky;
   top: 0;
-  z-index: 10;
-  background: #f9fafb;   /* 헤더 배경 */
-  backdrop-filter: blur(4px);
+  background: #f3f4f6;
+  z-index: 5;
 }
 
-/* 기본 테이블 스타일 */
-.table-v2 {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;   /* ← 컬럼 폭을 강제로 고정 */
+tbody tr:nth-child(even) {
+  background: #f9fafb;
 }
 
-/* 공통 셀 스타일 */
-.table-v2 th,
-.table-v2 td {
-    padding: 10px;
-    border: 1px solid #d4d4d8;
-    text-align: center;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+tbody tr:hover {
+  background: #eef2ff;
 }
 
-/* ===  Request Board - 개별 컬럼 사이즈 조정 === */
-.col-id        { width: 40px; }        /* ID */
-.col-company   { width: 70px; }       /* 택배사 */
-.col-region    { width: 70px; }       /* 지역 */
-.col-vehicle   { width: 100px; }       /* 차종 */
-.col-headcount { width: 40px; }        /* 인원 */
-.col-unit      { width: 45px; }        /* 단가 */
-.col-volume    { width: 90px; }        /* 월물량 */
-.col-date      { width: 70px; }       /* 등록일 */
-.col-delete    { width: 40px; }        /* 삭제 */
-
-/* login banner full size */
-.banner-full {
-    width: 100% !important;       /* 로그인 버튼과 동일한 가로폭 */
-    border-radius: 6px;  /* 선택: 로그인 카드와 자연스럽게 어울림 */
-}
-
-
-
-.table-v2 thead th {
-    position: sticky;
-    top: 0;
-    background: #f9fafb;
-    z-index: 10;
-}
-
-.sheet-scroll {
-  display: block !important;
-  overflow-x: auto !important;
-  overflow-y: auto !important;
-  height: auto !important;
-  max-height: none !important;
-  min-height: 400px !important;  /* 테이블 반드시 보이게 */
-}
-
-/* 테이블 헤더 고정 */
-.table-fixed {
-  max-height: 600px;
-  overflow-y: auto;
-  overflow-x: auto;
-}
-
-.table-fixed thead th {
-  position: sticky;
-  top: 0;
-  background: #f8f9fa;
-  z-index: 2;
-}
-
-/* 테이블 최소 폭 (엑셀 느낌) */
-.table-compact {
-  min-width: 1200px;
-}
-
-/* status bar padding 주기 */
-@media (max-width: 768px) {
-  body {
-    padding-top: 28px !important;
-  }
-}
-
-
-.agency-card {
+/* ===== Buttons ===== */
+.btn-primary {
   width: 100%;
-  max-width: 1600px;
-
-  /* 🔥 기존 margin: 20px auto → 완전 제거 */
-  margin: 0 auto !important;
-
-  /* 🔥 내부 padding도 컴팩트하게 축소 */
-  padding: 12px 20px 14px !important;
-
-  background: linear-gradient(
-    180deg,
-    #F5FAFF 0%,
-    #EEF6FF 100%
-  );
-  border-radius: 14px;
-  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
-}
-
-
-/* 내부 메뉴 버튼 */
-.agency-menu {
-  margin-top: 16px;
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.agency-menu button {
-  flex: 1;
-  padding: 11px 0;
-  border-radius: 10px;
-  border: 1px solid #d1d5db;
-  background: #f8fafc;
-  font-size: 15px;
-  color: #111827;
-  transition: 0.2s;
-}
-
-.agency-menu button:hover {
-  background: #e5edff;
-  color: #2563eb;
-  border-color: #3b82f6;
-}
-
-/* =============================== */
-/*  🔵 REQUEST PAGE — 품고 스타일   */
-/* =============================== */
-
-/* 전체 페이지 배경은 화이트 */
-.request-wrapper {
-  background: #ffffff;
-  padding: 22px 18px;
-  max-width: 780px;
-  margin: 0 auto;
-}
-.request-title {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0064E6;
-  margin-bottom: 8px;
-}
-
-.request-sub {
-  font-size: 13px;
-  color: #6B7280;
-  margin-bottom: 24px;
-}
-.request-card {
-  background: #ffffff;
-  border-radius: 14px;
-  padding: 18px 20px;
-  border: 1px solid #E5E7EB;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  margin-bottom: 22px;
-}
-
-.request-card-title {
-  font-size: 15px;
-  font-weight: 700;
-  color: #111827;
-  margin-bottom: 14px;
-}
-.request-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  margin-bottom: 14px;
-}
-
-.request-field label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #374151;
-}
-
-.request-input,
-.request-select,
-.request-textarea {
-  padding: 10px 12px;
-  font-size: 14px;
-  background: #ffffff;
-  border-radius: 10px;
-  border: 1px solid #D5DAE1;
-  outline: none;
-  transition: 0.15s;
-}
-
-.request-input:focus,
-.request-select:focus,
-.request-textarea:focus {
-  border-color: #3B82F6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25);
-}
-
-.request-textarea {
-  min-height: 90px;
-  resize: vertical;
-}
-.request-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
-
-@media (max-width: 640px) {
-  .request-grid {
-    grid-template-columns: 1fr;
-  }
-}
-.request-badge {
-  display: inline-block;
-  padding: 4px 10px;
-  background: #22C55E;
-  color: white;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 600;
-  margin-bottom: 12px;
-}
-.request-btn-main {
-  width: 100%;
-  padding: 14px 0;
-  border: none;
-  border-radius: 12px;
-  background: linear-gradient(90deg, #0064E6 0%, #24D37A 100%);
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #2563eb;
+  background: #2563eb;
   color: #ffffff;
-  font-size: 17px;
-  font-weight: 700;
-  cursor: pointer;
-  margin-top: 10px;
-  transition: 0.15s;
-}
-
-.request-btn-main:hover {
-  opacity: 0.92;
-}
-.request-help {
-  margin-top: 10px;
-  font-size: 13px;
-  color: #6B7280;
-}
-/* ===========================
-   🟦 Request Page Mobile Fix
-   =========================== */
-
-@media (max-width: 640px) {
-
-  .request-wrapper {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 16px 14px !important;
-  }
-
-  /* 카드 내부 padding 모바일 최적화 */
-  .request-card {
-    padding: 16px !important;
-  }
-
-  /* 입력 폼 2열 → 1열 */
-  .request-grid {
-    grid-template-columns: 1fr !important;
-    gap: 12px !important;
-  }
-
-  /* 버튼 여백 조정 */
-  .request-btn-main {
-    font-size: 15px !important;
-    padding: 12px 0 !important;
-  }
-}
-/* ===========================
-   🟦 Mobile Header Padding Fix
-   =========================== */
-@media (max-width: 768px) {
-  .top-header {
-    padding-top: 6px !important;
-    padding-bottom: 6px !important;
-  }
-
-  body {
-    padding-top: 36px !important;   /* 28px → 헤더 높이에 맞게 36px */
-  }
-}
-
-/* Request Form 간격 축소 */
-.request-form-row {
-  margin-bottom: 10px !important;   /* 기존 24px → 10px */
-}
-
-.request-form-row .col-md-6,
-.request-form-row .col-md-4,
-.request-form-row .col-md-8 {
-  margin-bottom: 8px;
-}
-
-.form-label {
-  margin-bottom: 3px !important;    /* 라벨과 입력창 간격 축소 */
-}
-/* 페이지 상단 여백 축소 */
-.page {
-  padding-top: 10px !important;  /* 기존 24~32px → 10px */
-}
-
-/* request-wrapper 상단 여백 축소 */
-.request-wrapper {
-  margin-top: 8px !important;   /* 기존 카드와의 간격 줄이기 */
-}
-.nav {
-  z-index: 10;
-}
-
-main, .sheet-scroll, .table-wrapper {
-  position: relative;
-  z-index: 20;
-}
-
-.nav.open {
-  text-align: left !important;
-}
-
-.nav.open a.nav-link,
-.nav.open .nav-user {
-  display: block !important;
-  text-align: left !important;
-  width: 100%;
-  padding-left: 12px !important;
-}
-/* ==========================================
-   공용 네비/카드 버튼 스타일 (통합 디자인)
-   ========================================== */
-.btn-nav {
-  display: inline-block;
-  padding: 6px 14px;
   font-size: 14px;
-  font-weight: 500;
-  color: #374151;
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 999px;
-  text-decoration: none;
-  transition: 0.18s ease-in-out;
-  cursor: pointer;
-  text-align: center;
-  white-space: nowrap;
-}
-
-.btn-nav:hover {
-  background: #eef6ff;
-  border-color: #c3dafc;
-  color: #1d4ed8;
-}
-
-.btn-nav.active,
-.btn-nav:active {
-  background: #1d4ed8 !important;
-  border-color: #1d4ed8 !important;
-  color: white !important;
   font-weight: 600;
-}
-.btn-nav.danger {
-  border-color: #dc2626;
-  color: #dc2626;
+  cursor: pointer;
 }
 
-.btn-nav.danger:hover {
-  background: #fee2e2;
-  border-color: #dc2626;
+/* ===== Footer ===== */
+.footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 11px;
+  color: #6b7280;
 }
