@@ -215,31 +215,63 @@
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
-  <!-- 지역별 Pie Chart (TOP 5 + DataLabel) -->
-  <script>
-    const regionData = {{ region_count | tojson | safe }};
-    const regionLabels = Object.keys(regionData);
-    const regionValues = Object.values(regionData);
 
-    if (regionLabels.length > 0) {
-      new Chart(document.getElementById('regionPieChart'), {
-        type: 'pie',
-        data: { labels: regionLabels, datasets: [{ data: regionValues }] },
-        plugins: [ChartDataLabels],
-        options: {
-          responsive: true,
-          plugins: {
-            legend: { position: 'bottom' },
-            datalabels: {
-              color: '#000',
-              font: { size: 11 },
-              formatter: (value) => value
-            }
-          }
-        }
-      });
-    }
-  </script>
+  <!-- 지역별 Pie Chart (TOP 5 + DataLabel + Sorted + Color Set) -->
+   <script>
+     const regionRaw = {{ region_count | tojson | safe }};
+   
+     // value 기준 내림차순 정렬 (TOP 5는 서버에서 이미 보장, 여기서는 순서 정렬)
+     const regionSorted = Object.entries(regionRaw)
+       .sort((a, b) => b[1] - a[1]);
+   
+     const regionLabels = regionSorted.map(item => item[0]);
+     const regionValues = regionSorted.map(item => item[1]);
+   
+     // 🎨 지역별 전용 컬러 팔레트 (택배사와 완전히 다르게)
+     const regionColors = [
+       '#6366F1', // indigo
+       '#8B5CF6', // violet
+       '#EC4899', // pink
+       '#F43F5E', // rose
+       '#F97316'  // orange (기타)
+     ];
+   
+     if (regionLabels.length > 0) {
+       new Chart(document.getElementById('regionPieChart'), {
+         type: 'pie',
+         data: {
+           labels: regionLabels,
+           datasets: [{
+             data: regionValues,
+             backgroundColor: regionColors.slice(0, regionLabels.length)
+           }]
+         },
+         plugins: [ChartDataLabels],
+         options: {
+           responsive: true,
+           plugins: {
+             legend: {
+               position: 'bottom'
+             },
+             datalabels: {
+               color: '#111',
+               font: {
+                 size: 11,
+                 weight: '600'
+               },
+               formatter: (value, ctx) => {
+                 const label = ctx.chart.data.labels[ctx.dataIndex];
+                 const total = ctx.chart.data.datasets[0].data
+                   .reduce((a, b) => a + b, 0);
+                 const percent = Math.round((value / total) * 100);
+                 return `${label}\n${value}건 (${percent}%)`;
+               }
+             }
+           }
+         }
+       });
+     }
+   </script>
 
 
    
