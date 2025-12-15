@@ -275,51 +275,66 @@
    </script>
 
    
-  <!--  택배사별 Pie Chart (TOP 5 + DataLabel) -->
-  <script>
-  const carrierRaw = {{ carrier_count | tojson | safe }};
-
-  const carrierSorted = Object.entries(carrierRaw)
-    .sort((a, b) => b[1] - a[1]);
-
-  const carrierLabels = carrierSorted.map(item => item[0]);
-  const carrierValues = carrierSorted.map(item => item[1]);
-
-  if (carrierLabels.length > 0) {
-    new Chart(document.getElementById('carrierPieChart'), {
-      type: 'pie',
-      data: {
-        labels: carrierLabels,
-        datasets: [{
-          data: carrierValues
-        }]
-      },
-      plugins: [ChartDataLabels],
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
-            position: 'bottom'
-          },
-          datalabels: {
-            color: '#111',
-            font: {
-              size: 11,
-              weight: '600'
-            },
-            formatter: (value, ctx) => {
-              const label = ctx.chart.data.labels[ctx.dataIndex];
-              const total = ctx.chart.data.datasets[0].data
-                .reduce((a, b) => a + b, 0);
-              const percent = Math.round((value / total) * 100);
-              return `${label}\n${value}건 (${percent}%)`;
-            }
-          }
-        }
-      }
-    });
-  }
-</script>
+  <!-- 택배사별 Pie Chart (TOP 5 + Center Label + White Text) -->
+   <script>
+     const carrierRaw = {{ carrier_count | tojson | safe }};
+   
+     const carrierSorted = Object.entries(carrierRaw)
+       .sort((a, b) => b[1] - a[1]);
+   
+     const carrierLabels = carrierSorted.map(item => item[0]);
+     const carrierValues = carrierSorted.map(item => item[1]);
+   
+     // 🎨 택배사 전용 컬러 팔레트 (지역 차트와 구분)
+     const carrierColors = [
+       '#2563EB', // blue
+       '#22C55E', // green
+       '#F59E0B', // amber
+       '#EF4444', // red
+       '#9CA3AF', // gray
+       '#0EA5E9'  // sky (6개 대비)
+     ];
+   
+     if (carrierLabels.length > 0) {
+       new Chart(document.getElementById('carrierPieChart'), {
+         type: 'pie',
+         data: {
+           labels: carrierLabels,
+           datasets: [{
+             data: carrierValues,
+             backgroundColor: carrierColors.slice(0, carrierLabels.length)
+           }]
+         },
+         plugins: [ChartDataLabels],
+         options: {
+           responsive: true,
+           plugins: {
+             legend: {
+               position: 'bottom'
+             },
+             datalabels: {
+               color: '#ffffff',        // ✅ 흰색 글씨
+               anchor: 'center',        // ✅ 가운데
+               align: 'center',         // ✅ 가운데
+               clamp: true,             // ✅ 영역 밖 방지
+               font: {
+                 size: 9,               // ✅ 글씨 작게
+                 weight: '600'
+               },
+               formatter: (value, ctx) => {
+                 const label = ctx.chart.data.labels[ctx.dataIndex];
+                 const total = ctx.chart.data.datasets[0].data
+                   .reduce((a, b) => a + b, 0);
+                 const percent = Math.round((value / total) * 100);
+                 return `${label}\n${value}건\n${percent}%`;
+               }
+             }
+           }
+         }
+       });
+     }
+   </script>
+   
 
  
 
