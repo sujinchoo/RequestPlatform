@@ -1162,7 +1162,7 @@ table tbody tr:hover {
 .request-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
+  gap: 12px;
 }
 
 @media (max-width: 640px) {
@@ -1245,20 +1245,7 @@ table tbody tr:hover {
   }
 }
 
-/* Request Form 간격 축소 */
-.request-form-row {
-  margin-bottom: 10px !important;   /* 기존 24px → 10px */
-}
 
-.request-form-row .col-md-6,
-.request-form-row .col-md-4,
-.request-form-row .col-md-8 {
-  margin-bottom: 8px;
-}
-
-.form-label {
-  margin-bottom: 3px !important;    /* 라벨과 입력창 간격 축소 */
-}
 /* 페이지 상단 여백 축소 */
 .page {
   padding-top: 10px !important;  /* 기존 24~32px → 10px */
@@ -1352,5 +1339,34 @@ main, .sheet-scroll, .table-wrapper {
 
   .main .sheet {
     max-width: calc(100vw - 24px);
+  }
+}
+/* ==================================================
+   📱 Request Board — Mobile Compact Gap Only
+   ================================================== */
+@media (max-width: 640px) {
+
+  /* 요청 등록 폼 grid 간격만 축소 */
+  .request-card .request-grid {
+    gap: 8px !important;          /* 기존 12px → 8px */
+  }
+
+  /* 필드 간 세로 간격 축소 */
+  .request-card .request-field {
+    gap: 3px !important;          /* label ↔ input */
+    margin-bottom: 6px !important;
+  }
+
+  /* 입력창 높이 살짝 축소 */
+  .request-card .request-input,
+  .request-card .request-select {
+    padding: 7px 9px !important;
+    font-size: 13px !important;
+  }
+
+  /* textarea도 함께 */
+  .request-card .request-textarea {
+    min-height: 64px !important;
+    padding: 7px 9px !important;
   }
 }
