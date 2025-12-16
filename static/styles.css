@@ -1356,7 +1356,6 @@ main, .sheet-scroll, .table-wrapper {
   /* 필드 간 세로 간격 축소 */
   .request-card .request-field {
     gap: 3px !important;          /* label ↔ input */
-    margin-bottom: 6px !important;
   }
 
   /* 입력창 높이 살짝 축소 */
@@ -1375,5 +1374,9 @@ main, .sheet-scroll, .table-wrapper {
 /* ==================================================
    🔵 Request Board — PC / Mobile 동일 1열 레이아웃
    ================================================== */
+/* PC 포함 모든 화면에서 한 줄씩 */
+.request-card .request-grid {
+  grid-template-columns: 1fr !important;
+}
 
 
