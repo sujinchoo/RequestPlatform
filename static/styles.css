@@ -1347,8 +1347,10 @@ main, .sheet-scroll, .table-wrapper {
 @media (max-width: 640px) {
 
   /* 요청 등록 폼 grid 간격만 축소 */
+  /* PC 포함 모든 화면에서 한 줄씩 */
   .request-card .request-grid {
     gap: 8px !important;          /* 기존 12px → 8px */
+    grid-template-columns: 1fr !important;
   }
 
   /* 필드 간 세로 간격 축소 */
@@ -1370,3 +1372,8 @@ main, .sheet-scroll, .table-wrapper {
     padding: 7px 9px !important;
   }
 }
+/* ==================================================
+   🔵 Request Board — PC / Mobile 동일 1열 레이아웃
+   ================================================== */
+
+
