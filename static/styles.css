@@ -1344,3 +1344,13 @@ main, .sheet-scroll, .table-wrapper {
   max-width: 1800px;
   margin: 0 auto;
 }
+@media (min-width: 1024px) {
+  .page {
+    padding-left: 6px !important;
+    padding-right: 6px !important;
+  }
+
+  .main .sheet {
+    max-width: calc(100vw - 24px);
+  }
+}
