@@ -1378,5 +1378,9 @@ main, .sheet-scroll, .table-wrapper {
 .request-card .request-grid {
   grid-template-columns: 1fr !important;
 }
+/* 기타 사항 필드도 grid 필드와 동일 간격 */
+.request-card > .request-field {
+  margin-top: 0;
+}
 
 
