@@ -1444,3 +1444,25 @@ main, .sheet-scroll, .table-wrapper {
   margin-bottom: 0 !important;
 }
 
+/* ==================================================
+   📱 Request Page ONLY — Top Padding Fix
+   (네비게이션 없는 페이지 전용)
+   ================================================== */
+@media (max-width: 640px) {
+
+  /* request 페이지에서만 body padding 보정 */
+  body:has(.request-wrapper) {
+    padding-top: 12px !important;   /* status bar 최소 유지 */
+  }
+
+  /* page 상단 여백 제거 */
+  body:has(.request-wrapper) .page {
+    padding-top: 0 !important;
+  }
+
+  /* request-wrapper 자체 여백 최소화 */
+  body:has(.request-wrapper) .request-wrapper {
+    margin-top: 0 !important;
+    padding-top: 8px !important;
+  }
+}
