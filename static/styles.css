@@ -1383,4 +1383,45 @@ main, .sheet-scroll, .table-wrapper {
   margin-top: 0;
 }
 
+/* ==================================================
+   🔵 Request Board — Ultra Compact Spacing
+   ================================================== */
+
+/* 모든 화면에서 1열 유지 */
+.request-card .request-grid {
+  grid-template-columns: 1fr !important;
+  gap: 6px !important;              /* 🔥 필드 간 기본 gap */
+}
+
+/* 개별 필드 간격 */
+.request-card .request-field {
+  gap: 2px !important;              /* label ↔ input */
+  margin-bottom: 4px !important;    /* 필드 ↔ 필드 */
+}
+
+/* label 더 컴팩트 */
+.request-card .request-field label {
+  font-size: 12px !important;
+  line-height: 1.15 !important;
+  margin-bottom: 1px !important;
+}
+
+/* input / select 높이 축소 */
+.request-card .request-input,
+.request-card .request-select {
+  padding: 6px 8px !important;      /* 🔥 체감상 가장 큼 */
+  font-size: 13px !important;
+  border-radius: 8px !important;
+}
+
+/* textarea는 너무 답답하지 않게 */
+.request-card .request-textarea {
+  min-height: 56px !important;      /* 기존 90px → 56px */
+  padding: 6px 8px !important;
+}
+
+/* 기타사항(단독 필드) 위 간격 정리 */
+.request-card > .request-field {
+  margin-top: 2px !important;
+}
 
