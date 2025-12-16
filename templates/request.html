@@ -71,35 +71,35 @@
         </div>
 
         <div class="request-field">
-          <label>지역 (시/군/구)</label>
+          <label>배송구역 (시/군/구)</label>
           <input name="region" type="text" class="request-input" placeholder="예: 인천 계양구" required>
         </div>
 
         <div class="request-field">
-          <label>차종</label>
+          <label>센터/터미널/위치 </label>
           <input name="vehicle_type" type="text" class="request-input" placeholder="예: 1톤 카고">
         </div>
 
         <div class="request-field">
           <label>필요 인원 (명)</label>
-          <input name="headcount" type="number" min="1" step="1" class="request-input" required>
+          <input name="headcount" type="number" min="1" step="1" class="request-input" placeholder="예: 00명" required>
         </div>
 
         <div class="request-field">
-          <label>단가 (원/건)</label>
-          <input name="unit_price" type="number" min="0" step="10" class="request-input" required>
+          <label>근무요일/주간/야간</label>
+          <input name="unit_price" type="number" min="0" step="10" class="request-input" placeholder="예: 주5일/6일 주간/야간" required>
         </div>
 
         <div class="request-field">
           <label>월 물량 (건)</label>
-          <input name="volume" type="number" min="0" step="100" class="request-input" required>
+          <input name="volume" type="number" min="0" step="100" class="request-input" placeholder="예: 월 3,000건 이상 보장" required>
         </div>
 
       </div>
 
       <div class="request-field">
         <label>기타 사항</label>
-        <textarea name="etc" class="request-textarea" placeholder="예: 군필 우대, 외국인 불가, 야간 가능자 등"></textarea>
+        <textarea name="etc" class="request-textarea" placeholder="예: 초보가능, 동승교육있음, 여성가능 등"></textarea>
       </div>
 
       <button type="submit" class="request-btn-main">요청 등록하기</button>
