@@ -1337,3 +1337,10 @@ main, .sheet-scroll, .table-wrapper {
   margin-left: auto;
   margin-right: auto;
 }
+
+/* HEADER 폭 확장 */
+.header-inner {
+  width: 100%;
+  max-width: 1800px;
+  margin: 0 auto;
+}
