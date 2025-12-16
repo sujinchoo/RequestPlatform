@@ -1329,8 +1329,11 @@ main, .sheet-scroll, .table-wrapper {
   background: #fee2e2;
   border-color: #dc2626;
 }
-.sheet {
-  max-width: 1600px;
+
+/* 🔥 MAIN 내부 모든 SHEET를 동일한 최대 폭으로 통일 */
+.main .sheet {
+  width: 100%;
+  max-width: 1800px;
   margin-left: auto;
   margin-right: auto;
 }
