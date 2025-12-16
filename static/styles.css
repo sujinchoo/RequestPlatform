@@ -1424,4 +1424,23 @@ main, .sheet-scroll, .table-wrapper {
 .request-card > .request-field {
   margin-top: 2px !important;
 }
+/* ==================================================
+   🔵 Request Page — agency-card 위 여백 제거
+   ================================================== */
+
+/* request-wrapper 바로 다음 agency-card 여백 제거 */
+.request-wrapper + .agency-card {
+  margin-top: 0 !important;
+}
+
+/* request-wrapper 하단 padding 제거 */
+.request-wrapper {
+  padding-bottom: 0 !important;
+  margin-bottom: 0 !important;
+}
+
+/* request-card 하단 여백 제거 (mb-4 대응) */
+.request-card {
+  margin-bottom: 0 !important;
+}
 
