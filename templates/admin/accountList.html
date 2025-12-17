@@ -40,7 +40,8 @@
 
       <tbody>
         {% for account in accounts %}
-        <tr>
+        <tr class="{% if account.is_admin %}admin-row{% endif %}">
+        
           <td class="col-id">{{ account.id }}</td>
           <td class="col-email">{{ account.login_id }}</td>
           <td class="col-name">{{ account.branch_name }}</td>
