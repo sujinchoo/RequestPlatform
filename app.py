@@ -13,6 +13,12 @@ from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text, extract, func
 import os
 
+# Google oauth2 for android mobile 
+from google.oauth2 import id_token as google_id_token
+from google.auth.transport import requests as google_requests
+from flask import make_response
+
+
 
 def create_app():
     app = Flask(__name__)
