@@ -141,6 +141,93 @@ def create_app():
     
         return redirect(url_for("request_page"))
 
+        
+        # /auth/google-token 엔드포인트 추가
+        @app.route("/auth/google-token", methods=["POST"])
+        def auth_google_token():
+            """
+            Android 네이티브 Google Sign-In에서 받은 id_token을 검증하고
+            Flask session을 생성한 뒤, Set-Cookie(session=...)를 내려준다.
+            """
+            data = request.get_json(silent=True) or {}
+            token = data.get("id_token")
+    
+            if not token:
+                return jsonify({"success": False, "error": "id_token missing"}), 400
+    
+            try:
+                # 1) Google ID Token 검증
+                CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+                idinfo = google_id_token.verify_oauth2_token(
+                    token,
+                    google_requests.Request(),
+                    CLIENT_ID
+                )
+    
+                google_id = idinfo.get("sub")  # Google 고유 사용자 ID
+                email = idinfo.get("email", "")
+                name = idinfo.get("name", "")
+                profile_img = idinfo.get("picture", "")
+    
+                if not google_id:
+                    return jsonify({"success": False, "error": "invalid token payload"}), 400
+    
+                # 2) users 테이블 upsert/조회 (기존 로직 재사용)
+                try:
+                    result = db.session.execute(
+                        text("""
+                            INSERT INTO users (google_id, email, name, profile_img)
+                            VALUES (:gid, :email, :name, :pic)
+                            ON CONFLICT (google_id) DO NOTHING
+                            RETURNING id
+                        """),
+                        {"gid": google_id, "email": email, "name": name, "pic": profile_img}
+                    )
+                    db.session.commit()
+    
+                    new_id = result.fetchone()[0] if result.rowcount > 0 else None
+    
+                    if not new_id:
+                        q = db.session.execute(
+                            text("SELECT id FROM users WHERE google_id=:gid"),
+                            {"gid": google_id}
+                        ).fetchone()
+                        new_id = q[0] if q else None
+    
+                except Exception as e:
+                    db.session.rollback()
+                    print("[GOOGLE TOKEN LOGIN DB ERROR]", e)
+                    return jsonify({"success": False, "error": "db error"}), 500
+    
+                # 3) Branch 자동 생성/매핑 (기존 로직 재사용)
+                branch = Branch.query.filter_by(login_id=google_id).first()
+                if not branch:
+                    branch = Branch(
+                        login_id=google_id,
+                        password_hash="",
+                        company="GoogleUser",
+                        branch_name=name or "GoogleUser",
+                        region="온라인",
+                        is_admin=False
+                    )
+                    db.session.add(branch)
+                    db.session.commit()
+    
+                # 4) Flask 세션 생성 (WebView에서 로그인 상태로 사용)
+                session["google_user_id"] = new_id
+                session["google_email"] = email
+                session["google_name"] = name
+                session["branch_id"] = branch.id
+                session["branch_name"] = branch.branch_name
+                session["is_admin"] = False
+    
+                # 5) JSON 응답 (중요: 쿠키는 Set-Cookie 헤더로 자동 내려감)
+                resp = make_response(jsonify({"success": True}))
+                return resp
+    
+            except Exception as e:
+                print("[GOOGLE TOKEN VERIFY ERROR]", e)
+                return jsonify({"success": False, "error": "token verify failed"}), 401
 
     # ============================================================
     # SaaS 데모 대시보드 (모바일 전용 요약)
