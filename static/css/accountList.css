@@ -1,0 +1,164 @@
+/* =======================================
+   Account List – Admin Excel Style (품고)
+   ======================================= */
+
+/* 전체 섹션 */
+.account-sheet {
+  padding: 16px 14px 24px;
+}
+
+/* 헤더 영역 */
+.account-header {
+  margin-bottom: 12px;
+}
+
+.account-header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.account-desc {
+  font-size: 13px;
+  color: #6b7280;
+}
+
+/* 테이블 감싸는 영역 */
+.account-table-wrapper {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+/* ==============================
+   Excel-like Table
+   ============================== */
+
+.account-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  min-width: 900px;
+}
+
+/* 헤더 */
+.account-table thead th {
+  background: #f3f4f6;
+  color: #111827;
+  font-weight: 600;
+  text-align: left;
+  padding: 8px 10px;
+  border-bottom: 1px solid #d1d5db;
+  border-right: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+/* 마지막 헤더 우측 보더 제거 */
+.account-table thead th:last-child {
+  border-right: none;
+}
+
+/* 바디 */
+.account-table tbody td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #f1f5f9;
+  color: #111827;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+/* 마지막 컬럼 우측 보더 제거 */
+.account-table tbody td:last-child {
+  border-right: none;
+}
+
+/* Row hover (품고 느낌) */
+.account-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* ==============================
+   Column Alignment / Width
+   ============================== */
+
+.col-id {
+  width: 70px;
+  text-align: right;
+  color: #374151;
+}
+
+.col-email {
+  min-width: 220px;
+}
+
+.col-name {
+  min-width: 120px;
+}
+
+.col-role {
+  min-width: 160px;
+  text-align: center;
+}
+
+.col-date {
+  width: 160px;
+  text-align: right;
+  color: #374151;
+}
+
+/* ==============================
+   Role Checkbox Style
+   ============================== */
+
+.role-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #374151;
+  margin-right: 8px;
+  cursor: default;
+}
+
+.role-option input[type="checkbox"] {
+  width: 14px;
+  height: 14px;
+  accent-color: #2563eb; /* 품고 블루 */
+  cursor: default;
+}
+
+/* Disabled 상태 시 흐리게 */
+.role-option input[disabled] {
+  opacity: 0.7;
+}
+
+/* ==============================
+   Sticky Header (선택)
+   ============================== */
+
+.account-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ==============================
+   Mobile 대응
+   ============================== */
+
+@media (max-width: 768px) {
+  .account-header h2 {
+    font-size: 16px;
+  }
+
+  .account-desc {
+    font-size: 12px;
+  }
+
+  .account-table {
+    font-size: 12px;
+  }
+}
