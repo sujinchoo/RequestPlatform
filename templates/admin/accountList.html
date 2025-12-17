@@ -12,70 +12,117 @@
 <section class="sheet account-sheet">
 
   <!-- ============================= -->
-  <!-- Account 관리 헤더 -->
+  <!-- Header -->
   <!-- ============================= -->
   <div class="account-header">
     <h2>계정 목록</h2>
     <p class="account-desc">
-      관리자 및 대리점 계정을 확인하고 권한을 관리할 수 있습니다.
+      관리자 계정과 일반 계정을 엑셀 시트처럼 분리하여 관리합니다.
     </p>
   </div>
 
   <!-- ============================= -->
-  <!-- Account List Table (Excel Style) -->
+  <!-- Excel Sheet Tabs -->
   <!-- ============================= -->
-  <div class="account-table-wrapper">
+  <div class="sheet-tabs">
+    <button class="sheet-tab active" onclick="showSheet('admin')">
+      관리자 계정 ({{ accounts | selectattr('is_admin') | list | length }})
+    </button>
+    <button class="sheet-tab" onclick="showSheet('user')">
+      일반 계정 ({{ accounts | rejectattr('is_admin') | list | length }})
+    </button>
+  </div>
 
-    <table class="account-table">
-      <thead>
-        <tr>
-          <th>ID</th>
-          <th>이메일</th>
-          <th>이름</th>
-          <th>역할</th>
-          <th>생성일</th>
-          <th>최근 로그인</th>
-        </tr>
-      </thead>
+  <!-- ============================= -->
+  <!-- 관리자 계정 Sheet -->
+  <!-- ============================= -->
+  <div class="sheet-panel admin-sheet active" id="sheet-admin">
 
-      <tbody>
-        {% for account in accounts %}
-        <tr class="{% if account.is_admin %}admin-row{% endif %}">
-        
-          <td class="col-id">{{ account.id }}</td>
-          <td class="col-email">{{ account.login_id }}</td>
-          <td class="col-name">{{ account.branch_name }}</td>
+    <div class="account-table-wrapper admin-border">
+      <table class="account-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>이메일 / 로그인</th>
+            <th>이름</th>
+            <th>역할</th>
+            <th>생성일</th>
+            <th>최근 로그인</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in accounts if account.is_admin %}
+          <tr class="admin-row">
+            <td class="col-id">{{ account.id }}</td>
+            <td class="col-email">{{ account.login_id }}</td>
+            <td class="col-name">{{ account.branch_name }}</td>
+            <td class="col-role">관리자</td>
+            <td class="col-date">
+              {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
+            </td>
+            <td class="col-date">-</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
-          <!-- Role -->
-          <td class="col-role">
-            <label class="role-option">
-              <input type="checkbox"
-                     {% if account.is_admin %}checked{% endif %}
-                     disabled>
-              관리자
-            </label>
-            <label class="role-option">
-              <input type="checkbox"
-                     {% if not account.is_admin %}checked{% endif %}
-                     disabled>
-              일반
-            </label>
-          </td>
+  </div>
 
-          <td class="col-date">
-            {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
-          </td>
+  <!-- ============================= -->
+  <!-- 일반 계정 Sheet -->
+  <!-- ============================= -->
+  <div class="sheet-panel" id="sheet-user">
 
-          <td class="col-date">
-            {{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}
-          </td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+    <div class="account-table-wrapper">
+      <table class="account-table">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>이메일 / 로그인</th>
+            <th>이름</th>
+            <th>역할</th>
+            <th>생성일</th>
+            <th>최근 로그인</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for account in accounts if not account.is_admin %}
+          <tr>
+            <td class="col-id">{{ account.id }}</td>
+            <td class="col-email">{{ account.login_id }}</td>
+            <td class="col-name">{{ account.branch_name }}</td>
+            <td class="col-role">일반</td>
+            <td class="col-date">
+              {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
+            </td>
+            <td class="col-date">-</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
 
   </div>
 
 </section>
+
+<!-- ============================= -->
+<!-- Sheet Switch Script -->
+<!-- ============================= -->
+<script>
+  function showSheet(type) {
+    document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.sheet-panel').forEach(p => p.classList.remove('active'));
+
+    if (type === 'admin') {
+      document.getElementById('sheet-admin').classList.add('active');
+      document.querySelectorAll('.sheet-tab')[0].classList.add('active');
+    } else {
+      document.getElementById('sheet-user').classList.add('active');
+      document.querySelectorAll('.sheet-tab')[1].classList.add('active');
+    }
+  }
+</script>
 
 {% endblock %}
