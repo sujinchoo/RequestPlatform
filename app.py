@@ -535,6 +535,71 @@ def create_app():
                                company_list=get_company_list())
 
     # =========================================================
+    # 관리자 계정 관리 - 계정 리스트
+    # =========================================================
+    @app.route("/admin/accounts")
+    @login_required
+    @admin_required
+    def admin_account_list():
+    
+        accounts = (
+            Branch.query
+            .order_by(Branch.created_at.desc())
+            .all()
+        )
+    
+        return render_template(
+            "admin/accountList.html",
+            accounts=accounts
+        )
+    
+    # =========================================================
+    # 관리자 계정 관리 - 관리자 권한 변경 API
+    # =========================================================
+    @app.route("/admin/accounts/update-role", methods=["POST"])
+    @login_required
+    @admin_required
+    def admin_update_account_role():
+    
+        data = request.get_json(force=True)
+    
+        branch_id = data.get("branch_id")
+        is_admin = data.get("is_admin")
+    
+        if branch_id is None or is_admin is None:
+            return jsonify({"success": False, "message": "잘못된 요청"}), 400
+    
+        branch = Branch.query.get(branch_id)
+    
+        if not branch:
+            return jsonify({"success": False, "message": "계정을 찾을 수 없습니다"}), 404
+    
+        # 🔒 자기 자신 관리자 권한 변경 방지
+        if branch.id == session.get("branch_id"):
+            return jsonify({
+                "success": False,
+                "message": "본인 권한은 변경할 수 없습니다."
+            }), 403
+    
+        try:
+            branch.is_admin = bool(is_admin)
+            db.session.commit()
+    
+            return jsonify({
+                "success": True,
+                "message": "권한이 변경되었습니다."
+            })
+    
+        except Exception as e:
+            db.session.rollback()
+            print("[ROLE UPDATE ERROR]", e)
+            return jsonify({
+                "success": False,
+                "message": "권한 변경 중 오류 발생"
+            }), 500
+
+    
+    # =========================================================
     # 요청 리스트 API (필터)
     # =========================================================
     @app.route("/api/requests", methods=["GET"])
