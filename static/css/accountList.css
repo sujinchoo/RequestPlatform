@@ -228,3 +228,53 @@
 .admin-row:hover {
   background: #eaf2ff;
 }
+/* SweetAlert Popup */
+.pumgo-popup {
+  border-radius: 14px !important;
+  padding: 20px 18px 24px;
+  max-width: 420px;
+}
+
+/* 팝업 내부 */
+.account-modal {
+  text-align: left;
+}
+
+.account-info {
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #374151;
+}
+
+.account-info div {
+  margin-bottom: 8px;
+}
+
+.account-role label {
+  display: block;
+  padding: 10px 12px;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.account-role input {
+  margin-right: 8px;
+}
+
+/* 저장 버튼 – 품고 블루 그라데이션 */
+.pumgo-btn-primary {
+  width: 100%;
+  background: linear-gradient(135deg, #2563EB, #1D4ED8);
+  border: none;
+  border-radius: 12px;
+  padding: 12px 0;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+}
+
+.pumgo-btn-primary:hover {
+  background: linear-gradient(135deg, #1D4ED8, #1E40AF);
+}
