@@ -10,6 +10,7 @@ document.querySelectorAll(".account-row").forEach(row => {
       title: "계정 권한 변경",
       html: `
         <div class="account-modal">
+
           <div class="account-info">
             <div><strong>이메일</strong><br>${email}</div>
             <div><strong>이름</strong><br>${name}</div>
@@ -20,55 +21,74 @@ document.querySelectorAll(".account-row").forEach(row => {
               <input type="radio" name="role" value="admin" ${isAdmin ? "checked" : ""}>
               관리자
             </label>
+
             <label>
               <input type="radio" name="role" value="user" ${!isAdmin ? "checked" : ""}>
               일반 사용자
             </label>
           </div>
+
+          <!-- 🔥 버튼을 감싸는 영역 (중요) -->
+          <div class="account-modal-actions">
+            <button type="button" class="pumgo-btn-primary">
+              저장
+            </button>
+          </div>
+
         </div>
       `,
-      showConfirmButton: true,
-      confirmButtonText: "저장",
-      showCloseButton: true,
+      showConfirmButton: false,          // 기본 confirm 버튼 제거
+      showCloseButton: true,             // 우측 상단 X
+      focusConfirm: false,
       customClass: {
-        popup: "pumgo-popup",
-        confirmButton: "pumgo-btn-primary"
+        popup: "pumgo-popup"
       },
-      preConfirm: () => {
-        const selected = document.querySelector('input[name="role"]:checked');
-        if (!selected) {
-          Swal.showValidationMessage("역할을 선택하세요");
-          return false;
-        }
-        return selected.value;
+      didOpen: () => {
+        const saveBtn = Swal.getPopup().querySelector(".pumgo-btn-primary");
+
+        saveBtn.addEventListener("click", () => {
+          const selected = Swal.getPopup().querySelector('input[name="role"]:checked');
+
+          if (!selected) {
+            Swal.showValidationMessage("역할을 선택하세요");
+            return;
+          }
+
+          const newRoleIsAdmin = selected.value === "admin";
+
+          fetch("/admin/accounts/update-role", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              branch_id: branchId,
+              is_admin: newRoleIsAdmin
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (!data.success) {
+              Swal.fire("오류", data.message || "권한 변경 실패", "error");
+              return;
+            }
+
+            Swal.fire({
+              toast: true,
+              position: "top-end",
+              icon: "success",
+              title: "권한이 변경되었습니다",
+              showConfirmButton: false,
+              timer: 1200
+            }).then(() => {
+              location.reload();
+            });
+          })
+          .catch(() => {
+            Swal.fire("오류", "서버 통신 오류", "error");
+          });
+        });
       }
-    }).then(result => {
-      if (!result.isConfirmed) return;
-
-      fetch("/admin/accounts/update-role", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          branch_id: branchId,
-          is_admin: result.value === "admin"
-        })
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (!data.success) {
-          Swal.fire("오류", data.message, "error");
-          return;
-        }
-
-        Swal.fire({
-          toast: true,
-          position: "top-end",
-          icon: "success",
-          title: "권한이 변경되었습니다",
-          showConfirmButton: false,
-          timer: 1200
-        }).then(() => location.reload());
-      });
     });
 
   });
