@@ -38,9 +38,8 @@
 
 .account-table {
   width: 100%;
-  
   font-size: 12px;
-  min-width: 90;
+  min-width: 0;
 }
 
 /* 헤더 */
