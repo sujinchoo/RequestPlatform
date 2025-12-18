@@ -38,9 +38,9 @@
 
 .account-table {
   width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  min-width: 900px;
+  
+  font-size: 12px;
+  min-width: 90;
 }
 
 /* 헤더 */
@@ -85,29 +85,28 @@
    ============================== */
 
 .col-id {
-  width: 70px;
+  width: 50px;           /* 기존 70px */
   text-align: right;
-  color: #374151;
 }
 
 .col-email {
-  min-width: 220px;
+  width: 180px;          /* 기존 220px */
 }
 
 .col-name {
-  min-width: 120px;
+  width: 90px;           /* 기존 120px */
 }
 
 .col-role {
-  min-width: 160px;
+  width: 90px;           /* 기존 160px */
   text-align: center;
 }
 
 .col-date {
-  width: 160px;
-  text-align: right;
-  color: #374151;
+  width: 120px;          /* 기존 160px */
+  font-size: 11px;       /* 날짜만 더 작게 */
 }
+
 
 /* ==============================
    Role Checkbox Style
