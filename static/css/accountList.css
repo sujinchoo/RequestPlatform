@@ -263,16 +263,24 @@
   margin-right: 8px;
 }
 
-/* 저장 버튼 – 품고 블루 그라데이션 */
+/* 저장 버튼 – 품고 블루 그라데이션 (사이즈 확장) */
 .pumgo-btn-primary {
   width: 100%;
+  min-height: 52px;                 /* 🔥 역할 선택 박스와 동일한 체급 */
   background: linear-gradient(135deg, #2563EB, #1D4ED8);
   border: none;
   border-radius: 12px;
-  padding: 12px 0;
+
+  display: flex;                    /* 🔥 가운데 정렬 */
+  align-items: center;
+  justify-content: center;
+
   font-size: 15px;
   font-weight: 700;
-  color: white;
+  color: #fff;
+
+  cursor: pointer;
+  margin-top: 12px;                 /* 위 요소와 간격 */
 }
 
 .pumgo-btn-primary:hover {
