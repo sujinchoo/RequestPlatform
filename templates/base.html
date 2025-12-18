@@ -190,27 +190,27 @@
           {% if session.get('branch_id') and session.get('is_admin') %}
             <a href="{{ url_for('dashboard_demo') }}"
                class="btn-nav {% if request.endpoint == 'dashboard_demo' %}active{% endif %}">
-              TPR Dashboard
+              기사천국 대시보드
             </a>
       
             <a href="{{ url_for('dashboard') }}"
                class="btn-nav {% if request.endpoint == 'dashboard' %}active{% endif %}">
-              요청 현황(엑셀뷰)
+              기사천국 요청현황
             </a>
       
             <a href="{{ url_for('dashboard_v3') }}"
                class="btn-nav {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
-              CARD Dashboard
+              기사천국 CARD현황
             </a>
             <!-- ✅ 여기 추가 -->
             <a href="{{ url_for('admin_account_list') }}"
                class="btn-nav {% if request.endpoint == 'admin_account_list' %}active{% endif %}">
-              Account 관리
+              사용자 계정관리
             </a>
-            <a href="{{ url_for('dbtest_page') }}"
+            <!--<a href="{{ url_for('dbtest_page') }}"
                class="btn-nav {% if request.endpoint == 'dbtest_page' %}active{% endif %}">
               DB TEST 입력
-            </a>
+            </a>-->
           {% endif %}
       
           <a href="{{ url_for('request_page') }}"
