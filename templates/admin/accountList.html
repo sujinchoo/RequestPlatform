@@ -52,7 +52,11 @@
         </thead>
         <tbody>
           {% for account in accounts if account.is_admin %}
-          <tr class="admin-row">
+          <tr class="account-row admin-row"
+              data-branch-id="{{ account.id }}"
+              data-is-admin="true"
+              data-email="{{ account.login_id }}"
+              data-name="{{ account.branch_name }}">
             <td class="col-id">{{ account.id }}</td>
             <td class="col-email">{{ account.login_id }}</td>
             <td class="col-name">{{ account.branch_name }}</td>
@@ -60,7 +64,9 @@
             <td class="col-date">
               {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
             </td>
-            <td class="col-date">-</td>
+            <td class="col-date">
+              {{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -88,7 +94,11 @@
         </thead>
         <tbody>
           {% for account in accounts if not account.is_admin %}
-          <tr>
+          <tr class="account-row"
+              data-branch-id="{{ account.id }}"
+              data-is-admin="false"
+              data-email="{{ account.login_id }}"
+              data-name="{{ account.branch_name }}">
             <td class="col-id">{{ account.id }}</td>
             <td class="col-email">{{ account.login_id }}</td>
             <td class="col-name">{{ account.branch_name }}</td>
@@ -96,7 +106,9 @@
             <td class="col-date">
               {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
             </td>
-            <td class="col-date">-</td>
+            <td class="col-date">
+              {{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}
+            </td>
           </tr>
           {% endfor %}
         </tbody>
@@ -124,5 +136,7 @@
     }
   }
 </script>
+
+<script src="{{ url_for('static', filename='js/accountList.js') }}"></script>
 
 {% endblock %}
