@@ -282,6 +282,9 @@
   cursor: pointer;
   margin-top: 12px;                 /* 위 요소와 간격 */
 }
+.pumgo-btn-primary {
+  background: red !important;
+}
 
 .pumgo-btn-primary:hover {
   background: linear-gradient(135deg, #1D4ED8, #1E40AF);
