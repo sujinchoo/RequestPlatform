@@ -15,8 +15,10 @@ class Branch(db.Model):
     region = db.Column(db.String(100))          # 기본 지역
     is_admin = db.Column(db.Boolean, default=False)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
+    last_login_at = db.Column(db.DateTime, nullable=True)
+    
     requests = db.relationship("Request", backref="branch", lazy=True)
+    
 
 
 class Request(db.Model):
