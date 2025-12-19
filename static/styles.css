@@ -15,9 +15,8 @@ body {
 
 .page {
   width: 100%;
-  max-width: 100%;   /* PC 최대 넓이 */
+  max-width: 1800px;   /* 🔥 기준 폭 고정 */
   margin: 0 ;
-   /* 🔥 기존: padding: 16px 14px 40px; */
   padding: 1px 14px 40px !important;   /* 상단을 1px로 축소 */
 }
 
@@ -441,7 +440,7 @@ th, td {
 
 /* 🔥 엑셀처럼 테이블 펼치기 (모바일은 가로 스크롤) */
 table {
-  min-width: 1200px; /* 또는 1400px, 필요하면 조정 */
+  min-width: 1800px; /* 또는 1400px, 필요하면 조정 */
 }
 
 
@@ -1337,7 +1336,7 @@ main, .sheet-scroll, .table-wrapper {
   }
 
   .main .sheet {
-    max-width: calc(100vw - 24px);
+    max-width: 1800px;   /* 🔥 정책 통일 */
   }
 }
 /* ==================================================
