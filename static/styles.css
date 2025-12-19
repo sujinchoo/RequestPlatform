@@ -1466,3 +1466,9 @@ main, .sheet-scroll, .table-wrapper {
     padding-top: 8px !important;
   }
 }
+.container-wide {
+  width: 100%;
+  max-width: 1800px;
+  margin-left: auto;
+  margin-right: auto;
+}
