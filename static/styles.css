@@ -30,15 +30,19 @@ body {
   border-bottom: 1px solid #d4d4d8;
 }
 
+/* HEADER */
 .header-inner {
-  max-width: 1600px;   /* 페이지와 동일하게 확장 */
+  width: 100%;
+  max-width: 1800px;
   margin: 0 auto;
   padding: 8px 14px;
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
 }
+
 
 .logo-wrap {
   display: flex;
@@ -1325,12 +1329,7 @@ main, .sheet-scroll, .table-wrapper {
   margin-right: auto;
 }
 
-/* HEADER 폭 확장 */
-.header-inner {
-  width: 100%;
-  max-width: 1800px;
-  margin: 0 auto;
-}
+
 @media (min-width: 1024px) {
   .page {
     padding-left: 6px !important;
