@@ -231,3 +231,133 @@ tbody tr:hover {
     padding: 16px;
   }
 }
+/* ===============================
+   🔁 PATCH: Excel Table Restore
+   =============================== */
+
+/* account / dashboard 전용 테이블 */
+.account-table,
+.table-compact,
+.table-auto {
+  border-collapse: collapse !important;
+  background: #ffffff;
+}
+
+/* 헤더 */
+.account-table thead th,
+.table-compact thead th,
+.table-auto thead th {
+  background: #f3f4f6 !important;
+  font-weight: 600;
+  color: #111827;
+  border-bottom: 1px solid #d1d5db;
+}
+
+/* 바디 셀 */
+.account-table td,
+.table-compact td,
+.table-auto td {
+  border-bottom: 1px solid #e5e7eb;
+  color: #111827;
+}
+
+/* 짝수 행 */
+.account-table tbody tr:nth-child(even),
+.table-compact tbody tr:nth-child(even),
+.table-auto tbody tr:nth-child(even) {
+  background: #f9fafb !important;
+}
+
+/* 🔥 hover 복구 (엑셀 느낌 핵심) */
+.account-table tbody tr:hover,
+.table-compact tbody tr:hover,
+.table-auto tbody tr:hover {
+  background: #eef2ff !important;
+  transition: background 0.15s ease-in-out;
+}
+
+/* 관리자 행 강조 */
+.account-table .admin-row {
+  background: #f8fbff !important;
+}
+.account-table .admin-row:hover {
+  background: #eaf2ff !important;
+}
+/* ===============================
+   🔁 PATCH: Navigation Restore
+   =============================== */
+
+.nav-link {
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+/* hover */
+.nav-link:hover {
+  background: #eef6ff !important;
+  color: #1d4ed8 !important;
+  border-color: #c3dafc !important;
+}
+
+/* active */
+.nav-link.active {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 600;
+}
+/* ===============================
+   🔁 PATCH: Modal / Popup Restore
+   =============================== */
+
+/* SweetAlert popup */
+.swal2-popup,
+.pumgo-popup {
+  z-index: 9999 !important;
+  border-radius: 14px !important;
+}
+
+/* SweetAlert backdrop */
+.swal2-container {
+  z-index: 9998 !important;
+}
+
+/* 커스텀 모달 (직접 만든 modal) */
+.modal {
+  position: fixed !important;
+  inset: 0;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 9999 !important;
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+/* 모달 카드 */
+.modal-card {
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.18);
+}
+/* ===============================
+   🔁 PATCH: Global Table Reset Fix
+   =============================== */
+
+/* 전역 table 리셋에 의해 깨지는 것 방지 */
+.account-table th,
+.account-table td,
+.table-compact th,
+.table-compact td,
+.table-auto th,
+.table-auto td {
+  white-space: nowrap !important;
+}
+
+/* 필요한 경우만 줄바꿈 */
+.account-table .wrap,
+.table-compact .wrap {
+  white-space: normal !important;
+}
