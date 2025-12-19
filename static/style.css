@@ -361,3 +361,97 @@ tbody tr:hover {
 .table-compact .wrap {
   white-space: normal !important;
 }
+/* ===============================
+   ✅ EXCEL TABLE CORE PATCH
+   =============================== */
+
+/* 테이블 기본 구조 복구 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+/* 셀 잘림 방지 */
+th, td {
+  white-space: normal !important;
+  word-break: keep-all;
+  vertical-align: middle;
+}
+
+/* 엑셀처럼 최소 가로폭 유지 */
+.table-compact {
+  width: 100% !important;
+  min-width: 1800px !important;
+  table-layout: fixed !important;
+}
+
+/* 스크롤 컨테이너 */
+.sheet-scroll,
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: auto;
+}
+
+/* 헤더 고정 */
+.table-compact thead th {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: #f3f4f6;
+}
+/* ===============================
+   ✅ MODAL CORE PATCH
+   =============================== */
+
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(15, 23, 42, 0.35);
+  z-index: 2000;
+}
+
+.modal.hidden {
+  display: none !important;
+}
+
+.modal-card {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 18px 20px;
+  width: 320px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+/* ===============================
+   ✅ NAV / BUTTON STATE PATCH
+   =============================== */
+
+/* 네비 링크 */
+.nav-link:hover {
+  background: #eef2ff;
+  color: #1d4ed8;
+}
+
+.nav-link.active {
+  background: #2563eb !important;
+  border-color: #2563eb !important;
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* 공용 버튼 */
+.btn-nav:hover {
+  background: #eef6ff;
+  border-color: #c3dafc;
+  color: #1d4ed8;
+}
+
+.btn-nav.active,
+.btn-nav:active {
+  background: #1d4ed8 !important;
+  color: #ffffff !important;
+}
