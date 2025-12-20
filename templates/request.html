@@ -76,9 +76,16 @@
         </div>
 
         <div class="request-field">
-          <label>센터/터미널/위치 </label>
-          <input name="vehicle_type" type="text" class="request-input" placeholder="예: 센터/터미널/위치" required>
+          <label>센터 / 터미널 / 위치</label>
+          <input
+            name="center_location"
+            type="text"
+            class="request-input"
+            placeholder="예: 인천 서브터미널"
+            required
+          >
         </div>
+
 
         <div class="request-field">
           <label>필요 인원 (명)</label>
@@ -86,9 +93,16 @@
         </div>
 
         <div class="request-field">
-          <label>근무요일/주간/야간</label>
-          <input name="unit_price" type="text" min="0" step="10" class="request-input" placeholder="예: 주5일,주6일,주간/야간/새벽 배차" required>
+          <label>근무요일 / 근무형태</label>
+          <input
+            name="work_type"
+            type="text"
+            class="request-input"
+            placeholder="예: 주5일 / 주6일 / 주간 / 야간 / 새벽"
+            required
+          >
         </div>
+
 
         <div class="request-field">
           <label>월 물량 (건)</label>
