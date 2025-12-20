@@ -145,13 +145,43 @@
   <h2 style="margin-bottom:16px;">📊 오늘의 요청 처리 현황</h2>
 
   <!-- 1. Summary -->
-  <div class="summary-box">
-    <div class="card"><div class="card-title">총 요청 수</div><div class="card-value">{{ total_cases }}</div></div>
-    <div class="card"><div class="card-title">모집중</div><div class="card-value">{{ status_wait }}</div></div>
-    <div class="card"><div class="card-title">선탑 진행중</div><div class="card-value">{{ status_pre }}</div></div>
-    <div class="card"><div class="card-title">면접 예정</div><div class="card-value">{{ status_interview }}</div></div>
-    <div class="card"><div class="card-title">배차 완료</div><div class="card-value" style="color:#059669;">{{ status_done }}</div></div>
-  </div>
+   <div class="summary-box">
+   
+     <div class="card">
+       <div class="card-title">총 요청 수</div>
+       <div class="card-value">{{ total_cases }}</div>
+     </div>
+   
+     <div class="card">
+       <div class="card-title">모집중</div>
+       <div class="card-value">
+         <span class="tag-status tag-모집중">{{ status_wait }}</span>
+       </div>
+     </div>
+   
+     <div class="card">
+       <div class="card-title">선탑 진행중</div>
+       <div class="card-value">
+         <span class="tag-status tag-선탑진행중">{{ status_pre }}</span>
+       </div>
+     </div>
+   
+     <div class="card">
+       <div class="card-title">면접 예정</div>
+       <div class="card-value">
+         <span class="tag-status tag-면접예정">{{ status_interview }}</span>
+       </div>
+     </div>
+   
+     <div class="card">
+       <div class="card-title">배차 완료</div>
+       <div class="card-value">
+         <span class="tag-status tag-배차완료">{{ status_done }}</span>
+       </div>
+     </div>
+   
+   </div>
+
 
   <!-- 2. Progress -->
   <div class="progress-wrap">
