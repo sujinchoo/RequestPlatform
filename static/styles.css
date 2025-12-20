@@ -1557,4 +1557,16 @@ main, .sheet-scroll, .table-wrapper {
 .summary-card.done {
   background: #ecfdf5;
 }
+.summary-card {
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+
+  /* 🔥 핵심 패치 */
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
 
