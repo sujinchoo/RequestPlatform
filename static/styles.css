@@ -1465,28 +1465,35 @@ main, .sheet-scroll, .table-wrapper {
   }
 }
 /* =========================================================
-   🔥 PC 전용 2000px 확장 패치 (SAFE)
+   🔥 PC 관리자 페이지 FULL WIDTH (Request 페이지 제외)
+   적용 대상:
+   - 기사천국 대시보드
+   - 기사천국 요청현황
+   - 기사천국 CARD현황
+   - 사용자 계정관리
    ========================================================= */
+@media (min-width: 1280px) {
 
-/* 1600px 이상 PC 화면에서만 확장 */
-@media (min-width: 1600px) {
-
-  /* 전체 페이지 기준 프레임 */
-  .page {
-    max-width: 2000px;
+  /* request 페이지는 제외 */
+  body:not(:has(.request-wrapper)) .page {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
   }
 
-  /* 상단 헤더 */
-  .header-inner {
-    max-width: 2000px;
+  body:not(:has(.request-wrapper)) .main .sheet {
+    max-width: none !important;
+    width: 100% !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
   }
 
-  /* 메인 콘텐츠 영역 */
-  .main .sheet {
-    max-width: 2000px;
+  body:not(:has(.request-wrapper)) .header-inner {
+    max-width: none !important;
+    width: 100% !important;
   }
 
 }
-
-
 
