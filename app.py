@@ -436,9 +436,14 @@ def create_app():
                     region=form.get("region"),
                 
                     center_location=form.get("center_location"),
-                    work_type=form.get("work_type"),
-                
+                    
+                    # ✅ 문자열 그대로 저장
+                    #work_type=form.get("work_type"),
+                    
+                    work_days = request.form.get("work_days"),                
                     headcount=int(form.get("headcount") or 0),
+                    
+                    # ✅ 숫자 필드 (HTML number)
                     volume=int(form.get("volume") or 0),
                 
                     unit_price=None,   # 지금은 사용 안 함
