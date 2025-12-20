@@ -379,11 +379,12 @@ def create_app():
     # =========================================================
     @app.route("/")
     def home():
-        if "google_user_id" in session:
+        if "google_user_id" in session or "branch_id" in session:
+            if session.get("is_admin"):
+                return redirect(url_for("dashboard_demo"))  # 🔥 핵심
             return redirect(url_for("request_page"))
-        if "branch_id" in session:
-            return redirect(url_for("dashboard" if session.get("is_admin") else "request_page"))
         return redirect(url_for("login"))
+
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
@@ -396,17 +397,18 @@ def create_app():
 
             branch = Branch.query.filter_by(login_id=login_id).first()
             if branch and check_password_hash(branch.password_hash, password):
-                branch.last_login_at = datetime.utcnow()   # ✅ 최근로그인 데이트 타임 생성 
-                db.session.commit()                        # ✅ 추가, 최근로그인 로그 생성 
-                
+                branch.last_login_at = datetime.utcnow()
+                db.session.commit()
+            
                 session["branch_id"] = branch.id
                 session["is_admin"] = branch.is_admin
                 session["branch_name"] = branch.branch_name
-                return redirect(url_for("dashboard" if branch.is_admin else "request_page"))
-            else:
-                flash("ID 또는 비밀번호를 확인하세요.", "error")
-
-        return render_template("login.html")
+            
+                if branch.is_admin:
+                    return redirect(url_for("dashboard_demo"))
+                return redirect(url_for("request_page"))
+            
+                    return render_template("login.html")
 
     @app.route("/logout")
     def logout():
