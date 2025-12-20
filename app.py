@@ -758,7 +758,7 @@ def create_app():
                     branch_name=f"{rand_txt()}지점"[:7],
                     
                     volume=random.randint(10, 900),
-                    vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
+                   
                     headcount=random.randint(1, 5),
                     etc="테스트",
                     status="모집중",
