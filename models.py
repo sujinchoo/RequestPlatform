@@ -37,8 +37,6 @@ class Request(db.Model):
     headcount = db.Column(db.Integer, nullable=False)
     volume = db.Column(db.Integer, nullable=False)
 
-    unit_price = db.Column(db.String(200), nullable=False)  # 🔥 텍스트 기준
-    vehicle_type = db.Column(db.String(100))
 
     etc = db.Column(db.Text)
 
