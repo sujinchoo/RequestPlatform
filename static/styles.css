@@ -1464,4 +1464,29 @@ main, .sheet-scroll, .table-wrapper {
     padding-top: 8px !important;
   }
 }
+/* =========================================================
+   🔥 PC 전용 2000px 확장 패치 (SAFE)
+   ========================================================= */
+
+/* 1600px 이상 PC 화면에서만 확장 */
+@media (min-width: 1600px) {
+
+  /* 전체 페이지 기준 프레임 */
+  .page {
+    max-width: 2000px;
+  }
+
+  /* 상단 헤더 */
+  .header-inner {
+    max-width: 2000px;
+  }
+
+  /* 메인 콘텐츠 영역 */
+  .main .sheet {
+    max-width: 2000px;
+  }
+
+}
+
+
 
