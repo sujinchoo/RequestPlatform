@@ -101,18 +101,21 @@ function renderData(data) {
         const row = document.createElement("tr");
 
         row.innerHTML = `
-            <td>${idx + 1}</td>
-            <td>${r.region}</td>
-            <td>${r.company}</td>
-            <td>${r.branch_name}</td>
-            <td>${r.unit_price || "-"}</td>
-            <td>${Number(r.volume).toLocaleString()}</td>
-            <td>${r.vehicle_type || "-"}</td>
-            <td>${r.headcount}</td>
-            <td>${r.etc || "-"}</td>
-            <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
-            <td>${r.interview_date || "-"}</td>
+          <td>${idx + 1}</td>
+          <td>${r.region}</td>
+          <td>${r.company}</td>
+          <td>${r.branch_name}</td>
+          <td>${r.work_type || "-"}</td>
+          <td>${r.unit_price ? Number(r.unit_price).toLocaleString() : "-"}</td>
+          <td>${Number(r.volume).toLocaleString()}</td>
+          <td>${r.vehicle_type || "-"}</td>
+          <td>${r.headcount}</td>
+          <td>${r.etc || "-"}</td>
+          <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
+          <td>${r.interview_date || "-"}</td>
         `;
+        .interview_date || "-"}</td>
+                `;
 
         row.onclick = () => openModal({
             id: r.id,
