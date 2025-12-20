@@ -390,25 +390,28 @@ def create_app():
     def login():
         if "google_user_id" in session:
             return redirect(url_for("request_page"))
-
+    
         if request.method == "POST":
             login_id = request.form.get("login_id", "").strip()
             password = request.form.get("password", "")
-
+    
             branch = Branch.query.filter_by(login_id=login_id).first()
             if branch and check_password_hash(branch.password_hash, password):
                 branch.last_login_at = datetime.utcnow()
                 db.session.commit()
-            
+    
                 session["branch_id"] = branch.id
                 session["is_admin"] = branch.is_admin
                 session["branch_name"] = branch.branch_name
-            
+    
                 if branch.is_admin:
                     return redirect(url_for("dashboard_demo"))
                 return redirect(url_for("request_page"))
-            
-                    return render_template("login.html")
+            else:
+                flash("ID 또는 비밀번호를 확인하세요.", "error")
+    
+        # 🔥 이 줄은 반드시 함수의 최하단 / if 바깥
+        return render_template("login.html")
 
     @app.route("/logout")
     def logout():
