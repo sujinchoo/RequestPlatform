@@ -31,16 +31,19 @@ class Request(db.Model):
     region = db.Column(db.String(100), nullable=False)
     branch_name = db.Column(db.String(150), nullable=False)
 
-    center_location = db.Column(db.String(150))      # 센터/터미널/위치
-    work_type = db.Column(db.String(50))              # 🔥 근무요일/주간/야간
+    center_location = db.Column(db.String(200))     # 센터/터미널/위치
+    work_type = db.Column(db.String(200))           # 근무요일/주간/야간
 
     headcount = db.Column(db.Integer, nullable=False)
     volume = db.Column(db.Integer, nullable=False)
-    unit_price = db.Column(db.Integer)                # 단가 (숫자 전용, 추후 사용)
+
+    unit_price = db.Column(db.String(200), nullable=False)  # 🔥 텍스트 기준
+    vehicle_type = db.Column(db.String(100))
 
     etc = db.Column(db.Text)
 
     status = db.Column(db.String(20), default="모집중")
     interview_date = db.Column(db.Date)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
+
 
