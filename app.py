@@ -445,7 +445,7 @@ def create_app():
                     # ✅ 숫자 필드 (HTML number)
                     volume=int(form.get("volume") or 0),
                 
-                    unit_price=None,   # 지금은 사용 안 함
+                    
                     etc=form.get("etc"),
                 
                     status="모집중",
@@ -719,9 +719,8 @@ def create_app():
                 company=data.get("company"),
                 region=data.get("region"),
                 branch_name=data.get("branch_name"),
-                unit_price=int(data.get("unit_price") or 0),
+               
                 volume=int(data.get("volume") or 0),
-                vehicle_type=data.get("vehicle_type"),
                 headcount=int(data.get("headcount") or 0),
                 etc=data.get("etc"),
                 status="모집중",
