@@ -80,18 +80,17 @@
 <script>
 let currentId = null;
 
-/* =========================================================
-   🔵 테이블 렌더링
-========================================================= */
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
     tbody.innerHTML = "";
 
     if (!data || data.length === 0) {
         tbody.innerHTML = `
-            <tr>
-              <td colspan="11" style="text-align:center;">등록된 요청이 없습니다.</td>
-            </tr>`;
+          <tr>
+            <td colspan="10" style="text-align:center;">
+              등록된 요청이 없습니다.
+            </td>
+          </tr>`;
         return;
     }
 
@@ -103,16 +102,14 @@ function renderData(data) {
           <td>${r.region}</td>
           <td>${r.company}</td>
           <td>${r.branch_name}</td>
-          <td>${r.work_type || "-"}</td>
-          <td>${r.unit_price ? Number(r.unit_price).toLocaleString() : "-"}</td>
-          <td>${Number(r.volume).toLocaleString()}</td>
-          <td>${r.vehicle_type || "-"}</td>
-          <td>${r.headcount}</td>
+          <td>${r.work_days || "-"}</td>
+          <td>${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
+          <td>${r.headcount || "-"}</td>
           <td>${r.etc || "-"}</td>
           <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
           <td>${r.interview_date || "-"}</td>
         `;
-       
+
         row.onclick = () => openModal({
             id: r.id,
             region: r.region,
@@ -125,6 +122,7 @@ function renderData(data) {
         tbody.appendChild(row);
     });
 }
+  
 
 /* =========================================================
    🔥 Dashboard 데이터 자동 로딩(fetch)
@@ -133,9 +131,7 @@ function loadDashboardData() {
     fetch("/api/requests")
         .then(res => res.json())
         .then(json => {
-            if (json.data) {
-                renderData(json.data);
-            }
+            if (json.data) renderData(json.data);
         })
         .catch(err => console.error("데이터 로딩 실패:", err));
 }
