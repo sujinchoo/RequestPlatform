@@ -434,14 +434,20 @@ def create_app():
                     company=form.get("company"),
                     branch_name=form.get("branch"),
                     region=form.get("region"),
-                    unit_price=int(form.get("unit_price") or 0),
-                    volume=int(form.get("volume") or 0),
-                    vehicle_type=form.get("vehicle_type"),
+                
+                    center_location=form.get("center_location"),
+                    work_type=form.get("work_type"),
+                
                     headcount=int(form.get("headcount") or 0),
+                    volume=int(form.get("volume") or 0),
+                
+                    unit_price=None,   # 지금은 사용 안 함
                     etc=form.get("etc"),
+                
                     status="모집중",
                     created_at=datetime.utcnow(),
                 )
+
                 db.session.add(new_req)
                 db.session.commit()
                 flash("요청이 저장되었습니다.", "success")
