@@ -437,10 +437,9 @@ def create_app():
                 
                     center_location=form.get("center_location"),
                     
-                    # ✅ 문자열 그대로 저장
-                    #work_type=form.get("work_type"),
+                   # ✅ 여기만 바꿔주면 끝
+                    work_type=request.form.get("work_days"),
                     
-                    work_days = request.form.get("work_days"),                
                     headcount=int(form.get("headcount") or 0),
                     
                     # ✅ 숫자 필드 (HTML number)
@@ -647,7 +646,7 @@ def create_app():
                 "region": r.region,
                 "company": r.company,
                 "branch_name": r.branch_name,
-                "work_days": r.work_days,          # ⭐ 추가
+                "work_days": r.work_type,          # ⭐ 추가
                 "volume": r.volume,
                 "headcount": r.headcount,
                 "etc": r.etc,
