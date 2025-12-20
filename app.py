@@ -756,7 +756,7 @@ def create_app():
                     company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
                     region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
                     branch_name=f"{rand_txt()}지점"[:7],
-                    unit_price=random.randint(300, 900),
+                    
                     volume=random.randint(10, 900),
                     vehicle_type=random.choice(["다마스", "라보", "1톤", "오토바이"])[:7],
                     headcount=random.randint(1, 5),
