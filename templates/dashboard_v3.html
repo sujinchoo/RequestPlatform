@@ -64,11 +64,11 @@
 
       <div class="recent-meta">
         지역: {{ r.region }}<br>
-        차종: {{ r.vehicle_type or "-" }} / 인원: {{ r.headcount }}명<br>
-        단가: {{ r.unit_price if r.unit_price else "-" }} /
-        물량: {{ r.volume if r.volume else "-" }}<br>
+        근무: {{ r.work_days or "-" }} / 인원: {{ r.headcount }}명<br>
+        물량: {{ r.volume or "-" }}<br>
         등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
       </div>
+
 
     </div>
     {% endfor %}
