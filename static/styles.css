@@ -1496,4 +1496,65 @@ main, .sheet-scroll, .table-wrapper {
   }
 
 }
+/* ===============================
+   📊 Dashboard Summary Cards
+   =============================== */
+
+.summary-box {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.summary-card {
+  border-radius: 14px;
+  padding: 18px 20px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+
+/* 제목 */
+.summary-card .card-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 10px;
+}
+
+/* 숫자 (기존 크기 유지) */
+.summary-card .card-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* ===============================
+   🎨 상태별 배경색
+   =============================== */
+
+/* 총 요청 수 (중립) */
+.summary-card.total {
+  background: #f1f5f9; /* 블루그레이 */
+}
+
+/* 모집중 */
+.summary-card.wait {
+  background: #f9fafb;
+}
+
+/* 선탑 진행중 */
+.summary-card.progress {
+  background: #eef6ff;
+}
+
+/* 면접 예정 */
+.summary-card.interview {
+  background: #fff7db;
+}
+
+/* 배차 완료 */
+.summary-card.done {
+  background: #ecfdf5;
+}
 
