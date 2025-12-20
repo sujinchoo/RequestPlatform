@@ -630,36 +630,39 @@ def create_app():
     def api_requests():
         company = request.args.get("company", "all")
         status = request.args.get("status", "all")
-
+    
         query = Req.query
-
+    
         if company != "all" and company:
             query = query.filter(Req.company == company)
-
+    
         if status != "all" and status:
             query = query.filter(Req.status == status)
-
+    
         rows = query.order_by(Req.created_at.desc()).all()
-
+    
         results = [
             {
                 "id": r.id,
-                "company": r.company,
                 "region": r.region,
+                "company": r.company,
                 "branch_name": r.branch_name,
-                #"unit_price": r.unit_price,
+                "work_days": r.work_days,          # ⭐ 추가
                 "volume": r.volume,
-                #"vehicle_type": r.vehicle_type,
                 "headcount": r.headcount,
                 "etc": r.etc,
                 "status": r.status,
-                "interview_date": r.interview_date.isoformat() if r.interview_date else None,
-                "created_at": r.created_at.isoformat(),
+                "interview_date": (
+                    r.interview_date.strftime("%Y-%m-%d")
+                    if r.interview_date else None
+                ),
+                "created_at": r.created_at.strftime("%Y-%m-%d"),
             }
             for r in rows
         ]
-
+    
         return jsonify({"count": len(results), "data": results})
+
 
     # =========================================================
     # 상태 업데이트 API
