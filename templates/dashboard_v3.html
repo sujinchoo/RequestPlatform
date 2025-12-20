@@ -68,8 +68,8 @@
       <div class="recent-meta">
         지역: {{ r.region }}<br>
         차종: {{ r.vehicle_type or '-' }} / 인원: {{ r.headcount }}명<br>
-        단가: {{ "{:,}".format(r.unit_price) }}원 /
-        물량: {{ "{:,}".format(r.volume) }}건<br>
+        단가: {{ r.unit_price or "-" }}원 /
+        물량: {{ r.volume or "-" }}건<br>
         등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
       </div>
 
