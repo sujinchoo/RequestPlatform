@@ -32,6 +32,7 @@
           <th style="width:120px;">지역</th>
           <th style="width:120px;">택배사</th>
           <th style="width:160px;">영업소 / 대리점명</th>
+          <th style="width:160px;">근무요일 / 주간·야간</th>
           <th style="width:120px;">단가</th>
           <th style="width:120px;">월 물량</th>
           <th style="width:120px;">차종</th>
@@ -104,7 +105,7 @@ function renderData(data) {
             <td>${r.region}</td>
             <td>${r.company}</td>
             <td>${r.branch_name}</td>
-            <td>${Number(r.unit_price).toLocaleString()}</td>
+            <td>${r.unit_price || "-"}</td>
             <td>${Number(r.volume).toLocaleString()}</td>
             <td>${r.vehicle_type || "-"}</td>
             <td>${r.headcount}</td>
