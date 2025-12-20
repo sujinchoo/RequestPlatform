@@ -95,12 +95,13 @@
         <div class="request-field">
           <label>근무요일 / 근무형태</label>
           <input
-            name="work_type"
+            name="work_days"
             type="text"
             class="request-input"
             placeholder="예: 주5일 / 주6일 / 주간 / 야간 / 새벽"
             required
           >
+
         </div>
 
 
@@ -143,9 +144,8 @@
               <th>등록일</th>
               <th>택배사</th>
               <th>지역</th>
-              <th>차종</th>
-              <th>인원</th>
-              <th>단가</th>
+                <th>인원</th>
+        
               <th>월물량</th>
               <th>삭제</th>
             </tr>
@@ -157,10 +157,8 @@
               <td>{{ r.id }}</td>
               <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
               <td>{{ r.company }}</td>
-              <td>{{ r.region }}</td>
-              <td>{{ r.vehicle_type }}</td>
-              <td>{{ r.headcount }}</td>
-              <td>{{ r.unit_price }}</td>
+              <td>{{ r.region }}</td>             
+              <td>{{ r.headcount }}</td>             
               <td>{{ r.volume }}</td>
 
               <td>
