@@ -114,9 +114,7 @@ function renderData(data) {
           <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
           <td>${r.interview_date || "-"}</td>
         `;
-        .interview_date || "-"}</td>
-                `;
-
+       
         row.onclick = () => openModal({
             id: r.id,
             region: r.region,
