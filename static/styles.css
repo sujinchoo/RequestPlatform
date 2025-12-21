@@ -1569,4 +1569,10 @@ main, .sheet-scroll, .table-wrapper {
   flex-direction: column;
   justify-content: center;
 }
+/* ===============================
+   Request Page Background Override
+   =============================== */
+body {
+  background: #eef2f7; /* ✅ 블루 그레이 (추천안 2번) */
+}
 
