@@ -1571,65 +1571,80 @@ main, .sheet-scroll, .table-wrapper {
 }
 
 /* ==================================================
-   🔵 Request Page — Mobile Table Ultra Compact FIX
+   🔥 Request Page — TABLE NUCLEAR COMPACT MODE
    ================================================== */
 
-/* request 페이지에서만 */
-body:has(.request-wrapper) .table-responsive table {
+/* Bootstrap table 완전 무력화 */
+body:has(.request-wrapper) table.table {
   table-layout: fixed !important;
-  width: 100% !important;
+  width: auto !important;
+  max-width: 100% !important;
 }
 
-/* 공통 셀 패딩 대폭 축소 */
-body:has(.request-wrapper) .table-responsive th,
-body:has(.request-wrapper) .table-responsive td {
-  padding: 6px 6px !important;   /* 🔥 기존 대비 약 70% 축소 */
-  font-size: 12px;
-  white-space: nowrap;
+/* Bootstrap padding 덮어쓰기 */
+body:has(.request-wrapper) table.table > :not(caption) > * > * {
+  padding: 4px 4px !important;   /* 🔥 극단 축소 */
+  font-size: 11px !important;
+  white-space: nowrap !important;
 }
 
-/* 🔻 컬럼별 초압축 */
-body:has(.request-wrapper) th:nth-child(1),
-body:has(.request-wrapper) td:nth-child(1) {
-  width: 18px !important;        /* ID */
+/* ===== 컬럼별 초초압축 ===== */
+
+/* ID */
+body:has(.request-wrapper) table.table th:nth-child(1),
+body:has(.request-wrapper) table.table td:nth-child(1) {
+  width: 28px !important;
+  max-width: 28px !important;
   text-align: center;
 }
 
-body:has(.request-wrapper) th:nth-child(2),
-body:has(.request-wrapper) td:nth-child(2) {
-  width: 39px !important;        /* 등록일 */
+/* 등록일 */
+body:has(.request-wrapper) table.table th:nth-child(2),
+body:has(.request-wrapper) table.table td:nth-child(2) {
+  width: 68px !important;
+  max-width: 68px !important;
 }
 
-body:has(.request-wrapper) th:nth-child(3),
-body:has(.request-wrapper) td:nth-child(3) {
-  width: 40px !important;        /* 택배사 */
+/* 택배사 */
+body:has(.request-wrapper) table.table th:nth-child(3),
+body:has(.request-wrapper) table.table td:nth-child(3) {
+  width: 70px !important;
+  max-width: 70px !important;
 }
 
-body:has(.request-wrapper) th:nth-child(4),
-body:has(.request-wrapper) td:nth-child(4) {
-  width: 40px !important;        /* 지역 */
+/* 지역 */
+body:has(.request-wrapper) table.table th:nth-child(4),
+body:has(.request-wrapper) table.table td:nth-child(4) {
+  width: 80px !important;
+  max-width: 80px !important;
 }
 
-body:has(.request-wrapper) th:nth-child(5),
-body:has(.request-wrapper) td:nth-child(5) {
-  width: 18px !important;        /* 인원 */
+/* 인원 */
+body:has(.request-wrapper) table.table th:nth-child(5),
+body:has(.request-wrapper) table.table td:nth-child(5) {
+  width: 32px !important;
+  max-width: 32px !important;
   text-align: center;
 }
 
-body:has(.request-wrapper) th:nth-child(6),
-body:has(.request-wrapper) td:nth-child(6) {
-  width: 20px !important;        /* 월물량 */
+/* 월물량 */
+body:has(.request-wrapper) table.table th:nth-child(6),
+body:has(.request-wrapper) table.table td:nth-child(6) {
+  width: 58px !important;
+  max-width: 58px !important;
   text-align: right;
 }
 
-body:has(.request-wrapper) th:nth-child(7),
-body:has(.request-wrapper) td:nth-child(7) {
-  width: 20px !important;        /* 삭제 */
+/* 삭제 */
+body:has(.request-wrapper) table.table th:nth-child(7),
+body:has(.request-wrapper) table.table td:nth-child(7) {
+  width: 44px !important;
+  max-width: 44px !important;
   text-align: center;
 }
 
-/* 삭제 버튼도 더 작게 */
+/* 삭제 버튼도 더 줄이기 */
 body:has(.request-wrapper) .btn-danger {
-  padding: 4px 6px;
-  font-size: 11px;
+  padding: 2px 4px !important;
+  font-size: 10px !important;
 }
