@@ -1593,53 +1593,53 @@ body:has(.request-wrapper) table.table > :not(caption) > * > * {
 /* ID */
 body:has(.request-wrapper) table.table th:nth-child(1),
 body:has(.request-wrapper) table.table td:nth-child(1) {
-  width: 28px !important;
-  max-width: 28px !important;
+  width: 14px !important;
+  max-width: 14px !important;
   text-align: center;
 }
 
 /* 등록일 */
 body:has(.request-wrapper) table.table th:nth-child(2),
 body:has(.request-wrapper) table.table td:nth-child(2) {
-  width: 68px !important;
-  max-width: 68px !important;
+  width: 34px !important;
+  max-width: 34px !important;
 }
 
 /* 택배사 */
 body:has(.request-wrapper) table.table th:nth-child(3),
 body:has(.request-wrapper) table.table td:nth-child(3) {
-  width: 70px !important;
-  max-width: 70px !important;
+  width: 35px !important;
+  max-width: 35px !important;
 }
 
 /* 지역 */
 body:has(.request-wrapper) table.table th:nth-child(4),
 body:has(.request-wrapper) table.table td:nth-child(4) {
-  width: 80px !important;
-  max-width: 80px !important;
+  width: 40px !important;
+  max-width: 40px !important;
 }
 
 /* 인원 */
 body:has(.request-wrapper) table.table th:nth-child(5),
 body:has(.request-wrapper) table.table td:nth-child(5) {
-  width: 32px !important;
-  max-width: 32px !important;
+  width: 16px !important;
+  max-width: 16px !important;
   text-align: center;
 }
 
 /* 월물량 */
 body:has(.request-wrapper) table.table th:nth-child(6),
 body:has(.request-wrapper) table.table td:nth-child(6) {
-  width: 58px !important;
-  max-width: 58px !important;
+  width: 20px !important;
+  max-width: 20px !important;
   text-align: right;
 }
 
 /* 삭제 */
 body:has(.request-wrapper) table.table th:nth-child(7),
 body:has(.request-wrapper) table.table td:nth-child(7) {
-  width: 44px !important;
-  max-width: 44px !important;
+  width: 20px !important;
+  max-width: 20px !important;
   text-align: center;
 }
 
