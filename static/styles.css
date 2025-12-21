@@ -1570,3 +1570,86 @@ main, .sheet-scroll, .table-wrapper {
   justify-content: center;
 }
 
+/* ===============================
+   Request 페이지 - 등록한 요청 목록 테이블 컬럼 정리
+   =============================== */
+
+/* request 페이지의 해당 테이블만 정확히 타겟 */
+body:has(.request-wrapper)
+.table-responsive > table.table.table-hover.align-middle {
+  table-layout: fixed;   /* 🔥 핵심 */
+  width: 100%;
+}
+
+/* 공통 셀 처리 */
+body:has(.request-wrapper)
+.table-responsive > table.table.table-hover.align-middle th,
+body:has(.request-wrapper)
+.table-responsive > table.table.table-hover.align-middle td {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+}
+
+/* ===== 컬럼별 폭 지정 (7컬럼 고정) ===== */
+
+/* ID */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(1),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(1) {
+  width: 60px;
+  text-align: center;
+}
+
+/* 등록일 */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(2),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(2) {
+  width: 100px;
+}
+
+/* 택배사 */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(3),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(3) {
+  width: 100px;
+}
+
+/* 지역 (조금 여유) */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(4),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(4) {
+  width: 140px;
+}
+
+/* 인원 */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(5),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(5) {
+  width: 70px;
+  text-align: center;
+}
+
+/* 월물량 */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(6),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(6) {
+  width: 100px;
+  text-align: right;
+}
+
+/* 삭제 버튼 */
+body:has(.request-wrapper)
+.table-responsive > table th:nth-child(7),
+body:has(.request-wrapper)
+.table-responsive > table td:nth-child(7) {
+  width: 80px;
+  text-align: center;
+}
