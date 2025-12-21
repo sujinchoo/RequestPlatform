@@ -1576,3 +1576,14 @@ body {
   background: #eef2f7; /* ✅ 블루 그레이 (추천안 2번) */
 }
 
+/* ===============================
+   Request Page Background FIX
+   =============================== */
+body:has(.request-wrapper) {
+  background: #eef2f7;
+}
+
+body:has(.request-wrapper) .sheet,
+body:has(.request-wrapper) .sheet-scroll {
+  background: transparent !important;
+}
