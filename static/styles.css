@@ -1595,7 +1595,7 @@ body:has(.request-wrapper) table.table > :not(caption) > * > * {
 body:has(.request-wrapper) table.table th:nth-child(1),
 body:has(.request-wrapper) table.table td:nth-child(1) {
   width: 14px !important;
-  max-width: 14px !important;
+  max-width: 50% !important;
   text-align: center;
 }
 
