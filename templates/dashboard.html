@@ -192,12 +192,9 @@ function saveStatus() {
         loadDashboardData();
 
         setTimeout(() => {
-            closeModal();
-            btn.innerText = "저장";
-            btn.disabled = false;
-            btn.style.background = "#2563eb";
-            btn.style.borderColor = "#2563eb";
-        }, 800);
+            location.reload();
+        }, 500);
+
     })
     .catch(err => {
         alert("오류 발생: " + err);
