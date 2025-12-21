@@ -1599,7 +1599,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(1),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(1) {
-  width: 50px;
+  width: 20px;
   text-align: center;
 }
 
@@ -1608,7 +1608,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(2),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(2) {
-  width: 70px;
+  width: 30px;
 }
 
 /* 택배사 */
@@ -1616,7 +1616,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(3),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(3) {
-  width: 100px;
+  width: 50px;
 }
 
 /* 지역 (조금 여유) */
@@ -1624,7 +1624,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(4),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(4) {
-  width: 100px;
+  width: 50px;
 }
 
 /* 인원 */
@@ -1632,7 +1632,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(5),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(5) {
-  width: 50px;
+  width: 30px;
   text-align: center;
 }
 
@@ -1641,7 +1641,7 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(6),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(6) {
-  width: 50px;
+  width: 30px;
   text-align: right;
 }
 
@@ -1650,6 +1650,6 @@ body:has(.request-wrapper)
 .table-responsive > table th:nth-child(7),
 body:has(.request-wrapper)
 .table-responsive > table td:nth-child(7) {
-  width: 80px;
+  width: 30px;
   text-align: center;
 }
