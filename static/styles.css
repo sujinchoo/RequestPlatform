@@ -1591,40 +1591,40 @@ body:has(.request-wrapper) .table-responsive td {
 /* 🔻 컬럼별 초압축 */
 body:has(.request-wrapper) th:nth-child(1),
 body:has(.request-wrapper) td:nth-child(1) {
-  width: 36px !important;        /* ID */
+  width: 18px !important;        /* ID */
   text-align: center;
 }
 
 body:has(.request-wrapper) th:nth-child(2),
 body:has(.request-wrapper) td:nth-child(2) {
-  width: 78px !important;        /* 등록일 */
+  width: 39px !important;        /* 등록일 */
 }
 
 body:has(.request-wrapper) th:nth-child(3),
 body:has(.request-wrapper) td:nth-child(3) {
-  width: 80px !important;        /* 택배사 */
+  width: 40px !important;        /* 택배사 */
 }
 
 body:has(.request-wrapper) th:nth-child(4),
 body:has(.request-wrapper) td:nth-child(4) {
-  width: 90px !important;        /* 지역 */
+  width: 40px !important;        /* 지역 */
 }
 
 body:has(.request-wrapper) th:nth-child(5),
 body:has(.request-wrapper) td:nth-child(5) {
-  width: 44px !important;        /* 인원 */
+  width: 18px !important;        /* 인원 */
   text-align: center;
 }
 
 body:has(.request-wrapper) th:nth-child(6),
 body:has(.request-wrapper) td:nth-child(6) {
-  width: 64px !important;        /* 월물량 */
+  width: 20px !important;        /* 월물량 */
   text-align: right;
 }
 
 body:has(.request-wrapper) th:nth-child(7),
 body:has(.request-wrapper) td:nth-child(7) {
-  width: 52px !important;        /* 삭제 */
+  width: 20px !important;        /* 삭제 */
   text-align: center;
 }
 
