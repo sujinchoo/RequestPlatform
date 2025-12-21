@@ -1571,64 +1571,65 @@ main, .sheet-scroll, .table-wrapper {
 }
 
 /* ==================================================
-   🔵 Request Page — Registered List Table Width FIX
-   (다른 페이지 영향 없음)
+   🔵 Request Page — Mobile Table Ultra Compact FIX
    ================================================== */
 
-/* request 페이지에서만 적용 */
-body:has(.request-wrapper) .table-responsive {
-  max-width: 960px;        /* 🔥 테이블 전체 폭 제한 */
-  margin: 0 auto;          /* 가운데 정렬 */
-}
-
-/* 테이블은 wrapper 폭에 맞춤 */
+/* request 페이지에서만 */
 body:has(.request-wrapper) .table-responsive table {
-  width: 100%;
-  table-layout: fixed;     /* 컬럼 폭 안정화 */
+  table-layout: fixed !important;
+  width: 100% !important;
 }
 
-/* 컬럼별 폭 최적화 */
-body:has(.request-wrapper) .table-responsive th:nth-child(1),
-body:has(.request-wrapper) .table-responsive td:nth-child(1) {
-  width: 15px;             /* ID */
+/* 공통 셀 패딩 대폭 축소 */
+body:has(.request-wrapper) .table-responsive th,
+body:has(.request-wrapper) .table-responsive td {
+  padding: 6px 6px !important;   /* 🔥 기존 대비 약 70% 축소 */
+  font-size: 12px;
+  white-space: nowrap;
 }
 
-body:has(.request-wrapper) .table-responsive th:nth-child(2),
-body:has(.request-wrapper) .table-responsive td:nth-child(2) {
-  width: 20px;            /* 등록일 */
-}
-
-body:has(.request-wrapper) .table-responsive th:nth-child(3),
-body:has(.request-wrapper) .table-responsive td:nth-child(3) {
-  width: 30px;            /* 택배사 */
-}
-
-body:has(.request-wrapper) .table-responsive th:nth-child(4),
-body:has(.request-wrapper) .table-responsive td:nth-child(4) {
-  width: 30px;            /* 지역 (조금 여유) */
-}
-
-body:has(.request-wrapper) .table-responsive th:nth-child(5),
-body:has(.request-wrapper) .table-responsive td:nth-child(5) {
-  width: 15px;             /* 인원 */
+/* 🔻 컬럼별 초압축 */
+body:has(.request-wrapper) th:nth-child(1),
+body:has(.request-wrapper) td:nth-child(1) {
+  width: 36px !important;        /* ID */
   text-align: center;
 }
 
-body:has(.request-wrapper) .table-responsive th:nth-child(6),
-body:has(.request-wrapper) .table-responsive td:nth-child(6) {
-  width: 20px;            /* 월물량 */
+body:has(.request-wrapper) th:nth-child(2),
+body:has(.request-wrapper) td:nth-child(2) {
+  width: 78px !important;        /* 등록일 */
+}
+
+body:has(.request-wrapper) th:nth-child(3),
+body:has(.request-wrapper) td:nth-child(3) {
+  width: 80px !important;        /* 택배사 */
+}
+
+body:has(.request-wrapper) th:nth-child(4),
+body:has(.request-wrapper) td:nth-child(4) {
+  width: 90px !important;        /* 지역 */
+}
+
+body:has(.request-wrapper) th:nth-child(5),
+body:has(.request-wrapper) td:nth-child(5) {
+  width: 44px !important;        /* 인원 */
+  text-align: center;
+}
+
+body:has(.request-wrapper) th:nth-child(6),
+body:has(.request-wrapper) td:nth-child(6) {
+  width: 64px !important;        /* 월물량 */
   text-align: right;
 }
 
-body:has(.request-wrapper) .table-responsive th:nth-child(7),
-body:has(.request-wrapper) .table-responsive td:nth-child(7) {
-  width: 20px;             /* 삭제 버튼 */
+body:has(.request-wrapper) th:nth-child(7),
+body:has(.request-wrapper) td:nth-child(7) {
+  width: 52px !important;        /* 삭제 */
   text-align: center;
 }
 
-/* 모바일에서는 다시 전체 폭 사용 */
-@media (max-width: 640px) {
-  body:has(.request-wrapper) .table-responsive {
-    max-width: 100%;
-  }
+/* 삭제 버튼도 더 작게 */
+body:has(.request-wrapper) .btn-danger {
+  padding: 4px 6px;
+  font-size: 11px;
 }
