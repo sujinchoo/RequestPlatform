@@ -40,37 +40,30 @@
   <div id="card-list" class="recent-list">
     {% for r in reqs %}
     <div class="recent-card"
-         onclick="openModal({
-           id: {{ r.id }},
-           region: '{{ r.region }}',
-           company: '{{ r.company }}',
-           branch_name: '{{ r.branch_name }}',
-           unit_price: {{ r.unit_price if r.unit_price is not none else 'null' }},
-           volume: {{ r.volume if r.volume is not none else 'null' }},
-           vehicle_type: '{{ r.vehicle_type or "-" }}',
-           headcount: {{ r.headcount }},
-           status: '{{ r.status }}',
-           interview_date: '{{ r.interview_date.isoformat() if r.interview_date else "" }}'
-         })">
-
+       data-id="{{ r.id }}"
+       data-region="{{ r.region }}"
+       data-company="{{ r.company }}"
+       data-branch="{{ r.branch_name }}"
+       data-status="{{ r.status }}"
+       data-interview="{{ r.interview_date.isoformat() if r.interview_date else '' }}"
+       onclick="openModalFromCard(this)">
+  
       <div class="recent-title">
         {{ r.company }} / {{ r.branch_name }}
       </div>
-
-      <!-- 상태 배지 (공백 제거) -->
+    
       <span class="tag-status tag-{{ r.status | replace(' ', '') }}">
         {{ r.status }}
       </span>
-
+    
       <div class="recent-meta">
         지역: {{ r.region }}<br>
-        근무: {{ r.work_days or "-" }} / 인원: {{ r.headcount }}명<br>
-        물량: {{ r.volume or "-" }}<br>
+        근무: {{ r.work_type or "-" }} / 인원: {{ r.headcount }}명<br>
+        물량: {{ r.volume }}<br>
         등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
       </div>
-
-
     </div>
+
     {% endfor %}
   </div>
 
@@ -107,14 +100,17 @@
 <script>
 let currentId = null;
 
-function openModal(r) {
-  currentId = r.id;
+function openModalFromCard(el) {
+  currentId = el.dataset.id;
 
   document.getElementById("modal-title").innerText =
-    `${r.region} / ${r.company} / ${r.branch_name}`;
+    `${el.dataset.region} / ${el.dataset.company} / ${el.dataset.branch}`;
 
-  document.getElementById("modal-interview").value = r.interview_date || "";
-  document.getElementById("modal-status").value = r.status || "모집중";
+  document.getElementById("modal-interview").value =
+    el.dataset.interview || "";
+
+  document.getElementById("modal-status").value =
+    el.dataset.status || "모집중";
 
   document.getElementById("status-modal").classList.remove("hidden");
 }
@@ -146,7 +142,7 @@ function saveStatus() {
       return;
     }
 
-    // ✅ 가장 확실한 방식
+    // ✅ 가장 확실한 UX
     location.reload();
   })
   .catch(() => {
@@ -156,5 +152,6 @@ function saveStatus() {
   });
 }
 </script>
+
 
 {% endblock %}
