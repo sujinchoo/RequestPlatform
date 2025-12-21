@@ -1570,86 +1570,65 @@ main, .sheet-scroll, .table-wrapper {
   justify-content: center;
 }
 
-/* ===============================
-   Request 페이지 - 등록한 요청 목록 테이블 컬럼 정리
-   =============================== */
+/* ==================================================
+   🔵 Request Page — Registered List Table Width FIX
+   (다른 페이지 영향 없음)
+   ================================================== */
 
-/* request 페이지의 해당 테이블만 정확히 타겟 */
-body:has(.request-wrapper)
-.table-responsive > table.table.table-hover.align-middle {
-  table-layout: fixed;   /* 🔥 핵심 */
+/* request 페이지에서만 적용 */
+body:has(.request-wrapper) .table-responsive {
+  max-width: 960px;        /* 🔥 테이블 전체 폭 제한 */
+  margin: 0 auto;          /* 가운데 정렬 */
+}
+
+/* 테이블은 wrapper 폭에 맞춤 */
+body:has(.request-wrapper) .table-responsive table {
   width: 100%;
+  table-layout: fixed;     /* 컬럼 폭 안정화 */
 }
 
-/* 공통 셀 처리 */
-body:has(.request-wrapper)
-.table-responsive > table.table.table-hover.align-middle th,
-body:has(.request-wrapper)
-.table-responsive > table.table.table-hover.align-middle td {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
+/* 컬럼별 폭 최적화 */
+body:has(.request-wrapper) .table-responsive th:nth-child(1),
+body:has(.request-wrapper) .table-responsive td:nth-child(1) {
+  width: 50px;             /* ID */
 }
 
-/* ===== 컬럼별 폭 지정 (7컬럼 고정) ===== */
+body:has(.request-wrapper) .table-responsive th:nth-child(2),
+body:has(.request-wrapper) .table-responsive td:nth-child(2) {
+  width: 110px;            /* 등록일 */
+}
 
-/* ID */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(1),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(1) {
-  width: 15px;
+body:has(.request-wrapper) .table-responsive th:nth-child(3),
+body:has(.request-wrapper) .table-responsive td:nth-child(3) {
+  width: 110px;            /* 택배사 */
+}
+
+body:has(.request-wrapper) .table-responsive th:nth-child(4),
+body:has(.request-wrapper) .table-responsive td:nth-child(4) {
+  width: 140px;            /* 지역 (조금 여유) */
+}
+
+body:has(.request-wrapper) .table-responsive th:nth-child(5),
+body:has(.request-wrapper) .table-responsive td:nth-child(5) {
+  width: 70px;             /* 인원 */
   text-align: center;
 }
 
-/* 등록일 */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(2),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(2) {
-  width: 15px;
-}
-
-/* 택배사 */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(3),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(3) {
-  width: 25px;
-}
-
-/* 지역 (조금 여유) */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(4),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(4) {
-  width: 25px;
-}
-
-/* 인원 */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(5),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(5) {
-  width: 15px;
-  text-align: center;
-}
-
-/* 월물량 */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(6),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(6) {
-  width: 15px;
+body:has(.request-wrapper) .table-responsive th:nth-child(6),
+body:has(.request-wrapper) .table-responsive td:nth-child(6) {
+  width: 100px;            /* 월물량 */
   text-align: right;
 }
 
-/* 삭제 버튼 */
-body:has(.request-wrapper)
-.table-responsive > table th:nth-child(7),
-body:has(.request-wrapper)
-.table-responsive > table td:nth-child(7) {
-  width: 15px;
+body:has(.request-wrapper) .table-responsive th:nth-child(7),
+body:has(.request-wrapper) .table-responsive td:nth-child(7) {
+  width: 70px;             /* 삭제 버튼 */
   text-align: center;
+}
+
+/* 모바일에서는 다시 전체 폭 사용 */
+@media (max-width: 640px) {
+  body:has(.request-wrapper) .table-responsive {
+    max-width: 100%;
+  }
 }
