@@ -1578,7 +1578,7 @@ main, .sheet-scroll, .table-wrapper {
 body:has(.request-wrapper) table.table {
   table-layout: fixed !important;
   width: auto !important;
-  max-width: 100% !important;
+  max-width: 50% !important;
 }
 
 /* Bootstrap padding 덮어쓰기 */
