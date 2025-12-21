@@ -1649,3 +1649,40 @@ body:has(.request-wrapper) .btn-danger {
   padding: 2px 4px !important;
   font-size: 10px !important;
 }
+/* =========================================================
+   🔥 PC 관리자 페이지 FULL WIDTH + 좌우 여백 (Request 제외)
+      이전코드는 1467 라인에 있음.
+   ========================================================= */
+@media (min-width: 1280px) {
+
+  /* request 페이지는 제외 */
+  body:not(:has(.request-wrapper)) .page {
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 auto !important;
+
+    /* 🔥 좌우 여백 핵심 */
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+  }
+
+  body:not(:has(.request-wrapper)) .main {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  body:not(:has(.request-wrapper)) .main .sheet,
+  body:not(:has(.request-wrapper)) .main .sheet-scroll {
+    width: 100% !important;
+    max-width: none !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+
+  body:not(:has(.request-wrapper)) .header-inner {
+    width: 100% !important;
+    max-width: none !important;
+    padding-left: 100px !important;
+    padding-right: 100px !important;
+  }
+}
