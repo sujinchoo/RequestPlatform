@@ -1683,11 +1683,6 @@ body:has(.request-wrapper) .btn-danger {
    (글자 크기 = 컬럼 폭)
    ================================================== */
 
-body:has(.request-wrapper) .table-responsive {
-  width: fit-content !important;
-  max-width: 100% !important;
-  overflow-x: auto;
-}
 
 body:has(.request-wrapper) table {
   width: fit-content !important;
@@ -1713,8 +1708,8 @@ body:has(.request-wrapper) td {
 
 /* 🔧 Request Page 테이블 가로폭 미세 확장 */
 body:has(.request-wrapper) .table-responsive {
-  width: 100% !important;
-  min-width: 100% !important;   /* 🔥 핵심: 버튼 폭 수준 */
-  max-width: 720px !important;   /* 살짝 여유 */
+  width: 1550px !important;
+ 
+  max-width: 1550px !important;   /* 살짝 여유 */
 }
 
