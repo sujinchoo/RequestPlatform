@@ -21,14 +21,15 @@
         </div>
         
         <div class="profile-email">
-          {% if session.login_provider == "kakao" %}
+          {% if session.get("login_provider") == "kakao" %}
             카카오톡 로그인
           {% elif session.get("google_email") %}
-            {{ session.google_email }}
+            {{ session.get("google_email") }}
           {% else %}
             일반 로그인
           {% endif %}
         </div>
+
 
       </div>
 
