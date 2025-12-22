@@ -1713,8 +1713,8 @@ body:has(.request-wrapper) td {
 
 /* 🔧 Request Page 테이블 가로폭 미세 확장 */
 body:has(.request-wrapper) .table-responsive {
-  width: fit-content !important;
-  min-width: 360px !important;   /* 🔥 핵심: 버튼 폭 수준 */
-  max-width: 420px !important;   /* 살짝 여유 */
+  width: 100% !important;
+  min-width: 100% !important;   /* 🔥 핵심: 버튼 폭 수준 */
+  max-width: 720px !important;   /* 살짝 여유 */
 }
 
