@@ -438,10 +438,6 @@ th, td {
   word-break: keep-all;  /* 한국어 단어 깨짐 방지 */
 }
 
-/* 🔥 엑셀처럼 테이블 펼치기 (모바일은 가로 스크롤) */
-table {
-  min-width: 1800px; /* 또는 1400px, 필요하면 조정 */
-}
 
 
 /* ===========================
@@ -1030,10 +1026,6 @@ table tbody tr:hover {
   z-index: 2;
 }
 
-/* 테이블 최소 폭 (엑셀 느낌) */
-.table-compact {
-  min-width: 1200px;
-}
 
 /* status bar padding 주기 */
 @media (max-width: 768px) {
@@ -1685,4 +1677,36 @@ body:has(.request-wrapper) .btn-danger {
     padding-left: 100px !important;
     padding-right: 100px !important;
   }
+}
+/* ==================================================
+   🔥 REQUEST PAGE — TRUE AUTO WIDTH TABLE
+   (글자 크기 = 컬럼 폭)
+   ================================================== */
+
+body:has(.request-wrapper) .table-responsive {
+  width: fit-content !important;
+  max-width: 100% !important;
+  overflow-x: auto;
+}
+
+body:has(.request-wrapper) table {
+  width: fit-content !important;
+  min-width: unset !important;   /* 🔥 기존 1800px 제거 */
+  table-layout: auto !important; /* 🔥 fixed 해제 */
+}
+
+/* 셀은 내용만큼만 */
+body:has(.request-wrapper) th,
+body:has(.request-wrapper) td {
+  padding: 3px 4px !important;
+  font-size: 11px !important;
+  white-space: nowrap !important;
+}
+
+/* ❌ 기존 강제 컬럼폭 전부 무력화 */
+body:has(.request-wrapper) th,
+body:has(.request-wrapper) td {
+  width: auto !important;
+  min-width: unset !important;
+  max-width: unset !important;
 }
