@@ -146,9 +146,11 @@
     </form>
 
     <!-- Kakao Login (위) -->
-    <button class="oauth-btn"
+    <button type="button" 
+            class="oauth-btn"
             onclick="window.location.href='{{ url_for('login_kakao_start') }}'">
-      <img src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
+      <img src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}" alt="카카오 로그인">
+      
     </button>
 
 
