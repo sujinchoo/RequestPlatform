@@ -1698,7 +1698,7 @@ body:has(.request-wrapper) table {
 /* 셀은 내용만큼만 */
 body:has(.request-wrapper) th,
 body:has(.request-wrapper) td {
-  padding: 3px 4px !important;
+  padding: 4px 6px !important;
   font-size: 11px !important;
   white-space: nowrap !important;
 }
