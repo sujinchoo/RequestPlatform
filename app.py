@@ -17,7 +17,7 @@ import os
 from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 from flask import make_response
-
+import requests
 
 
 def create_app():
@@ -34,12 +34,11 @@ def create_app():
     def login_required(view):
         @wraps(view)
         def wrapped(*args, **kwargs):
-            if "branch_id" in session:
-                return view(*args, **kwargs)
-            if "google_user_id" in session:
+            if session.get("branch_id"):
                 return view(*args, **kwargs)
             return redirect(url_for("login"))
         return wrapped
+
 
     def admin_required(view):
         @wraps(view)
@@ -232,6 +231,121 @@ def create_app():
             print("[GOOGLE TOKEN VERIFY ERROR]", e)
             return jsonify({"success": False, "error": "token verify failed"}), 401
 
+    # =========================================================
+    # Kakao OAuth 공용 유틸
+    # =========================================================
+    def _upsert_branch_from_social(login_id, display_name, provider):
+        branch = Branch.query.filter_by(login_id=login_id).first()
+        if not branch:
+            branch = Branch(
+                login_id=login_id,
+                password_hash="",
+                company=f"{provider}User",
+                branch_name=display_name or provider,
+                region="온라인",
+                is_admin=False,
+            )
+            db.session.add(branch)
+        branch.last_login_at = datetime.utcnow()
+        db.session.commit()
+        return branch
+
+    def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
+        session["branch_id"] = branch.id
+        session["branch_name"] = branch.branch_name
+        session["is_admin"] = branch.is_admin
+        session["login_provider"] = provider_key
+        if provider_key:
+            session[f"{provider_key}_name"] = name
+            session[f"{provider_key}_email"] = email
+    @app.route("/login/kakao/start")
+    def login_kakao_start():
+        client_id = os.getenv("KAKAO_REST_API_KEY")
+        redirect_uri = os.getenv("KAKAO_REDIRECT_URI") or url_for(
+            "kakao_callback", _external=True
+        )
+    
+        if not client_id:
+            flash("카카오 로그인 설정이 필요합니다.", "error")
+            return redirect(url_for("login"))
+    
+        kakao_auth_url = (
+            "https://kauth.kakao.com/oauth/authorize"
+            f"?client_id={client_id}&redirect_uri={redirect_uri}&response_type=code"
+        )
+        return redirect(kakao_auth_url)
+
+    @app.route("/login/callback/kakao")
+    def kakao_callback():
+        code = request.args.get("code")
+        client_id = os.getenv("KAKAO_REST_API_KEY")
+        client_secret = os.getenv("KAKAO_CLIENT_SECRET")
+        redirect_uri = os.getenv("KAKAO_REDIRECT_URI") or url_for(
+            "kakao_callback", _external=True
+        )
+    
+        if not code or not client_id:
+            flash("카카오 인증 실패", "error")
+            return redirect(url_for("login"))
+    
+        token_data = {
+            "grant_type": "authorization_code",
+            "client_id": client_id,
+            "redirect_uri": redirect_uri,
+            "code": code,
+        }
+        if client_secret:
+            token_data["client_secret"] = client_secret
+    
+        token_resp = requests.post(
+            "https://kauth.kakao.com/oauth/token", data=token_data, timeout=10
+        )
+    
+        if token_resp.status_code != 200:
+            flash("카카오 토큰 발급 실패", "error")
+            return redirect(url_for("login"))
+    
+        access_token = token_resp.json().get("access_token")
+        if not access_token:
+            flash("카카오 토큰 없음", "error")
+            return redirect(url_for("login"))
+    
+        user_resp = requests.get(
+            "https://kapi.kakao.com/v2/user/me",
+            headers={"Authorization": f"Bearer {access_token}"},
+            timeout=10,
+        )
+    
+        if user_resp.status_code != 200:
+            flash("카카오 사용자 정보 조회 실패", "error")
+            return redirect(url_for("login"))
+    
+        user_info = user_resp.json()
+        kakao_id = user_info.get("id")
+        kakao_account = user_info.get("kakao_account", {})
+        profile = kakao_account.get("profile", {})
+        email = kakao_account.get("email")
+        name = profile.get("nickname") or "KakaoUser"
+    
+        if not kakao_id:
+            flash("카카오 사용자 정보 오류", "error")
+            return redirect(url_for("login"))
+    
+        branch = _upsert_branch_from_social(
+            login_id=f"kakao_{kakao_id}",
+            display_name=name,
+            provider="Kakao"
+        )
+        _set_session_for_branch(
+            branch,
+            name=name,
+            email=email,
+            provider_key="kakao"
+        )
+    
+        return redirect(url_for("request_page"))
+
+    
     # ============================================================
     # SaaS 데모 대시보드 (모바일 전용 요약)
     # ============================================================
