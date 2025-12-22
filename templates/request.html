@@ -16,8 +16,20 @@
 
     <div class="profile-box">
       <div class="profile-left">
-        <div class="profile-name">{{ session.get("google_name") }}</div>
-        <div class="profile-email">{{ session.get("google_email") }}</div>
+          <div class="profile-name">
+          {{ session.branch_name }}
+        </div>
+        
+        <div class="profile-email">
+          {% if session.login_provider == "kakao" %}
+            카카오톡 로그인
+          {% elif session.get("google_email") %}
+            {{ session.google_email }}
+          {% else %}
+            일반 로그인
+          {% endif %}
+        </div>
+
       </div>
 
       <div class="profile-buttons">
