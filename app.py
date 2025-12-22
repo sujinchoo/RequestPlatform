@@ -132,12 +132,15 @@ def create_app():
         db.session.commit()
 
         # 🔥 세션 저장 (branch와 google user 모두 반영)
+        session.clear()                      # ⭐ 여기 추가
         session["google_user_id"] = new_id
         session["google_email"] = email
         session["google_name"] = name
         session["branch_id"] = branch.id
         session["branch_name"] = branch.branch_name
         session["is_admin"] = False
+        session["login_provider"] = "google" # ⭐ 추가
+
     
         return redirect(url_for("request_page"))
 
@@ -216,12 +219,14 @@ def create_app():
             db.session.commit()
 
             # 4) Flask 세션 생성 (WebView에서 로그인 상태로 사용)
+            session.clear()                      # ⭐ 여기 추가
             session["google_user_id"] = new_id
             session["google_email"] = email
             session["google_name"] = name
             session["branch_id"] = branch.id
             session["branch_name"] = branch.branch_name
             session["is_admin"] = False
+            session["login_provider"] = "google" # ⭐ 추가
 
             # 5) JSON 응답 (중요: 쿠키는 Set-Cookie 헤더로 자동 내려감)
             resp = make_response(jsonify({"success": True}))
@@ -231,37 +236,6 @@ def create_app():
             print("[GOOGLE TOKEN VERIFY ERROR]", e)
             return jsonify({"success": False, "error": "token verify failed"}), 401
 
-    # =========================================================
-    # Kakao OAuth 공용 유틸
-    # =========================================================
-    def _upsert_branch_from_kakao(kakao_id, nickname):
-        login_id = f"kakao_{kakao_id}"
-    
-        branch = Branch.query.filter_by(login_id=login_id).first()
-        if not branch:
-            branch = Branch(
-                login_id=login_id,
-                password_hash="",
-                company="Kakao",
-                branch_name=nickname,   # ⭐ 닉네임 = 대리점명
-                region="온라인",
-                is_admin=False,
-            )
-            db.session.add(branch)
-    
-        branch.last_login_at = datetime.utcnow()
-        db.session.commit()
-        return branch
-
-
-    def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
-        session["branch_id"] = branch.id
-        session["branch_name"] = branch.branch_name
-        session["is_admin"] = branch.is_admin
-        session["login_provider"] = provider_key
-        if provider_key:
-            session[f"{provider_key}_name"] = name
-            session[f"{provider_key}_email"] = email
     # =========================================================
     # Kakao Login Start
     # =========================================================
@@ -284,23 +258,23 @@ def create_app():
         return redirect(kakao_auth_url)
 
     def _upsert_branch_from_kakao(kakao_id, nickname):
-    login_id = f"kakao_{kakao_id}"
-
-    branch = Branch.query.filter_by(login_id=login_id).first()
-    if not branch:
-        branch = Branch(
-            login_id=login_id,
-            password_hash="",
-            company="Kakao",
-            branch_name=nickname,
-            region="온라인",
-            is_admin=False,
-        )
-        db.session.add(branch)
-
-    branch.last_login_at = datetime.utcnow()
-    db.session.commit()
-    return branch
+        login_id = f"kakao_{kakao_id}"
+    
+        branch = Branch.query.filter_by(login_id=login_id).first()
+        if not branch:
+            branch = Branch(
+                login_id=login_id,
+                password_hash="",
+                company="Kakao",
+                branch_name=nickname,
+                region="온라인",
+                is_admin=False,
+            )
+            db.session.add(branch)
+    
+        branch.last_login_at = datetime.utcnow()
+        db.session.commit()
+        return branch
 
     # helper 함수 정의 위치 #
     def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
@@ -365,7 +339,7 @@ def create_app():
         kakao_id = user_info.get("id")
         kakao_account = user_info.get("kakao_account", {})
         profile = kakao_account.get("profile", {})
-        email = kakao_account.get("email")
+        # email = kakao_account.get("email")
         name = profile.get("nickname") or "KakaoUser"
     
         if not kakao_id:
