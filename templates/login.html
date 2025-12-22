@@ -147,9 +147,10 @@
 
     <!-- Kakao Login (위) -->
     <button class="oauth-btn"
-            onclick="alert('카카오 로그인 예정입니다.')">
+            onclick="window.location.href='{{ url_for('login_kakao_start') }}'">
       <img src="{{ url_for('static', filename='images/kakao_login_medium_wide.png') }}">
     </button>
+
 
  
     <!-- Google Login (아래) -->
