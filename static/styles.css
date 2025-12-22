@@ -1678,3 +1678,74 @@ body:has(.request-wrapper) .btn-danger {
     padding-right: 100px !important;
   }
 }
+/* ==================================================
+   📊 Request Page — Excel Sheet Table (FINAL)
+   ================================================== */
+
+/* 카드 안에서 가로 스크롤 */
+.request-card .excel-sheet {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-bottom: 6px;
+}
+
+/* 엑셀 테이블 본체 */
+.request-card .excel-table {
+  border-collapse: collapse;
+  table-layout: fixed;          /* 🔥 엑셀 핵심 */
+  font-size: 12px;
+  white-space: nowrap;
+
+  /* 등록일 컬럼 기준 폭 × 컬럼 수 */
+  width: 700px;                 /* ❗ 과하지 않게 */
+  min-width: 700px;
+}
+
+/* 공통 셀 */
+.request-card .excel-table th,
+.request-card .excel-table td {
+  border: 1px solid #d4d4d8;
+  padding: 6px 8px;
+  text-align: center;
+  background: #ffffff;
+}
+
+/* 헤더 */
+.request-card .excel-table thead th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* 짝수 행 */
+.request-card .excel-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+/* Hover */
+.request-card .excel-table tbody tr:hover {
+  background: #eef2ff;
+}
+
+/* 🔥 모든 컬럼을 '등록일' 기준 폭으로 통일 */
+.request-card .excel-table th,
+.request-card .excel-table td {
+  width: 100px;                 /* 등록일 기준 */
+}
+
+/* ID / 삭제는 조금만 더 줄임 */
+.request-card .excel-table th:first-child,
+.request-card .excel-table td:first-child {
+  width: 60px;
+}
+
+.request-card .excel-table th:last-child,
+.request-card .excel-table td:last-child {
+  width: 70px;
+}
+
+/* 삭제 버튼 */
+.request-card .excel-table .btn-danger {
+  padding: 4px 6px;
+  font-size: 11px;
+}
