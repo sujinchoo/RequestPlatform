@@ -1678,38 +1678,3 @@ body:has(.request-wrapper) .btn-danger {
     padding-right: 100px !important;
   }
 }
-/* ==================================================
-   🔥 REQUEST PAGE — TRUE AUTO WIDTH TABLE
-   (글자 크기 = 컬럼 폭)
-   ================================================== */
-
-
-body:has(.request-wrapper) table {
-  width: fit-content !important;
-  min-width: unset !important;   /* 🔥 기존 1800px 제거 */
-  table-layout: auto !important; /* 🔥 fixed 해제 */
-}
-
-/* 셀은 내용만큼만 */
-body:has(.request-wrapper) th,
-body:has(.request-wrapper) td {
-  padding: 4px 6px !important;
-  font-size: 11px !important;
-  white-space: nowrap !important;
-}
-
-/* ❌ 기존 강제 컬럼폭 전부 무력화 */
-body:has(.request-wrapper) th,
-body:has(.request-wrapper) td {
-  width: auto !important;
-  min-width: unset !important;
-  max-width: unset !important;
-}
-
-/* 🔧 Request Page 테이블 가로폭 미세 확장 */
-body:has(.request-wrapper) .table-responsive {
-  width: 1550px !important;
- 
-  max-width: 1550px !important;   /* 살짝 여유 */
-}
-
