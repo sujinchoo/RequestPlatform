@@ -257,30 +257,26 @@ def create_app():
         )
         return redirect(kakao_auth_url)
 
-    def _upsert_branch_from_kakao(kakao_id, nickname):
-        login_id = f"kakao_{kakao_id}"
+    def _upsert_branch_from_kakao(kakao_id):
+        branch = Branch.query.filter_by(login_id=f"kakao_{kakao_id}").first()
     
-        branch = Branch.query.filter_by(login_id=login_id).first()
         if not branch:
             branch = Branch(
-                login_id=login_id,
-                password_hash="",
-                company="Kakao",
-                branch_name=nickname,
-                region="온라인",
-                is_admin=False,
+                login_id=f"kakao_{kakao_id}",
+                password_hash=""
             )
             db.session.add(branch)
+            db.session.commit()
     
-        branch.last_login_at = datetime.utcnow()
-        db.session.commit()
         return branch
 
+
     # helper 함수 정의 위치 #
+
     def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
-        session.clear()  # ⭐ 강력 추천 (세션 꼬임 방지)
+        session.clear()
         session["branch_id"] = branch.id
-        session["branch_name"] = branch.branch_name
+        session["branch_name"] = name or branch.branch_name   # ✅ 핵심 수정
         session["is_admin"] = branch.is_admin
         session["login_provider"] = provider_key
     
@@ -289,7 +285,6 @@ def create_app():
             session[f"{provider_key}_email"] = email
 
 
-    
     @app.route("/login/callback/kakao")
     def kakao_callback():
         code = request.args.get("code")
@@ -313,7 +308,9 @@ def create_app():
             token_data["client_secret"] = client_secret
     
         token_resp = requests.post(
-            "https://kauth.kakao.com/oauth/token", data=token_data, timeout=10
+            "https://kauth.kakao.com/oauth/token",
+            data=token_data,
+            timeout=10,
         )
     
         if token_resp.status_code != 200:
@@ -336,31 +333,33 @@ def create_app():
             return redirect(url_for("login"))
     
         user_info = user_resp.json()
+    
         kakao_id = user_info.get("id")
         kakao_account = user_info.get("kakao_account", {})
         profile = kakao_account.get("profile", {})
-        # email = kakao_account.get("email")
-        name = profile.get("nickname") or "KakaoUser"
+    
+        nickname = profile.get("nickname") or "KakaoUser"
     
         if not kakao_id:
             flash("카카오 사용자 정보 오류", "error")
             return redirect(url_for("login"))
     
+        # 🔴 DB에는 kakao_id 기준으로만 upsert (닉네임 저장 X)
         branch = _upsert_branch_from_kakao(
-            kakao_id=kakao_id,
-            nickname=name
+            kakao_id=kakao_id
         )
-        
+    
+        # 🔴 닉네임은 세션에만 저장
         _set_session_for_branch(
             branch,
-            name=name,
-            email=None,          # ❗ 이메일 안 쓰기로 했으니 None
+            name=nickname,        # ✅ 여기서만 사용
+            email=None,
             provider_key="kakao"
         )
     
         return redirect(url_for("request_page"))
-
-    
+        
+        
     # ============================================================
     # SaaS 데모 대시보드 (모바일 전용 요약)
     # ============================================================
