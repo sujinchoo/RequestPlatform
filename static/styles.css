@@ -17,7 +17,7 @@ body {
   width: 100%;
   max-width: 1800px;   /* 🔥 기준 폭 고정 */
   margin: 0 ;
-  padding: 1px 14px 40px !important;   /* 상단을 1px로 축소 */
+  padding: 1px 10px 40px !important;   /* 상단을 1px로 축소 */
 }
 
 /* ===== 상단 헤더 (엑셀 리본 상단 느낌) ===== */
