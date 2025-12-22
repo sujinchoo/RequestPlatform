@@ -234,21 +234,25 @@ def create_app():
     # =========================================================
     # Kakao OAuth 공용 유틸
     # =========================================================
-    def _upsert_branch_from_social(login_id, display_name, provider):
+    def _upsert_branch_from_kakao(kakao_id, nickname):
+        login_id = f"kakao_{kakao_id}"
+    
         branch = Branch.query.filter_by(login_id=login_id).first()
         if not branch:
             branch = Branch(
                 login_id=login_id,
                 password_hash="",
-                company=f"{provider}User",
-                branch_name=display_name or provider,
+                company="Kakao",
+                branch_name=nickname,   # ⭐ 닉네임 = 대리점명
                 region="온라인",
                 is_admin=False,
             )
             db.session.add(branch)
+    
         branch.last_login_at = datetime.utcnow()
         db.session.commit()
         return branch
+
 
     def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
         session["branch_id"] = branch.id
@@ -258,6 +262,10 @@ def create_app():
         if provider_key:
             session[f"{provider_key}_name"] = name
             session[f"{provider_key}_email"] = email
+    # =========================================================
+    # Kakao Login Start
+    # =========================================================
+    
     @app.route("/login/kakao/start")
     def login_kakao_start():
         client_id = os.getenv("KAKAO_REST_API_KEY")
@@ -331,15 +339,15 @@ def create_app():
             flash("카카오 사용자 정보 오류", "error")
             return redirect(url_for("login"))
     
-        branch = _upsert_branch_from_social(
-            login_id=f"kakao_{kakao_id}",
-            display_name=name,
-            provider="Kakao"
+        branch = _upsert_branch_from_kakao(
+            kakao_id=kakao_id,
+            nickname=name
         )
+        
         _set_session_for_branch(
             branch,
             name=name,
-            email=email,
+            email=None,          # ❗ 이메일 안 쓰기로 했으니 None
             provider_key="kakao"
         )
     
