@@ -283,6 +283,39 @@ def create_app():
         )
         return redirect(kakao_auth_url)
 
+    def _upsert_branch_from_kakao(kakao_id, nickname):
+    login_id = f"kakao_{kakao_id}"
+
+    branch = Branch.query.filter_by(login_id=login_id).first()
+    if not branch:
+        branch = Branch(
+            login_id=login_id,
+            password_hash="",
+            company="Kakao",
+            branch_name=nickname,
+            region="온라인",
+            is_admin=False,
+        )
+        db.session.add(branch)
+
+    branch.last_login_at = datetime.utcnow()
+    db.session.commit()
+    return branch
+
+    # helper 함수 정의 위치 #
+    def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
+        session.clear()  # ⭐ 강력 추천 (세션 꼬임 방지)
+        session["branch_id"] = branch.id
+        session["branch_name"] = branch.branch_name
+        session["is_admin"] = branch.is_admin
+        session["login_provider"] = provider_key
+    
+        if provider_key:
+            session[f"{provider_key}_name"] = name
+            session[f"{provider_key}_email"] = email
+
+
+    
     @app.route("/login/callback/kakao")
     def kakao_callback():
         code = request.args.get("code")
