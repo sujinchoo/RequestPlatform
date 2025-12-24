@@ -68,7 +68,8 @@ def create_app():
     def login_google_start():
         # Flask-Dance의 blueprint 시작 URL로 리다이렉트
         return redirect(url_for("google.login"))
-    
+
+    '''
     #===========================================
     #      android app login 
     #===========================================
@@ -97,6 +98,7 @@ def create_app():
         session["login_provider"] = "native"
     
         return jsonify({"success": True})
+        '''
     #===============================
     # test print 
     #======================================
