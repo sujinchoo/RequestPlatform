@@ -97,8 +97,17 @@ def create_app():
         session["login_provider"] = "native"
     
         return jsonify({"success": True})
-
-
+    #===============================
+    # test print 
+    #======================================
+    @app.route("/api/login", methods=["POST"])
+    def api_login():
+        data = request.get_json(silent=True) or {}
+    
+        print("LOGIN API DATA:", data)
+    
+        login_id = data.get("login_id", "").strip()
+        password = data.get("password", "")
     # =========================================================
     # Google OAuth Callback (Flask-Dance의 google.authorized 대신 직접 처리)
     # =========================================================
