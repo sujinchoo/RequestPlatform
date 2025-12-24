@@ -69,25 +69,34 @@ def create_app():
         # Flask-Dance의 blueprint 시작 URL로 리다이렉트
         return redirect(url_for("google.login"))
 
-    '''
-    #===========================================
-    #      android app login 
-    #===========================================
     @app.route("/api/login", methods=["POST"])
     def api_login():
-        data = request.get_json(silent=True) or {}
+        data = request.get_json(silent=True)
+    
+        print("LOGIN API DATA:", data)
+    
+        if not data:
+            return jsonify({
+                "success": False,
+                "error": "invalid or missing JSON"
+            }), 400
     
         login_id = data.get("login_id", "").strip()
         password = data.get("password", "")
     
         if not login_id or not password:
-            return jsonify({"success": False, "error": "missing fields"}), 400
+            return jsonify({
+                "success": False,
+                "error": "missing fields"
+            }), 400
     
         branch = Branch.query.filter_by(login_id=login_id).first()
         if not branch or not check_password_hash(branch.password_hash, password):
-            return jsonify({"success": False, "error": "invalid credentials"}), 401
+            return jsonify({
+                "success": False,
+                "error": "invalid credentials"
+            }), 401
     
-        # 로그인 성공
         branch.last_login_at = datetime.utcnow()
         db.session.commit()
     
@@ -97,8 +106,8 @@ def create_app():
         session["is_admin"] = branch.is_admin
         session["login_provider"] = "native"
     
-        return jsonify({"success": True})
-        '''
+        return jsonify({"success": True}), 200
+    '''
     #===============================
     # test print 
     #======================================
@@ -110,6 +119,8 @@ def create_app():
     
         login_id = data.get("login_id", "").strip()
         password = data.get("password", "")
+    '''
+    
     # =========================================================
     # Google OAuth Callback (Flask-Dance의 google.authorized 대신 직접 처리)
     # =========================================================
