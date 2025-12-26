@@ -412,6 +412,58 @@ def create_app():
         )
     
         return redirect(url_for("request_page"))
+
+    # =========================================================
+    # Kakao Native Login (Android 전용)
+    # =========================================================
+    @app.route("/auth/kakao-token", methods=["POST"])
+    def auth_kakao_token():
+        data = request.get_json(silent=True) or {}
+        access_token = data.get("access_token")
+    
+        if not access_token:
+            return jsonify({"success": False, "error": "access_token missing"}), 400
+    
+        try:
+            # 1️⃣ 카카오 사용자 정보 조회
+            user_resp = requests.get(
+                "https://kapi.kakao.com/v2/user/me",
+                headers={"Authorization": f"Bearer {access_token}"},
+                timeout=10,
+            )
+    
+            if user_resp.status_code != 200:
+                return jsonify({"success": False, "error": "kakao user info failed"}), 401
+    
+            user_info = user_resp.json()
+    
+            kakao_id = user_info.get("id")
+            kakao_account = user_info.get("kakao_account", {})
+            profile = kakao_account.get("profile", {})
+            nickname = profile.get("nickname") or "KakaoUser"
+    
+            if not kakao_id:
+                return jsonify({"success": False, "error": "invalid kakao user"}), 400
+    
+            # 2️⃣ Branch upsert (기존 helper 재사용)
+            branch = _upsert_branch_from_kakao(kakao_id=kakao_id)
+    
+            # 3️⃣ 세션 생성 (기존 helper 재사용)
+            _set_session_for_branch(
+                branch,
+                name=nickname,
+                email=None,
+                provider_key="kakao"
+            )
+    
+            # 4️⃣ JSON 응답 (쿠키는 자동 Set-Cookie)
+            return jsonify({"success": True})
+    
+        except Exception as e:
+            print("[KAKAO TOKEN LOGIN ERROR]", e)
+            return jsonify({"success": False, "error": "server error"}), 500
+
+
     
     #==========================================
     # session check 
