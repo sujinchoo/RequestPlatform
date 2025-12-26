@@ -25,7 +25,7 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-
+    
     # =========================================================
     # 유틸 데코레이터
     # =========================================================
@@ -49,6 +49,9 @@ def create_app():
             return view(*args, **kwargs)
         return wrapped
 
+
+    
+    
     # =========================================================
     # GOOGLE LOGIN (Blueprint 등록) — 충돌 제거 버전
     # =========================================================
@@ -409,7 +412,22 @@ def create_app():
         )
     
         return redirect(url_for("request_page"))
-        
+    
+    #==========================================
+    # session check 
+    #==================================
+    @app.route("/api/me")
+    def api_me():
+        if not session.get("branch_id"):
+            return jsonify({"logged_in": False}), 401
+    
+        return jsonify({
+            "logged_in": True,
+            "is_admin": bool(session.get("is_admin")),
+            "branch_name": session.get("branch_name"),
+            "login_provider": session.get("login_provider")
+        })
+
         
     # ============================================================
     # SaaS 데모 대시보드 (모바일 전용 요약)
