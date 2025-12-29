@@ -197,12 +197,13 @@
                class="btn-nav {% if request.endpoint == 'dashboard' %}active{% endif %}">
               기사천국 요청현황
             </a>
-      
+
+            <!--
             <a href="{{ url_for('dashboard_v3') }}"
                class="btn-nav {% if request.endpoint == 'dashboard_v3' %}active{% endif %}">
               기사천국 CARD현황
             </a>
-            <!-- ✅ 여기 추가 -->
+              -->
             <a href="{{ url_for('admin_account_list') }}"
                class="btn-nav {% if request.endpoint == 'admin_account_list' %}active{% endif %}">
               사용자 계정관리
