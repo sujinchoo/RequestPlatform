@@ -555,7 +555,11 @@ def create_app():
         recent_items = [
             {
                 "id": r.id,
-                "region": r.region_full,
+                "region": (
+                    f"{r.region_sido or ''} {r.region_sigungu or ''}".strip()
+                    or r.region or ""
+                ),
+
                 "company": r.company,
                 "branch_name": r.branch_name,
                 "vehicle_type": getattr(r, "vehicle_type", None),
