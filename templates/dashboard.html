@@ -23,7 +23,34 @@
     <span class="stat active">진행중: {{ active_cases }}개</span>
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
-
+  <!-- 필터 영역 -->
+  <div class="sheet-filters">
+    <div class="filter-item">
+      <label>시/도</label>
+      <select id="filter-sido" class="filter-select">
+        <option value="">전체</option>
+      </select>
+    </div>
+    <div class="filter-item">
+      <label>시/군/구</label>
+      <select id="filter-sigungu" class="filter-select" disabled>
+        <option value="">전체</option>
+      </select>
+    </div>
+    <div class="filter-item">
+      <label>택배사</label>
+      <select id="filter-company" class="filter-select">
+        <option value="all">전체</option>
+        {% for c in company_list %}
+          <option value="{{ c }}">{{ c }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="filter-actions">
+      <button class="btn-primary" id="filter-apply" type="button">필터 적용</button>
+      <button class="btn-secondary" id="filter-reset" type="button">초기화</button>
+    </div>
+  </div>
   <div class="table-wrapper table-fixed">
     <table id="request-table" class="table-compact">
       <thead>

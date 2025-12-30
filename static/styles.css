@@ -152,6 +152,49 @@ body {
   font-size: 11px;
   color: #6b7280;
 }
+.sheet-filters {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  margin: 12px 0 6px;
+}
+
+.sheet-filters label {
+  font-size: 12px;
+  color: #4b5563;
+  margin-bottom: 4px;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.filter-select {
+  min-width: 150px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.btn-secondary {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid #d1d5db;
+  background: #f3f4f6;
+  color: #374151;
+  font-weight: 600;
+}
 
 /* ===== 폼 / 그리드 ===== */
 
@@ -323,7 +366,9 @@ tbody tr:nth-child(even) {
   background: #ffffff;
   color: #111827;
 }
-
+.tag-홍보중 {
+    background: #7c3aed;
+}
 .tag-선탑진행중 {
   background: #dbeafe;
   color: #1d4ed8;

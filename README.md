@@ -18,7 +18,7 @@ Flask + Render PostgreSQL 기반 인력 요청/배차 관리 플랫폼
 - 요청 데이터 PostgreSQL 저장
 - 본사 관리자(admin) 로그인
 - 대시보드(엑셀 시트 스타일)
-- 상태 변경(모집중 → 선탑진행중 → 면접예정 → 배차완료)
+- 상태 변경(모집중 → 홍보중 → 선탑진행중 → 면접예정 → 배차완료)
 - 면접일 입력 기능
 - 모바일/태블릿 대응 UI
 
@@ -83,6 +83,14 @@ pip install -r requirements.txt
 ```
 DATABASE_URL=postgresql://user:pass@host:5432/dbname
 SECRET_KEY=your-secret-key
+# Google OAuth (웹 & 안드로이드 공용)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+
+# Kakao OAuth (웹 & 안드로이드 공용)
+KAKAO_REST_API_KEY=your-kakao-rest-key
+KAKAO_CLIENT_SECRET=your-kakao-client-secret   # 선택
+KAKAO_REDIRECT_URI=https://your-domain.com/login/callback/kakao
 ```
 
 ### 4. DB 테이블 생성
@@ -104,6 +112,35 @@ flask --app app create-admin
 ```bash
 flask run
 ```
+### 7. Android WebView & 네이티브 로그인 연동
+
+* **Google**: 네이티브 Google Sign-In 후 `id_token`을 `/auth/google-token`에 `POST` 하면 세션 쿠키가 내려가므로 WebView가 로그인된 상태가 됩니다.
+* **Kakao**: Kakao SDK 로그인 후 `access_token`을 `/auth/kakao-token`에 `POST` 합니다. 성공 시 동일하게 세션 쿠키가 WebView에 설정됩니다.
+
+Kotlin 예시 (WebView에서 쿠키 공유):
+
+```kotlin
+// 네이티브 로그인 후 받은 토큰을 서버에 전달
+suspend fun sendTokenToServer(url: String, payload: JSONObject) {
+    withContext(Dispatchers.IO) {
+        val conn = URL(url).openConnection() as HttpURLConnection
+        conn.requestMethod = "POST"
+        conn.setRequestProperty("Content-Type", "application/json")
+        conn.doOutput = true
+        conn.outputStream.use { it.write(payload.toString().toByteArray()) }
+
+        val cookieHeader = conn.headerFields["Set-Cookie"]
+        cookieHeader?.forEach { cookie ->
+            CookieManager.getInstance().setCookie("https://your-domain.com", cookie)
+        }
+    }
+}
+
+// Google 예시: sendTokenToServer("https://your-domain.com/auth/google-token", jsonObjectOf("id_token" to idToken))
+// Kakao 예시:  sendTokenToServer("https://your-domain.com/auth/kakao-token", jsonObjectOf("access_token" to accessToken))
+```
+
+WebView 초기화 시 `CookieManager.getInstance().setAcceptCookie(true)`를 설정하면, 이후 `loadUrl("https://your-domain.com")` 호출 시 동일 세션으로 접속됩니다.
 
 ---
 
