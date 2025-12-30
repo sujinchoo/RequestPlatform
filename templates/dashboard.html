@@ -223,14 +223,16 @@ function saveStatus() {
   })
   .then(res => res.json())
   .then(json => {
-  if (!json.success) {
-    alert("저장 실패");
-    return;
-  }
+    if (!json.success) {
+      alert("저장 실패");
+      btn.disabled = false;
+      btn.innerText = "저장";
+      return;
+    }
 
-  window.location.reload(); // 🔥 핵심
-});
-
+    // 성공 시 새로고침
+    window.location.reload();
+  })
   .catch(() => {
     alert("오류 발생");
     btn.disabled = false;
