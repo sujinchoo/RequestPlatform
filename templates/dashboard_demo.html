@@ -6,9 +6,6 @@
 
 {% block extra_css %}
 <style>
-/* ===============================
-   Summary
-=============================== */
 .summary-box {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -36,27 +33,18 @@
   color: #111827;
 }
 
-/* ===============================
-   Progress
-=============================== */
 .progress-wrap { margin: 20px 0; }
-.progress-label { font-size: 13px; margin-bottom: 4px; }
-
 .progress-bar {
   background: #e5e7eb;
   height: 10px;
   border-radius: 6px;
   overflow: hidden;
 }
-
 .progress-fill {
   height: 100%;
   background: #10b981;
 }
 
-/* ===============================
-   Recent Card
-=============================== */
 .recent-card-compact {
   position: relative;
   background: #fff;
@@ -65,13 +53,6 @@
   padding: 14px 18px;
   margin-bottom: 14px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  transition: 0.18s ease;
-  cursor: pointer;
-}
-
-.recent-card-compact:hover {
-  box-shadow: 0 4px 12px rgba(0,0,0,0.10);
-  transform: translateY(-2px);
 }
 
 .recent-title {
@@ -82,60 +63,40 @@
 
 .recent-meta {
   font-size: 13px;
-  line-height: 1.35;
   color: #374151;
 }
 
-/* ===============================
-   ✅ Status Tag (정상 동작 핵심)
-=============================== */
 .recent-status-tag {
   position: absolute;
   top: 12px;
   right: 14px;
-  display: inline-block;
   padding: 3px 8px;
   border-radius: 6px;
-  font-weight: 600;
   font-size: 11px;
   color: #fff;
-  white-space: nowrap;
+  font-weight: 600;
 }
 
-.recent-status-tag.tag-모집중       { background: #2563eb; }
-.recent-status-tag.tag-홍보중       { background: #7c3aed; }
-.recent-status-tag.tag-선탑\ 진행중 { background: #0ea5e9; }
-.recent-status-tag.tag-면접\ 예정   { background: #f59e0b; }
-.recent-status-tag.tag-배차완료     { background: #059669; }
+.tag-모집중 { background:#2563eb; }
+.tag-홍보중 { background:#7c3aed; }
+.tag-선탑-진행중 { background:#0ea5e9; }
+.tag-면접-예정 { background:#f59e0b; }
+.tag-배차-완료 { background:#059669; }
 
-/* ===============================
-   Charts
-=============================== */
 .chart-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-  margin-top: 16px;
+  display:grid;
+  grid-template-columns:1fr;
+  gap:16px;
+  margin-top:16px;
 }
-
-@media (min-width: 1024px) {
-  .chart-grid { grid-template-columns: 1fr 1fr; }
+@media(min-width:1024px){
+  .chart-grid{grid-template-columns:1fr 1fr;}
 }
-
-.chart-card {
-  background: #fff;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
-}
-
-.chart-card canvas {
-  width: 100%;
-  max-width: 420px;
-  height: 320px !important;
-  margin: 0 auto;
-  display: block;
+.chart-card{
+  background:#fff;
+  padding:16px;
+  border-radius:12px;
+  border:1px solid #e5e7eb;
 }
 </style>
 {% endblock %}
@@ -143,235 +104,123 @@
 {% block content %}
 <section class="sheet">
 
-  <h2 style="margin-bottom:16px;">📊 오늘의 요청 처리 현황</h2>
+<h2>📊 오늘의 요청 처리 현황</h2>
 
-  <!-- 1. Summary -->
-  <!-- 📊 오늘의 요청 처리 현황 -->
-   <div class="summary-box">
-   
-     <div class="summary-card total">
-       <div class="card-title">총 요청 수</div>
-       <div class="card-value">{{ total_cases }}</div>
-     </div>
-   
-     <div class="summary-card wait">
-       <div class="card-title">모집중</div>
-       <div class="card-value">{{ status_wait }}</div>
-     </div>
-     
-     <div class="summary-card promo card">
-      <div class="card-title">홍보중</div>
-      <div class="card-value">{{ status_promo }}</div>
+<div class="summary-box">
+  <div class="card">
+    <div class="card-title">총 요청 수</div>
+    <div class="card-value">{{ total_cases }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">모집중</div>
+    <div class="card-value">{{ status_wait }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">홍보중</div>
+    <div class="card-value">{{ status_promo }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">선탑 진행중</div>
+    <div class="card-value">{{ status_pre }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">면접 예정</div>
+    <div class="card-value">{{ status_interview }}</div>
+  </div>
+  <div class="card">
+    <div class="card-title">배차 완료</div>
+    <div class="card-value">{{ status_done }}</div>
+  </div>
+</div>
+
+<div class="progress-wrap">
+  <div>진행률 (배차완료 기준): <b>{{ progress_rate }}%</b></div>
+  <div class="progress-bar">
+    <div class="progress-fill" style="width:{{ progress_rate }}%"></div>
+  </div>
+</div>
+
+<div class="card">
+  <div class="card-title">상태별 비중</div>
+  <div>모집중 {{ pct_wait }}%</div>
+  <div>홍보중 {{ pct_promo }}%</div>
+  <div>선탑 {{ pct_pre }}%</div>
+  <div>면접 {{ pct_interview }}%</div>
+  <div>완료 {{ pct_done }}%</div>
+</div>
+
+<div class="card">
+  <div class="chart-grid">
+    <div class="chart-card">
+      <div class="card-title">지역별 요청 비율</div>
+      <canvas id="regionPieChart"></canvas>
     </div>
-
-     <div class="summary-card progress">
-       <div class="card-title">선탑 진행중</div>
-       <div class="card-value">{{ status_pre }}</div>
-     </div>
-   
-     <div class="summary-card interview">
-       <div class="card-title">면접 예정</div>
-       <div class="card-value">{{ status_interview }}</div>
-     </div>
-   
-     <div class="summary-card done">
-       <div class="card-title">배차 완료</div>
-       <div class="card-value">{{ status_done }}</div>
-     </div>
-   
-   </div>
-
-
-  <!-- 2. Progress -->
-  <div class="progress-wrap">
-    <div class="progress-label">
-      상태 진행률 (배차완료 기준): <b>{{ progress_rate }}%</b>
-    </div>
-    <div class="progress-bar">
-      <div class="progress-fill" style="width: {{ progress_rate }}%;"></div>
+    <div class="chart-card">
+      <div class="card-title">택배사별 요청 비율</div>
+      <canvas id="carrierPieChart"></canvas>
     </div>
   </div>
+</div>
 
-  <!-- 3. 비중 -->
-  <div class="card" style="margin-top:10px;">
-    <div class="card-title">상태별 비중</div>
-    <div>모집중: <b>{{ pct_wait }}%</b></div>
-     <div>홍보중: <b>{{ pct_promo }}%</b></div>
-    <div>선탑 진행중: <b>{{ pct_pre }}%</b></div>
-    <div>면접 예정: <b>{{ pct_interview }}%</b></div>
-    <div>배차 완료: <b>{{ pct_done }}%</b></div>
+<h3 style="margin-top:20px;">📌 최근 요청 5건</h3>
+{% for r in recent %}
+<div class="recent-card-compact">
+  <span class="recent-status-tag tag-{{ r.status | replace(' ', '-') }}">
+    {{ r.status }}
+  </span>
+  <div class="recent-title">{{ r.company }} / {{ r.branch_name }}</div>
+  <div class="recent-meta">
+    지역: {{ r.region }}<br>
+    인원: {{ r.headcount }}명<br>
+    등록일: {{ r.created_at }}
   </div>
+</div>
+{% endfor %}
 
-  <!-- 4 & 5. Pie Chart + Bar Chart -->
-  <div class="card" style="margin-top:16px;">
-     <div class="chart-grid">
-   
-       <!-- 지역별 Pie -->
-       <div class="chart-card">
-         <div class="card-title" style="margin-bottom:10px;">
-           지역별 요청 비율 (TOP 5)
-         </div>
-         <canvas id="regionPieChart"></canvas>
-       </div>
-   
-       <!-- 택배사별 Pie -->
-       <div class="chart-card">
-         <div class="card-title" style="margin-bottom:10px;">
-           택배사별 요청 비율 (TOP 5)
-         </div>
-         <canvas id="carrierPieChart"></canvas>
-       </div>
-   
-     </div>
-   </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
+<script>
+const regionRaw = {{ region_count | tojson | safe }};
+const carrierRaw = {{ carrier_count | tojson | safe }};
 
-  <!-- 6. Recent -->
-  <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
-  {% for r in recent %}
-  <div class="recent-card-compact"
-     data-item='{{ r | tojson }}'
+function renderPie(id, data, colors){
+  const labels = Object.keys(data);
+  const values = Object.values(data);
+  if(!labels.length) return;
 
-     onclick="openModal(JSON.parse(this.dataset.item))">
-     
-    <span class="recent-status-tag tag-{{ r.status }}">{{ r.status }}</span>
-    <div class="recent-title">{{ r.company }} / {{ r.branch_name }}</div>
-    <div class="recent-meta">
-      지역: {{ r.region }}<br>
-      차종: {{ r.vehicle_type or "-" }} / 인원: {{ r.headcount }}명<br>
-      등록일: {{ r.created_at.strftime("%Y-%m-%d") }}
-    </div>
-  </div>
-  {% endfor %}
+  new Chart(document.getElementById(id),{
+    type:'pie',
+    data:{labels:labels,datasets:[{data:values,backgroundColor:colors}]},
+    plugins:[ChartDataLabels],
+    options:{
+      plugins:{
+        legend:{position:'bottom'},
+        datalabels:{
+          color:'#fff',
+          font:{size:9,weight:'600'},
+          formatter:(v,ctx)=>{
+            const total = ctx.dataset.data.reduce((a,b)=>a+b,0);
+            return `${Math.round(v/total*100)}%`;
+          }
+        }
+      }
+    }
+  });
+}
 
-  <!-- Chart.js + Plugins -->
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-   
-   <!-- 지역별 Pie Chart (TOP 5 + Center Label + White Text) -->
-   <script>
-     const regionRaw = {{ region_count | tojson | safe }};
-   
-     const regionSorted = Object.entries(regionRaw)
-       .sort((a, b) => b[1] - a[1]);
-   
-     const regionLabels = regionSorted.map(item => item[0]);
-     const regionValues = regionSorted.map(item => item[1]);
-   
-     const regionColors = [
-       '#6366F1', // indigo
-       '#8B5CF6', // violet
-       '#EC4899', // pink
-       '#F43F5E', // rose
-       '#F97316', // orange
-       '#22C55E'  // green (6개일 경우 대비)
-     ];
-   
-     if (regionLabels.length > 0) {
-       new Chart(document.getElementById('regionPieChart'), {
-         type: 'pie',
-         data: {
-           labels: regionLabels,
-           datasets: [{
-             data: regionValues,
-             backgroundColor: regionColors.slice(0, regionLabels.length)
-           }]
-         },
-         plugins: [ChartDataLabels],
-         options: {
-           responsive: true,
-           plugins: {
-             legend: {
-               position: 'bottom'
-             },
-             datalabels: {
-               color: '#ffffff',              // ✅ 흰색 글씨
-               anchor: 'center',              // ✅ 조각 중앙
-               align: 'center',               // ✅ 중앙 정렬
-               clamp: true,                   // ✅ 영역 밖 방지
-               font: {
-                 size: 9,                     // ✅ 글씨 작게
-                 weight: '600'
-               },
-               formatter: (value, ctx) => {
-                 const label = ctx.chart.data.labels[ctx.dataIndex];
-                 const total = ctx.chart.data.datasets[0].data
-                   .reduce((a, b) => a + b, 0);
-                 const percent = Math.round((value / total) * 100);
-                 return `${label}\n${value}건\n${percent}%`;
-               }
-             }
-           }
-         }
-       });
-     }
-   </script>
+renderPie(
+  'regionPieChart',
+  regionRaw,
+  ['#6366F1','#8B5CF6','#EC4899','#F97316','#22C55E','#9CA3AF']
+);
 
-   
-  <!-- 택배사별 Pie Chart (TOP 5 + Center Label + White Text) -->
-   <script>
-     const carrierRaw = {{ carrier_count | tojson | safe }};
-   
-     const carrierSorted = Object.entries(carrierRaw)
-       .sort((a, b) => b[1] - a[1]);
-   
-     const carrierLabels = carrierSorted.map(item => item[0]);
-     const carrierValues = carrierSorted.map(item => item[1]);
-   
-     // 🎨 택배사 전용 컬러 팔레트 (지역 차트와 구분)
-     const carrierColors = [
-       '#2563EB', // blue
-       '#22C55E', // green
-       '#F59E0B', // amber
-       '#EF4444', // red
-       '#9CA3AF', // gray
-       '#0EA5E9'  // sky (6개 대비)
-     ];
-   
-     if (carrierLabels.length > 0) {
-       new Chart(document.getElementById('carrierPieChart'), {
-         type: 'pie',
-         data: {
-           labels: carrierLabels,
-           datasets: [{
-             data: carrierValues,
-             backgroundColor: carrierColors.slice(0, carrierLabels.length)
-           }]
-         },
-         plugins: [ChartDataLabels],
-         options: {
-           responsive: true,
-           plugins: {
-             legend: {
-               position: 'bottom'
-             },
-             datalabels: {
-               color: '#ffffff',        // ✅ 흰색 글씨
-               anchor: 'center',        // ✅ 가운데
-               align: 'center',         // ✅ 가운데
-               clamp: true,             // ✅ 영역 밖 방지
-               font: {
-                 size: 9,               //  글씨 작게
-                 weight: '600'
-               },
-               formatter: (value, ctx) => {
-                 const label = ctx.chart.data.labels[ctx.dataIndex];
-                 const total = ctx.chart.data.datasets[0].data
-                   .reduce((a, b) => a + b, 0);
-                 const percent = Math.round((value / total) * 100);
-                 return `${label}\n${value}건\n${percent}%`;
-               }
-             }
-           }
-         }
-       });
-     }
-   </script>
-   
-
- 
-
-
+renderPie(
+  'carrierPieChart',
+  carrierRaw,
+  ['#2563EB','#22C55E','#F59E0B','#EF4444','#0EA5E9','#9CA3AF']
+);
+</script>
 
 </section>
 {% endblock %}
