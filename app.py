@@ -527,9 +527,9 @@ def create_app():
     
         status_wait = RequestItem.query.filter_by(status="모집중").count()
         status_promo = RequestItem.query.filter_by(status="홍보중").count()
-        status_pre = RequestItem.query.filter_by(status="선탑 진행중").count()
-        status_interview = RequestItem.query.filter_by(status="면접 예정").count()
-        status_done = RequestItem.query.filter_by(status="배차 완료").count()
+        status_pre = RequestItem.query.filter_by(status="선탑진행중").count()
+        status_interview = RequestItem.query.filter_by(status="면접예정").count()
+        status_done = RequestItem.query.filter_by(status="배차완료").count()
     
         # 진행률 (배차완료 기준)
         progress_rate = round((status_done / total) * 100, 1) if total > 0 else 0
