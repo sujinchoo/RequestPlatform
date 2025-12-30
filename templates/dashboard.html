@@ -133,14 +133,11 @@ function renderData(data) {
   }
 
   data.forEach((r, idx) => {
-    const regionText = r.region || "-";
-
-
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${idx + 1}</td>
-      <td>${regionText}</td>
+      <td>${r.region || "-"}</td>
       <td>${r.company || "-"}</td>
       <td>${r.branch_name || "-"}</td>
       <td>${r.work_days || "-"}</td>
@@ -160,15 +157,9 @@ function renderData(data) {
 function loadDashboardData() {
   const params = new URLSearchParams();
 
-  if (companySelect.value !== "all") {
-    params.set("company", companySelect.value);
-  }
-  if (sidoSelect.value) {
-    params.set("region_sido", sidoSelect.value);
-  }
-  if (sigunguSelect.value) {
-    params.set("region_sigungu", sigunguSelect.value);
-  }
+  if (companySelect.value !== "all") params.set("company", companySelect.value);
+  if (sidoSelect.value) params.set("region_sido", sidoSelect.value);
+  if (sigunguSelect.value) params.set("region_sigungu", sigunguSelect.value);
 
   fetch(`/api/requests?${params.toString()}`)
     .then(res => res.json())
@@ -176,7 +167,7 @@ function loadDashboardData() {
     .catch(err => console.error("데이터 로딩 실패:", err));
 }
 
-/* 지역 필터 초기화 */
+/* 지역 필터 */
 function setupRegionFilters() {
   if (!window.REGION_DATA) return;
 
@@ -184,8 +175,7 @@ function setupRegionFilters() {
   sidoList.forEach(sido => sidoSelect.add(new Option(sido, sido)));
 
   sidoSelect.addEventListener("change", () => {
-    sigunguSelect.innerHTML = "";
-    sigunguSelect.add(new Option("전체", ""));
+    sigunguSelect.innerHTML = '<option value="">전체</option>';
     const list = window.REGION_DATA[sidoSelect.value] || [];
     list.forEach(g => sigunguSelect.add(new Option(g, g)));
     sigunguSelect.disabled = list.length === 0;
@@ -195,19 +185,12 @@ function setupRegionFilters() {
 /* Modal */
 function openModal(r) {
   currentId = r.id;
-
-  const regionText =
-    [r.region_sido, r.region_sigungu].filter(Boolean).join(" ");
-
   document.getElementById("modal-title").innerText =
-  `${r.region} / ${r.company} / ${r.branch_name}`;
-
-
+    `${r.region} / ${r.company} / ${r.branch_name}`;
   document.getElementById("modal-interview").value = r.interview_date || "";
   document.getElementById("modal-status").value = r.status || "모집중";
   document.getElementById("status-modal").classList.remove("hidden");
 }
-
 
 function closeModal() {
   document.getElementById("status-modal").classList.add("hidden");
@@ -236,8 +219,6 @@ function saveStatus() {
       btn.innerText = "저장";
       return;
     }
-
-    // 성공 시 새로고침
     window.location.reload();
   })
   .catch(() => {
@@ -247,24 +228,20 @@ function saveStatus() {
   });
 }
 
-  
-<!-- 지역 데이터 먼저 로드 -->
-<script src="{{ url_for('static', filename='region-data.js') }}"></script>
+/* 초기 실행 */
+document.addEventListener("DOMContentLoaded", () => {
+  setupRegionFilters();
+  loadDashboardData();
 
-<script>
-  /* 초기 실행 */
-  document.addEventListener("DOMContentLoaded", () => {
-    setupRegionFilters();
+  document.getElementById("filter-apply").onclick = loadDashboardData;
+  document.getElementById("filter-reset").onclick = () => {
+    sidoSelect.value = "";
+    sigunguSelect.innerHTML = '<option value="">전체</option>';
+    sigunguSelect.disabled = true;
+    companySelect.value = "all";
     loadDashboardData();
-  
-    document.getElementById("filter-apply").onclick = loadDashboardData;
-    document.getElementById("filter-reset").onclick = () => {
-      sidoSelect.value = "";
-      sigunguSelect.innerHTML = '<option value="">전체</option>';
-      sigunguSelect.disabled = true;
-      companySelect.value = "all";
-      loadDashboardData();
-    };
-  });
+  };
+});
 </script>
+
 {% endblock %}
