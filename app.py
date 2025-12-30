@@ -620,7 +620,7 @@ def create_app():
         # -----------------------------------------------
         return render_template(
             "dashboard_demo.html",
-            total_cases=total_cases,
+            total_cases=total,
 
             status_wait=status_wait,
             status_promo=status_promo,
