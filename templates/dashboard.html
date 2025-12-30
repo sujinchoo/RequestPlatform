@@ -133,8 +133,8 @@ function renderData(data) {
   }
 
   data.forEach((r, idx) => {
-    const regionText =
-      [r.region_sido, r.region_sigungu].filter(Boolean).join(" ") || "-";
+    const regionText = r.region || "-";
+
 
     const tr = document.createElement("tr");
 
@@ -200,7 +200,8 @@ function openModal(r) {
     [r.region_sido, r.region_sigungu].filter(Boolean).join(" ");
 
   document.getElementById("modal-title").innerText =
-    `${regionText} / ${r.company} / ${r.branch_name}`;
+  `${r.region} / ${r.company} / ${r.branch_name}`;
+
 
   document.getElementById("modal-interview").value = r.interview_date || "";
   document.getElementById("modal-status").value = r.status || "모집중";
