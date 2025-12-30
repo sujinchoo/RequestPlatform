@@ -627,7 +627,7 @@ def create_app():
             status_done=status_done,
             progress_rate=progress_rate,
             pct_wait=pct_wait,
-            status_promo=status_promo,
+            pct_promo=pct_promo,
             pct_pre=pct_pre,
             pct_interview=pct_interview,
             pct_done=pct_done,
