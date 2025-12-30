@@ -515,10 +515,19 @@ def create_app():
         # 0) 지역 라벨 헬퍼 (현재 DB 구조 완전 대응)
         # -----------------------------------------------
         def get_region_label(r):
-            # region_sido / sigungu 컬럼이 없거나 값이 없으면 region 사용
+            """
+            파이 차트용 지역 라벨
+            - region_sido 있으면 그것만 사용
+            - 없으면 region에서 첫 단어만 사용
+            """
             if hasattr(r, "region_sido") and r.region_sido:
-                return f"{r.region_sido} {r.region_sigungu or ''}".strip()
-            return r.region or "미기입"
+                return r.region_sido
+        
+            if r.region:
+                return r.region.split()[0]
+        
+            return "미기입"
+
     
         # -----------------------------------------------
         # 1) 전체 개수 & 상태별 개수
