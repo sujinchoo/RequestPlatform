@@ -516,165 +516,165 @@ def create_app():
 
         
     # ============================================================
-# SaaS 데모 대시보드 (모바일 전용 요약)
-# ============================================================
-@app.route("/dashboard_demo")
-@login_required
-@admin_required
-def dashboard_demo():
-
-    # -----------------------------------------------
-    # 0) 지역 라벨 헬퍼 (현재 DB 구조 완전 대응)
-    # -----------------------------------------------
-    def get_region_label(r):
-        # region_sido / sigungu 컬럼이 없거나 값이 없으면 region 사용
-        if hasattr(r, "region_sido") and r.region_sido:
-            return f"{r.region_sido} {r.region_sigungu or ''}".strip()
-        return r.region or "미기입"
-
-    # -----------------------------------------------
-    # 1) 전체 개수 & 상태별 개수
-    # -----------------------------------------------
-    total = RequestItem.query.count()
-
-    status_wait = RequestItem.query.filter_by(status="모집중").count()
-    status_promo = RequestItem.query.filter_by(status="홍보중").count()
-    status_pre = RequestItem.query.filter_by(status="선탑 진행중").count()
-    status_interview = RequestItem.query.filter_by(status="면접 예정").count()
-    status_done = RequestItem.query.filter_by(status="배차 완료").count()
-
-    # 진행률 (배차완료 기준)
-    progress_rate = round((status_done / total) * 100, 1) if total > 0 else 0
-
-    # 상태별 비중
-    total2 = (
-        status_wait
-        + status_promo
-        + status_pre
-        + status_interview
-        + status_done
-        or 1
-    )
-
-    pct_wait = round((status_wait / total2) * 100, 1)
-    pct_promo = round((status_promo / total2) * 100, 1)
-    pct_pre = round((status_pre / total2) * 100, 1)
-    pct_interview = round((status_interview / total2) * 100, 1)
-    pct_done = round((status_done / total2) * 100, 1)
-
-    # -----------------------------------------------
-    # 2) 최근 요청 5건
-    # -----------------------------------------------
-    recent = (
-        RequestItem.query
-        .order_by(RequestItem.created_at.desc())
-        .limit(5)
-        .all()
-    )
-
-    recent_items = [
-        {
-            "id": r.id,
-            "region": get_region_label(r),
-            "company": r.company,
-            "branch_name": r.branch_name,
-            "vehicle_type": getattr(r, "vehicle_type", None),
-            "headcount": r.headcount,
-            "unit_price": getattr(r, "unit_price", None),
-            "volume": r.volume,
-            "etc": r.etc,
-            "status": r.status,
-            "interview_date": (
-                r.interview_date.isoformat()
-                if r.interview_date else ""
-            ),
-            "created_at": r.created_at.strftime("%Y-%m-%d"),
+    # SaaS 데모 대시보드 (모바일 전용 요약)
+    # ============================================================
+    @app.route("/dashboard_demo")
+    @login_required
+    @admin_required
+    def dashboard_demo():
+    
+        # -----------------------------------------------
+        # 0) 지역 라벨 헬퍼 (현재 DB 구조 완전 대응)
+        # -----------------------------------------------
+        def get_region_label(r):
+            # region_sido / sigungu 컬럼이 없거나 값이 없으면 region 사용
+            if hasattr(r, "region_sido") and r.region_sido:
+                return f"{r.region_sido} {r.region_sigungu or ''}".strip()
+            return r.region or "미기입"
+    
+        # -----------------------------------------------
+        # 1) 전체 개수 & 상태별 개수
+        # -----------------------------------------------
+        total = RequestItem.query.count()
+    
+        status_wait = RequestItem.query.filter_by(status="모집중").count()
+        status_promo = RequestItem.query.filter_by(status="홍보중").count()
+        status_pre = RequestItem.query.filter_by(status="선탑 진행중").count()
+        status_interview = RequestItem.query.filter_by(status="면접 예정").count()
+        status_done = RequestItem.query.filter_by(status="배차 완료").count()
+    
+        # 진행률 (배차완료 기준)
+        progress_rate = round((status_done / total) * 100, 1) if total > 0 else 0
+    
+        # 상태별 비중
+        total2 = (
+            status_wait
+            + status_promo
+            + status_pre
+            + status_interview
+            + status_done
+            or 1
+        )
+    
+        pct_wait = round((status_wait / total2) * 100, 1)
+        pct_promo = round((status_promo / total2) * 100, 1)
+        pct_pre = round((status_pre / total2) * 100, 1)
+        pct_interview = round((status_interview / total2) * 100, 1)
+        pct_done = round((status_done / total2) * 100, 1)
+    
+        # -----------------------------------------------
+        # 2) 최근 요청 5건
+        # -----------------------------------------------
+        recent = (
+            RequestItem.query
+            .order_by(RequestItem.created_at.desc())
+            .limit(5)
+            .all()
+        )
+    
+        recent_items = [
+            {
+                "id": r.id,
+                "region": get_region_label(r),
+                "company": r.company,
+                "branch_name": r.branch_name,
+                "vehicle_type": getattr(r, "vehicle_type", None),
+                "headcount": r.headcount,
+                "unit_price": getattr(r, "unit_price", None),
+                "volume": r.volume,
+                "etc": r.etc,
+                "status": r.status,
+                "interview_date": (
+                    r.interview_date.isoformat()
+                    if r.interview_date else ""
+                ),
+                "created_at": r.created_at.strftime("%Y-%m-%d"),
+            }
+            for r in recent
+        ]
+    
+        # -----------------------------------------------
+        # 3) ⭐ 지역별 요청 집계 (TOP 5 + 기타)
+        #    → region_sido 없이도 100% 정상 동작
+        # -----------------------------------------------
+        region_temp = {}
+    
+        for r in RequestItem.query.all():
+            key = get_region_label(r)
+            region_temp[key] = region_temp.get(key, 0) + 1
+    
+        sorted_regions = sorted(
+            region_temp.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+    
+        top5 = sorted_regions[:5]
+        others_total = sum(cnt for _, cnt in sorted_regions[5:])
+    
+        region_count = {}
+        for region, cnt in top5:
+            region_count[f"{region} ({cnt})"] = cnt
+    
+        if others_total > 0:
+            region_count[f"기타 ({others_total})"] = others_total
+    
+        # -----------------------------------------------
+        # 4) ⭐ 택배사별 요청 집계 (TOP 5 + 기타)
+        # -----------------------------------------------
+        carrier_rows = (
+            db.session.query(RequestItem.company, func.count(RequestItem.id))
+            .group_by(RequestItem.company)
+            .all()
+        )
+    
+        carrier_temp = {
+            (c or "미기입"): int(cnt)
+            for c, cnt in carrier_rows
         }
-        for r in recent
-    ]
-
-    # -----------------------------------------------
-    # 3) ⭐ 지역별 요청 집계 (TOP 5 + 기타)
-    #    → region_sido 없이도 100% 정상 동작
-    # -----------------------------------------------
-    region_temp = {}
-
-    for r in RequestItem.query.all():
-        key = get_region_label(r)
-        region_temp[key] = region_temp.get(key, 0) + 1
-
-    sorted_regions = sorted(
-        region_temp.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    top5 = sorted_regions[:5]
-    others_total = sum(cnt for _, cnt in sorted_regions[5:])
-
-    region_count = {}
-    for region, cnt in top5:
-        region_count[f"{region} ({cnt})"] = cnt
-
-    if others_total > 0:
-        region_count[f"기타 ({others_total})"] = others_total
-
-    # -----------------------------------------------
-    # 4) ⭐ 택배사별 요청 집계 (TOP 5 + 기타)
-    # -----------------------------------------------
-    carrier_rows = (
-        db.session.query(RequestItem.company, func.count(RequestItem.id))
-        .group_by(RequestItem.company)
-        .all()
-    )
-
-    carrier_temp = {
-        (c or "미기입"): int(cnt)
-        for c, cnt in carrier_rows
-    }
-
-    sorted_carriers = sorted(
-        carrier_temp.items(),
-        key=lambda x: x[1],
-        reverse=True
-    )
-
-    top5_carriers = sorted_carriers[:5]
-    others_carrier_total = sum(cnt for _, cnt in sorted_carriers[5:])
-
-    carrier_count = {}
-    for name, cnt in top5_carriers:
-        carrier_count[f"{name} ({cnt})"] = cnt
-
-    if others_carrier_total > 0:
-        carrier_count[f"기타 ({others_carrier_total})"] = others_carrier_total
-
-    # -----------------------------------------------
-    # 5) 템플릿 전달
-    # -----------------------------------------------
-    return render_template(
-        "dashboard_demo.html",
-
-        total_cases=total,
-
-        status_wait=status_wait,
-        status_promo=status_promo,
-        status_pre=status_pre,
-        status_interview=status_interview,
-        status_done=status_done,
-
-        progress_rate=progress_rate,
-
-        pct_wait=pct_wait,
-        pct_promo=pct_promo,
-        pct_pre=pct_pre,
-        pct_interview=pct_interview,
-        pct_done=pct_done,
-
-        recent=recent_items,
-        region_count=region_count,
-        carrier_count=carrier_count,
-    )
+    
+        sorted_carriers = sorted(
+            carrier_temp.items(),
+            key=lambda x: x[1],
+            reverse=True
+        )
+    
+        top5_carriers = sorted_carriers[:5]
+        others_carrier_total = sum(cnt for _, cnt in sorted_carriers[5:])
+    
+        carrier_count = {}
+        for name, cnt in top5_carriers:
+            carrier_count[f"{name} ({cnt})"] = cnt
+    
+        if others_carrier_total > 0:
+            carrier_count[f"기타 ({others_carrier_total})"] = others_carrier_total
+    
+        # -----------------------------------------------
+        # 5) 템플릿 전달
+        # -----------------------------------------------
+        return render_template(
+            "dashboard_demo.html",
+    
+            total_cases=total,
+    
+            status_wait=status_wait,
+            status_promo=status_promo,
+            status_pre=status_pre,
+            status_interview=status_interview,
+            status_done=status_done,
+    
+            progress_rate=progress_rate,
+    
+            pct_wait=pct_wait,
+            pct_promo=pct_promo,
+            pct_pre=pct_pre,
+            pct_interview=pct_interview,
+            pct_done=pct_done,
+    
+            recent=recent_items,
+            region_count=region_count,
+            carrier_count=carrier_count,
+        )
 
 
     # =========================================================
@@ -946,7 +946,7 @@ def dashboard_demo():
             }), 500
 
     
-    # =========================================================
+   # =========================================================
     # 요청 리스트 API (필터)
     # =========================================================
     @app.route("/api/requests", methods=["GET"])
@@ -957,43 +957,50 @@ def dashboard_demo():
         status = request.args.get("status", "all")
         region_sido = request.args.get("region_sido", "").strip()
         region_sigungu = request.args.get("region_sigungu", "").strip()
+    
         query = RequestItem.query
     
+        # 택배사 필터
         if company != "all" and company:
             query = query.filter(RequestItem.company == company)
     
+        # 상태 필터
         if status != "all" and status:
             query = query.filter(RequestItem.status == status)
+    
+        # 지역 필터 (문자열 contains 방식)
         if region_sido:
-            query = query.filter(RequestItem.region_sido == region_sido)
+            query = query.filter(RequestItem.region.contains(region_sido))
+    
         if region_sigungu:
-            query = query.filter(RequestItem.region_sigungu == region_sigungu)
-
+            query = query.filter(RequestItem.region.contains(region_sigungu))
+    
         rows = query.order_by(RequestItem.created_at.desc()).all()
     
         results = [
             {
                 "id": r.id,
-                "region": r.region_full,
-                "region_sido": r.region_sido,
-                "region_sigungu": r.region_sigungu,
+                "region": r.region,                 # ✅ 단일 region 사용
                 "company": r.company,
                 "branch_name": r.branch_name,
-                "work_days": r.work_type,          # ⭐ 추가
+                "work_days": r.work_type,
                 "volume": r.volume,
                 "headcount": r.headcount,
                 "etc": r.etc,
                 "status": r.status,
                 "interview_date": (
                     r.interview_date.strftime("%Y-%m-%d")
-                    if r.interview_date else None
+                    if r.interview_date else ""
                 ),
                 "created_at": r.created_at.strftime("%Y-%m-%d"),
             }
             for r in rows
         ]
     
-        return jsonify({"count": len(results), "data": results})
+        return jsonify({
+            "count": len(results),
+            "data": results
+        })
 
 
     # =========================================================
