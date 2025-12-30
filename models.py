@@ -41,7 +41,7 @@ class RequestItem(db.Model):
     region_sido = db.Column(db.String(100))
     region_sigungu = db.Column(db.String(100))
 
-    region = db.Column(db.String(100), nullable=False)
+  
     branch_name = db.Column(db.String(150), nullable=False)
 
     center_location = db.Column(db.String(200))
