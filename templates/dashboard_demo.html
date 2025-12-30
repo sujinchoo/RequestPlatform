@@ -230,7 +230,8 @@
   <h3 style="margin-top:20px; margin-bottom:12px;">📌 최근 요청 5건</h3>
   {% for r in recent %}
   <div class="recent-card-compact"
-     data-item='{{ r | tojson | safe }}'
+     data-item='{{ r | tojson }}'
+
      onclick="openModal(JSON.parse(this.dataset.item))">
      
     <span class="recent-status-tag tag-{{ r.status }}">{{ r.status }}</span>

@@ -551,6 +551,28 @@ def create_app():
         # 2) 최근 요청 5건
         # -----------------------------------------------
         recent = Req.query.order_by(Req.created_at.desc()).limit(5).all()
+
+        recent_items = [
+            {
+                "id": r.id,
+                "region": r.region_full,
+                "company": r.company,
+                "branch_name": r.branch_name,
+                "vehicle_type": getattr(r, "vehicle_type", None),
+                "headcount": r.headcount,
+                "unit_price": getattr(r, "unit_price", None),
+                "volume": r.volume,
+                "etc": r.etc,
+                "status": r.status,
+                "interview_date": (
+                    r.interview_date.isoformat()
+                    if r.interview_date else ""
+                ),
+                "created_at": r.created_at.strftime("%Y-%m-%d"),
+            }
+            for r in recent
+        ]
+
     
         # -----------------------------------------------
         # 3) ⭐ 지역별 개수 집계 (TOP 5 + 기타 + 라벨(숫자))
@@ -635,7 +657,7 @@ def create_app():
             pct_interview=pct_interview,
             pct_done=pct_done,
 
-            recent=recent,
+            recent=recent_items,
             region_count=region_count,
             carrier_count=carrier_count
         )
