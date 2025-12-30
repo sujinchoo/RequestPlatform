@@ -133,11 +133,14 @@ function renderData(data) {
   }
 
   data.forEach((r, idx) => {
+    const regionText =
+      [r.region_sido, r.region_sigungu].filter(Boolean).join(" ") || "-";
+
     const tr = document.createElement("tr");
 
     tr.innerHTML = `
       <td>${idx + 1}</td>
-      <td>${r.region || "-"}</td>
+      <td>${regionText}</td>
       <td>${r.company || "-"}</td>
       <td>${r.branch_name || "-"}</td>
       <td>${r.work_days || "-"}</td>
