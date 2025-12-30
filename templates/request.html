@@ -78,26 +78,31 @@
             </select>
           </div>
 
-        <div class="request-field">
-          <label>영업소 / 대리점명</label>
-          <input name="branch" type="text" class="request-input" placeholder="예: 인천 계양영업소" required>
-        </div>
+       <div class="request-field">
+        <label>지역1 (시/도)</label>
+        <select id="region_sido" name="region_sido" class="request-select" required>
+          <option value="">선택</option>
+        </select>
+      </div>
+      
+      <div class="request-field">
+        <label>지역2 (시/군/구)</label>
+        <select id="region_sigungu" name="region_sigungu" class="request-select" required disabled>
+          <option value="">선택</option>
+        </select>
+      </div>
+      
+      <div class="request-field">
+        <label>영업소 / 대리점명</label>
+        <input
+          type="text"
+          name="branch_name"
+          class="request-input"
+          placeholder="시/군/구 선택 후 입력"
+          required
+        >
+      </div>
 
-        <div class="request-field">
-          <label>지역 (시/도)</label>
-          <select id="region-sido" name="region_sido" class="request-select" required>
-            <option value="">시/도를 선택하세요</option>
-          </select>
-        </div>
-
-        <div class="request-field">
-          <label>지역 (시/군/구)</label>
-          <select id="region-sigungu" name="region_sigungu" class="request-select" required disabled>
-            <option value="">시/군/구를 먼저 선택하세요</option>
-          </select>
-          <div class="request-hint" id="region-preview">예: 서울특별시 강동구</div>
-         
-        </div>
 
         <div class="request-field">
           <label>센터 / 터미널 / 위치</label>
@@ -211,90 +216,36 @@
 <script src="{{ url_for('static', filename='region-data.js') }}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-   // 지역 선택기 (시/도 → 시/군/구)
-  const sidoSelect = document.querySelector("#region-sido");
-  const sigunguSelect = document.querySelector("#region-sigungu");
-  const regionPreview = document.querySelector("#region-preview");
+  // ✅ HTML id와 정확히 일치시킴
+  const sidoSelect = document.querySelector("#region_sido");
+  const sigunguSelect = document.querySelector("#region_sigungu");
 
-  function setRegionPreview() {
-    if (!regionPreview) return;
-    const text = [sidoSelect?.value, sigunguSelect?.value].filter(Boolean).join(" ").trim();
-    regionPreview.textContent = text || "예: 서울특별시 강동구";
-  }
+  if (!sidoSelect || !sigunguSelect || !window.REGION_DATA) return;
 
-  if (sidoSelect && sigunguSelect && window.REGION_DATA) {
-    const sidoList = (window.REGION_SIDO_ORDER && Array.isArray(window.REGION_SIDO_ORDER))
-      ? window.REGION_SIDO_ORDER
-      : Object.keys(window.REGION_DATA);
+  // 1️⃣ 시/도 채우기
+  const sidoList = Array.isArray(window.REGION_SIDO_ORDER)
+    ? window.REGION_SIDO_ORDER
+    : Object.keys(window.REGION_DATA);
 
-    sidoList.forEach((sido) => {
-      const opt = new Option(sido, sido);
-      sidoSelect.add(opt);
-    });
-
-    const renderSigungu = (sido) => {
-      sigunguSelect.innerHTML = "";
-      sigunguSelect.add(new Option("시/군/구를 선택하세요", ""));
-
-      const items = window.REGION_DATA[sido] || [];
-      items.forEach((g) => {
-        sigunguSelect.add(new Option(g, g));
-      });
-
-      sigunguSelect.disabled = items.length === 0;
-    };
-
-    sidoSelect.addEventListener("change", () => {
-      renderSigungu(sidoSelect.value);
-      setRegionPreview();
-    });
-
-    sigunguSelect.addEventListener("change", setRegionPreview);
-
-    // 초기화
-    renderSigungu("");
-    setRegionPreview();
-  }
-
-
-  document.querySelectorAll(".delete-form").forEach(form => {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault();
-
-      Swal.fire({
-        title: "삭제하시겠습니까?",
-        text: "삭제 후에는 되돌릴 수 없습니다.",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#dc2626",
-        cancelButtonColor: "#6b7280",
-        confirmButtonText: "삭제",
-        cancelButtonText: "취소"
-      }).then(result => {
-        if (result.isConfirmed) form.submit();
-      });
-
-    });
+  sidoList.forEach(sido => {
+    sidoSelect.add(new Option(sido, sido));
   });
+
+  // 2️⃣ 시/군/구 렌더링 함수
+  function renderSigungu(sido) {
+    sigunguSelect.innerHTML = "";
+    sigunguSelect.add(new Option("선택", ""));
+    const list = window.REGION_DATA[sido] || [];
+    list.forEach(g => sigunguSelect.add(new Option(g, g)));
+    sigunguSelect.disabled = list.length === 0;
+  }
+
+  // 3️⃣ 시/도 변경 시
+  sidoSelect.addEventListener("change", () => {
+    renderSigungu(sidoSelect.value);
+  });
+
+  // 초기 상태
+  renderSigungu("");
 });
 </script>
-
-
-<!-- ============================= -->
-<!-- 🔵 스크롤 이동 -->
-<!-- ============================= -->
-<script>
-function scrollToSection(type) {
-  let target;
-
-  if (type === "register") {
-    target = document.querySelector("#register");
-  } else if (type === "status") {
-    target = document.querySelector("#status");
-  }
-
-  target?.scrollIntoView({ behavior: "smooth", block: "start" });
-}
-</script>
-
-{% endblock %}
