@@ -766,7 +766,7 @@ def create_app():
                     volume=safe_int(form.get("volume")),
                     headcount=safe_int(form.get("headcount")),
     
-                    work_days=form.get("work_days", "").strip(),
+                    work_type=form.get("work_type", "").strip(),
                     center_location=form.get("center_location", "").strip(),
                     etc=form.get("etc", "").strip(),
     
