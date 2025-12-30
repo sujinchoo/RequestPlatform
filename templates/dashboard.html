@@ -51,6 +51,7 @@
       <button class="btn-secondary" id="filter-reset" type="button">초기화</button>
     </div>
   </div>
+
   <div class="table-wrapper table-fixed">
     <table id="request-table" class="table-compact">
       <thead>
@@ -91,10 +92,12 @@
       <label>상태 변경</label>
       <select id="modal-status" class="modal-input">
         <option value="모집중">모집중</option>
-        <option value="선탑진행중">선탑진행중</option>
-        <option value="면접예정">면접예정</option>
+        <option value="홍보중">홍보중</option>
+        <option value="선탑 진행중">선탑 진행중</option>
+        <option value="면접 예정">면접 예정</option>
         <option value="배차완료">배차완료</option>
       </select>
+
     </div>
 
     <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
@@ -106,6 +109,10 @@
 <!-- ============================================================== -->
 <script>
 let currentId = null;
+const sidoSelect = document.getElementById("filter-sido");
+const sigunguSelect = document.getElementById("filter-sigungu");
+const companySelect = document.getElementById("filter-company");
+
 
 function renderData(data) {
     const tbody = document.querySelector("#request-table tbody");
@@ -155,7 +162,21 @@ function renderData(data) {
    🔥 Dashboard 데이터 자동 로딩(fetch)
 ========================================================= */
 function loadDashboardData() {
-    fetch("/api/requests")
+    const params = new URLSearchParams();
+
+    if (companySelect?.value && companySelect.value !== "all") {
+        params.set("company", companySelect.value);
+    }
+    if (sidoSelect?.value) {
+        params.set("region_sido", sidoSelect.value);
+    }
+    if (sigunguSelect?.value) {
+        params.set("region_sigungu", sigunguSelect.value);
+    }
+
+    const url = `/api/requests${params.toString() ? "?" + params.toString() : ""}`;
+
+    fetch(url)
         .then(res => res.json())
         .then(json => {
             if (json.data) renderData(json.data);
@@ -163,7 +184,42 @@ function loadDashboardData() {
         .catch(err => console.error("데이터 로딩 실패:", err));
 }
 
-window.addEventListener("DOMContentLoaded", loadDashboardData);
+window.addEventListener("DOMContentLoaded", () => {
+    loadDashboardData();
+    setupRegionFilters();
+    document.getElementById("filter-apply")?.addEventListener("click", loadDashboardData);
+    document.getElementById("filter-reset")?.addEventListener("click", () => {
+        if (sidoSelect) sidoSelect.value = "";
+        if (sigunguSelect) {
+            sigunguSelect.innerHTML = '<option value="">전체</option>';
+            sigunguSelect.disabled = true;
+        }
+        if (companySelect) companySelect.value = "all";
+        loadDashboardData();
+    });
+});
+
+function setupRegionFilters() {
+    if (!window.REGION_DATA || !sidoSelect || !sigunguSelect) return;
+
+    const sidoList = window.REGION_SIDO_ORDER || Object.keys(window.REGION_DATA);
+    sidoList.forEach((sido) => {
+        const opt = new Option(sido, sido);
+        sidoSelect.add(opt);
+    });
+
+    const renderSigungu = (sido) => {
+        sigunguSelect.innerHTML = "";
+        sigunguSelect.add(new Option("전체", ""));
+        const items = window.REGION_DATA[sido] || [];
+        items.forEach((g) => sigunguSelect.add(new Option(g, g)));
+        sigunguSelect.disabled = items.length === 0;
+    };
+
+    sidoSelect.addEventListener("change", () => {
+        renderSigungu(sidoSelect.value);
+    });
+}
 
 /* =========================================================
    🔵 Modal 열기
@@ -238,5 +294,5 @@ function closeModal() {
     if (modal) modal.classList.add("hidden");
 }
 </script>
-
+<script src="{{ url_for('static', filename='region-data.js') }}"></script>
 {% endblock %}
