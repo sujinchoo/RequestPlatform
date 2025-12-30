@@ -18,12 +18,14 @@
     <div class="sheet-sub">최신 요청이 위에 표시됩니다.</div>
   </div>
 
+  <!-- 통계 -->
   <div class="stats-box">
     <span class="stat total">전체: {{ total_cases }}개</span>
     <span class="stat active">진행중: {{ active_cases }}개</span>
     <span class="stat done">완료: {{ completed_cases }}개</span>
   </div>
-  <!-- 필터 영역 -->
+
+  <!-- 필터 -->
   <div class="sheet-filters">
     <div class="filter-item">
       <label>시/도</label>
@@ -31,12 +33,14 @@
         <option value="">전체</option>
       </select>
     </div>
+
     <div class="filter-item">
       <label>시/군/구</label>
       <select id="filter-sigungu" class="filter-select" disabled>
         <option value="">전체</option>
       </select>
     </div>
+
     <div class="filter-item">
       <label>택배사</label>
       <select id="filter-company" class="filter-select">
@@ -46,26 +50,28 @@
         {% endfor %}
       </select>
     </div>
+
     <div class="filter-actions">
       <button class="btn-primary" id="filter-apply" type="button">필터 적용</button>
       <button class="btn-secondary" id="filter-reset" type="button">초기화</button>
     </div>
   </div>
 
+  <!-- 테이블 -->
   <div class="table-wrapper table-fixed">
     <table id="request-table" class="table-compact">
       <thead>
         <tr>
           <th style="width:50px;">No</th>
-          <th style="width:120px;">지역</th>
+          <th style="width:140px;">지역</th>
           <th style="width:120px;">택배사</th>
           <th style="width:160px;">영업소 / 대리점명</th>
-          <th style="width:160px;">근무요일 / 주간·야간</th>
+          <th style="width:160px;">근무 형태</th>
           <th style="width:120px;">월 물량</th>
           <th style="width:80px;">인원</th>
           <th style="width:250px;">기타 사항</th>
           <th style="width:120px;">현재 상태</th>
-          <th style="width:100px;">면접일</th>
+          <th style="width:110px;">면접일</th>
         </tr>
       </thead>
       <tbody></tbody>
@@ -75,7 +81,7 @@
 </section>
 
 <!-- ====================== -->
-<!-- 🔥 상태 변경 Modal -->
+<!-- 상태 변경 Modal -->
 <!-- ====================== -->
 <div id="status-modal" class="modal hidden">
   <div class="modal-card">
@@ -97,202 +103,156 @@
         <option value="면접 예정">면접 예정</option>
         <option value="배차완료">배차완료</option>
       </select>
-
     </div>
 
     <button class="btn-primary modal-save-btn" onclick="saveStatus()">저장</button>
   </div>
 </div>
 
-<!-- ============================================================== -->
-<!-- 🔥 JS — 테이블 렌더링 + 모달 + 저장 + 데이터 자동 로딩          -->
-<!-- ============================================================== -->
+<!-- ====================== -->
+<!-- JS -->
+<!-- ====================== -->
 <script>
 let currentId = null;
+
 const sidoSelect = document.getElementById("filter-sido");
 const sigunguSelect = document.getElementById("filter-sigungu");
 const companySelect = document.getElementById("filter-company");
 
-
+/* 테이블 렌더링 */
 function renderData(data) {
-    const tbody = document.querySelector("#request-table tbody");
-    tbody.innerHTML = "";
+  const tbody = document.querySelector("#request-table tbody");
+  tbody.innerHTML = "";
 
-    if (!data || data.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="10" style="text-align:center;">
-              등록된 요청이 없습니다.
-            </td>
-          </tr>`;
-        return;
-    }
+  if (!data || data.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="10" style="text-align:center;">등록된 요청이 없습니다.</td>
+      </tr>`;
+    return;
+  }
 
-    data.forEach((r, idx) => {
-        const row = document.createElement("tr");
+  data.forEach((r, idx) => {
+    const tr = document.createElement("tr");
 
-        row.innerHTML = `
-          <td>${idx + 1}</td>
-          <td>${r.region}</td>
-          <td>${r.company}</td>
-          <td>${r.branch_name}</td>
-          <td>${r.work_days || "-"}</td>
-          <td>${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
-          <td>${r.headcount || "-"}</td>
-          <td>${r.etc || "-"}</td>
-          <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
-          <td>${r.interview_date || "-"}</td>
-        `;
+    tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${r.region || "-"}</td>
+      <td>${r.company || "-"}</td>
+      <td>${r.branch_name || "-"}</td>
+      <td>${r.work_days || "-"}</td>
+      <td>${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
+      <td>${r.headcount || "-"}</td>
+      <td>${r.etc || "-"}</td>
+      <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
+      <td>${r.interview_date || "-"}</td>
+    `;
 
-        row.onclick = () => openModal({
-            id: r.id,
-            region: r.region,
-            company: r.company,
-            branch_name: r.branch_name,
-            interview_date: r.interview_date,
-            status: r.status
-        });
-
-        tbody.appendChild(row);
-    });
+    tr.onclick = () => openModal(r);
+    tbody.appendChild(tr);
+  });
 }
-  
 
-/* =========================================================
-   🔥 Dashboard 데이터 자동 로딩(fetch)
-========================================================= */
+/* 데이터 로딩 */
 function loadDashboardData() {
-    const params = new URLSearchParams();
+  const params = new URLSearchParams();
 
-    if (companySelect?.value && companySelect.value !== "all") {
-        params.set("company", companySelect.value);
-    }
-    if (sidoSelect?.value) {
-        params.set("region_sido", sidoSelect.value);
-    }
-    if (sigunguSelect?.value) {
-        params.set("region_sigungu", sigunguSelect.value);
-    }
+  if (companySelect.value !== "all") {
+    params.set("company", companySelect.value);
+  }
+  if (sidoSelect.value) {
+    params.set("region_sido", sidoSelect.value);
+  }
+  if (sigunguSelect.value) {
+    params.set("region_sigungu", sigunguSelect.value);
+  }
 
-    const url = `/api/requests${params.toString() ? "?" + params.toString() : ""}`;
-
-    fetch(url)
-        .then(res => res.json())
-        .then(json => {
-            if (json.data) renderData(json.data);
-        })
-        .catch(err => console.error("데이터 로딩 실패:", err));
-}
-
-window.addEventListener("DOMContentLoaded", () => {
-    loadDashboardData();
-    setupRegionFilters();
-    document.getElementById("filter-apply")?.addEventListener("click", loadDashboardData);
-    document.getElementById("filter-reset")?.addEventListener("click", () => {
-        if (sidoSelect) sidoSelect.value = "";
-        if (sigunguSelect) {
-            sigunguSelect.innerHTML = '<option value="">전체</option>';
-            sigunguSelect.disabled = true;
-        }
-        if (companySelect) companySelect.value = "all";
-        loadDashboardData();
-    });
-});
-
-function setupRegionFilters() {
-    if (!window.REGION_DATA || !sidoSelect || !sigunguSelect) return;
-
-    const sidoList = window.REGION_SIDO_ORDER || Object.keys(window.REGION_DATA);
-    sidoList.forEach((sido) => {
-        const opt = new Option(sido, sido);
-        sidoSelect.add(opt);
-    });
-
-    const renderSigungu = (sido) => {
-        sigunguSelect.innerHTML = "";
-        sigunguSelect.add(new Option("전체", ""));
-        const items = window.REGION_DATA[sido] || [];
-        items.forEach((g) => sigunguSelect.add(new Option(g, g)));
-        sigunguSelect.disabled = items.length === 0;
-    };
-
-    sidoSelect.addEventListener("change", () => {
-        renderSigungu(sidoSelect.value);
-    });
-}
-
-/* =========================================================
-   🔵 Modal 열기
-========================================================= */
-function openModal(r) {
-    currentId = r.id;
-
-    document.getElementById("modal-title").innerText =
-        `${r.region} / ${r.company} / ${r.branch_name}`;
-
-    document.getElementById("modal-interview").value =
-        r.interview_date || "";
-
-    document.getElementById("modal-status").value =
-        r.status || "모집중";
-
-    document.getElementById("status-modal").classList.remove("hidden");
-}
-
-/* =========================================================
-   🔥 저장 요청
-========================================================= */
-function saveStatus() {
-
-    const btn = document.querySelector(".modal-save-btn");
-    btn.innerText = "저장중...";
-    btn.disabled = true;
-
-    fetch("/api/update-status", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-            req_id: currentId,
-            interview_date: document.getElementById("modal-interview").value,
-            status: document.getElementById("modal-status").value
-        })
-    })
+  fetch(`/api/requests?${params.toString()}`)
     .then(res => res.json())
-    .then(json => {
-
-        if (!json.success) {
-            alert("저장 실패: " + (json.error || ""));
-            btn.innerText = "저장";
-            btn.disabled = false;
-            return;
-        }
-
-        btn.innerText = "저장완료 ✓";
-        btn.style.background = "#059669";
-        btn.style.borderColor = "#059669";
-
-        // 저장 후 리스트 새로고침
-        loadDashboardData();
-
-        setTimeout(() => {
-            location.reload();
-        }, 500);
-
-    })
-    .catch(err => {
-        alert("오류 발생: " + err);
-        btn.innerText = "저장";
-        btn.disabled = false;
-    });
+    .then(json => renderData(json.data || []))
+    .catch(err => console.error("데이터 로딩 실패:", err));
 }
 
-/* =========================================================
-   🔵 Modal 닫기
-========================================================= */
+/* 지역 필터 초기화 */
+function setupRegionFilters() {
+  if (!window.REGION_DATA) return;
+
+  const sidoList = window.REGION_SIDO_ORDER || Object.keys(window.REGION_DATA);
+  sidoList.forEach(sido => sidoSelect.add(new Option(sido, sido)));
+
+  sidoSelect.addEventListener("change", () => {
+    sigunguSelect.innerHTML = "";
+    sigunguSelect.add(new Option("전체", ""));
+    const list = window.REGION_DATA[sidoSelect.value] || [];
+    list.forEach(g => sigunguSelect.add(new Option(g, g)));
+    sigunguSelect.disabled = list.length === 0;
+  });
+}
+
+/* Modal */
+function openModal(r) {
+  currentId = r.id;
+  document.getElementById("modal-title").innerText =
+    `${r.region} / ${r.company} / ${r.branch_name}`;
+  document.getElementById("modal-interview").value = r.interview_date || "";
+  document.getElementById("modal-status").value = r.status || "모집중";
+  document.getElementById("status-modal").classList.remove("hidden");
+}
+
 function closeModal() {
-    const modal = document.getElementById("status-modal");
-    if (modal) modal.classList.add("hidden");
+  document.getElementById("status-modal").classList.add("hidden");
 }
+
+/* 상태 저장 */
+function saveStatus() {
+  const btn = document.querySelector(".modal-save-btn");
+  btn.disabled = true;
+  btn.innerText = "저장중...";
+
+  fetch("/api/update-status", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      req_id: currentId,
+      interview_date: document.getElementById("modal-interview").value,
+      status: document.getElementById("modal-status").value
+    })
+  })
+  .then(res => res.json())
+  .then(json => {
+    if (!json.success) {
+      alert("저장 실패");
+      btn.disabled = false;
+      btn.innerText = "저장";
+      return;
+    }
+    loadDashboardData();
+    closeModal();
+    btn.disabled = false;
+    btn.innerText = "저장";
+  })
+  .catch(() => {
+    alert("오류 발생");
+    btn.disabled = false;
+    btn.innerText = "저장";
+  });
+}
+
+/* 초기 실행 */
+document.addEventListener("DOMContentLoaded", () => {
+  setupRegionFilters();
+  loadDashboardData();
+
+  document.getElementById("filter-apply").onclick = loadDashboardData;
+  document.getElementById("filter-reset").onclick = () => {
+    sidoSelect.value = "";
+    sigunguSelect.innerHTML = '<option value="">전체</option>';
+    sigunguSelect.disabled = true;
+    companySelect.value = "all";
+    loadDashboardData();
+  };
+});
 </script>
+
 <script src="{{ url_for('static', filename='region-data.js') }}"></script>
 {% endblock %}
