@@ -144,19 +144,7 @@ def create_app():
         session["login_provider"] = "native"
     
         return jsonify({"success": True}), 200
-    '''
-    #===============================
-    # test print 
-    #======================================
-    @app.route("/api/login", methods=["POST"])
-    def api_login():
-        data = request.get_json(silent=True) or {}
-    
-        print("LOGIN API DATA:", data)
-    
-        login_id = data.get("login_id", "").strip()
-        password = data.get("password", "")
-    '''
+   
     
     # =========================================================
     # Google OAuth Callback (Flask-Dance의 google.authorized 대신 직접 처리)
@@ -756,44 +744,62 @@ def create_app():
         if request.method == "POST":
             form = request.form
             try:
+                # 지역 처리 (시/도 + 시/군/구)
                 region_sido = form.get("region_sido", "").strip()
                 region_sigungu = form.get("region_sigungu", "").strip()
-                region_combined = " ".join([p for p in [region_sido, region_sigungu] if p]).strip()
-
+                region_combined = " ".join(
+                    [p for p in [region_sido, region_sigungu] if p]
+                ).strip()
+    
                 new_req = RequestItem(
                     branch_id=branch.id,
                     company=form.get("company", "").strip(),
-                    branch_name=form.get("branch", "").strip(),
-                    region=region_combined or form.get("region", "").strip(),
+    
+                    # ❗ branch_name은 form에서 받지 말고 Branch에서
+                    branch_name=branch.branch_name,
+    
+                    region=region_combined,
                     region_sido=region_sido or None,
                     region_sigungu=region_sigungu or None,
-                    unit_price=safe_int(form.get("unit_price")),
+    
+                    # ❌ unit_price 완전 제거
                     volume=safe_int(form.get("volume")),
-                    vehicle_type=form.get("vehicle_type", "").strip(),
                     headcount=safe_int(form.get("headcount")),
-                    etc=form.get("etc", "").strip(),               
+    
+                    work_days=form.get("work_days", "").strip(),
+                    center_location=form.get("center_location", "").strip(),
+                    etc=form.get("etc", "").strip(),
+    
                     status="모집중",
                     created_at=datetime.utcnow(),
                 )
-
+    
                 db.session.add(new_req)
                 db.session.commit()
                 flash("요청이 저장되었습니다.", "success")
+    
             except Exception as e:
                 db.session.rollback()
-                print(e)
-                flash("요청 저장 중 오류 발생", "error")
+                print("❌ 요청 저장 오류:", e)
+                flash("요청 저장 중 오류가 발생했습니다.", "error")
     
             return redirect(url_for("request_page"))
     
-        # ⭐ 여기 추가! → 브랜치별 요청 내역 조회
+        # 브랜치별 요청 목록
         branch_requests = []
         if branch:
-            branch_requests = RequestItem.query.filter_by(branch_id=branch.id).order_by(RequestItem.created_at.desc()).all()
+            branch_requests = (
+                RequestItem.query
+                .filter_by(branch_id=branch.id)
+                .order_by(RequestItem.created_at.desc())
+                .all()
+            )
     
-        return render_template("request.html",
-                               branch=branch,
-                               branch_requests=branch_requests)
+        return render_template(
+            "request.html",
+            branch=branch,
+            branch_requests=branch_requests
+        )
 
 
     # =========================================================
