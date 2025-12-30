@@ -6,7 +6,7 @@ from flask import (
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from config import Config
-from models import db, Branch, Request as Req
+from models import db, Branch, RequestItem
 
 # Google OAuth
 from flask_dance.contrib.google import make_google_blueprint, google
@@ -526,14 +526,14 @@ def create_app():
         # -----------------------------------------------
         # 1) 전체 개수
         # -----------------------------------------------
-        total = Req.query.count()
+        total = RequestItem.query.count()
     
         # 상태별 개수
-        status_wait = Req.query.filter_by(status='모집중').count()
-        status_promo = Req.query.filter_by(status='홍보중').count()
-        status_pre = Req.query.filter_by(status='선탑 진행중').count()
-        status_interview = Req.query.filter_by(status='면접 예정').count()
-        status_done = Req.query.filter_by(status='배차 완료').count()
+        status_wait = RequestItem.query.filter_by(status='모집중').count()
+        status_promo = RequestItem.query.filter_by(status='홍보중').count()
+        status_pre = RequestItem.query.filter_by(status='선탑 진행중').count()
+        status_interview = RequestItem.query.filter_by(status='면접 예정').count()
+        status_done = RequestItem.query.filter_by(status='배차 완료').count()
 
     
         # 진행률
@@ -550,7 +550,7 @@ def create_app():
         # -----------------------------------------------
         # 2) 최근 요청 5건
         # -----------------------------------------------
-        recent = Req.query.order_by(Req.created_at.desc()).limit(5).all()
+        recent = RequestItem.query.order_by(RequestItem.created_at.desc()).limit(5).all()
 
         recent_items = [
             {
@@ -582,8 +582,8 @@ def create_app():
         # 3) ⭐ 지역별 개수 집계 (TOP 5 + 기타 + 라벨(숫자))
         # -----------------------------------------------
         raw_rows = (
-            db.session.query(Req.region, db.func.count(Req.id))
-            .group_by(Req.region)
+            db.session.query(RequestItem.region, db.func.count(RequestItem.id))
+            .group_by(RequestItem.region)
             .all()
         )
         
@@ -611,8 +611,8 @@ def create_app():
         # 4) ⭐ 택배사별 요청 비율 집계 (TOP 5 + 기타)
         # -----------------------------------------------
         carrier_rows = (
-            db.session.query(Req.company, func.count(Req.id))
-            .group_by(Req.company)
+            db.session.query(RequestItem.company, func.count(RequestItem.id))
+            .group_by(RequestItem.company)
             .all()
         )
         
@@ -751,7 +751,7 @@ def create_app():
                 region_sigungu = form.get("region_sigungu", "").strip()
                 region_combined = " ".join([p for p in [region_sido, region_sigungu] if p]).strip()
 
-                new_req = Req(
+                new_req = RequestItem(
                     branch_id=branch.id,
                     company=form.get("company", "").strip(),
                     branch_name=form.get("branch", "").strip(),
@@ -780,7 +780,7 @@ def create_app():
         # ⭐ 여기 추가! → 브랜치별 요청 내역 조회
         branch_requests = []
         if branch:
-            branch_requests = Req.query.filter_by(branch_id=branch.id).order_by(Req.created_at.desc()).all()
+            branch_requests = RequestItem.query.filter_by(branch_id=branch.id).order_by(RequestItem.created_at.desc()).all()
     
         return render_template("request.html",
                                branch=branch,
@@ -801,7 +801,7 @@ def create_app():
             return redirect(url_for("login"))
 
         # 🔒 보안: 내 지점(branch_id)의 데이터만 삭제 가능
-        row = Req.query.filter_by(id=req_id, branch_id=branch_id).first()
+        row = RequestItem.query.filter_by(id=req_id, branch_id=branch_id).first()
 
         if not row:
             flash("삭제할 요청을 찾을 수 없습니다.", "error")
@@ -822,8 +822,8 @@ def create_app():
     # 통계 함수
     # =========================================================
     def get_stats():
-        total = Req.query.count()
-        completed = Req.query.filter_by(status="배차완료").count()
+        total = RequestItem.query.count()
+        completed = RequestItem.query.filter_by(status="배차완료").count()
         active = total - completed
         return total, active, completed
 
@@ -846,7 +846,7 @@ def create_app():
     @login_required
     @admin_required
     def dashboard_v2():
-        reqs = Req.query.order_by(Req.created_at.desc()).all()
+        reqs = RequestItem.query.order_by(RequestItem.created_at.desc()).all()
         total, active, completed = get_stats()
 
         return render_template("dashboard_v2.html",
@@ -860,7 +860,7 @@ def create_app():
     @login_required
     @admin_required
     def dashboard_v3():
-        reqs = Req.query.order_by(Req.created_at.desc()).all()
+        reqs = RequestItem.query.order_by(RequestItem.created_at.desc()).all()
         total, active, completed = get_stats()
 
         return render_template("dashboard_v3.html",
@@ -948,19 +948,19 @@ def create_app():
         status = request.args.get("status", "all")
         region_sido = request.args.get("region_sido", "").strip()
         region_sigungu = request.args.get("region_sigungu", "").strip()
-        query = Req.query
+        query = RequestItem.query
     
         if company != "all" and company:
-            query = query.filter(Req.company == company)
+            query = query.filter(RequestItem.company == company)
     
         if status != "all" and status:
-            query = query.filter(Req.status == status)
+            query = query.filter(RequestItem.status == status)
         if region_sido:
-            query = query.filter(Req.region_sido == region_sido)
+            query = query.filter(RequestItem.region_sido == region_sido)
         if region_sigungu:
-            query = query.filter(Req.region_sigungu == region_sigungu)
+            query = query.filter(RequestItem.region_sigungu == region_sigungu)
 
-        rows = query.order_by(Req.created_at.desc()).all()
+        rows = query.order_by(RequestItem.created_at.desc()).all()
     
         results = [
             {
@@ -1001,7 +1001,7 @@ def create_app():
         new_status = data.get("status")
         interview_date = data.get("interview_date")
 
-        row = Req.query.get(req_id)
+        row = RequestItem.query.get(req_id)
         if not row:
             return jsonify({"success": False, "error": "Invalid request ID"}), 404
 
@@ -1039,7 +1039,7 @@ def create_app():
         data = request.get_json()
 
         try:
-            r = Req(
+            r = RequestItem(
                 company=data.get("company"),
                 region=data.get("region"),
                 branch_name=data.get("branch_name"),
@@ -1075,7 +1075,7 @@ def create_app():
 
         try:
             for _ in range(100):
-                r = Req(
+                r = RequestItem(
                     branch_id=admin_branch_id,
                     company=random.choice(["CJ", "HPL", "롯데", "로젠", "우체국", "쿠팡"])[:7],
                     region=random.choice(["서울", "경기", "부산", "대구", "광주", "인천"])[:7],
@@ -1102,7 +1102,7 @@ def create_app():
     # =========================================================
     def get_company_list():
         try:
-            rows = db.session.query(Req.company).distinct().all()
+            rows = db.session.query(RequestItem.company).distinct().all()
             return [c[0] for c in rows if c[0]]
         except Exception as e:
             print("COMPANY LIST ERROR:", e)
