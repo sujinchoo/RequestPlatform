@@ -10,7 +10,7 @@ from models import db, Branch, Request as Req
 
 # Google OAuth
 from flask_dance.contrib.google import make_google_blueprint, google
-from sqlalchemy import text, extract, func
+from sqlalchemy import text, extract, func, inspect
 import os
 
 # Google oauth2 for android mobile 
@@ -25,7 +25,41 @@ def create_app():
     app.config.from_object(Config)
 
     db.init_app(app)
-    
+
+    def safe_int(value):
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return 0
+
+    def ensure_request_region_columns():
+        """
+        기존 DB에 region_sido / region_sigungu 컬럼이 없으면 자동으로 추가한다.
+        (Postgres / SQLite 호환 ALTER 사용, 실패 시 로깅 후 계속 진행)
+        """
+        insp = inspect(db.engine)
+        if "requests" not in insp.get_table_names():
+            return
+
+        existing = {col["name"] for col in insp.get_columns("requests")}
+        statements = []
+
+        if "region_sido" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN region_sido VARCHAR(100)")
+        if "region_sigungu" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN region_sigungu VARCHAR(100)")
+
+        for stmt in statements:
+            try:
+                db.session.execute(text(stmt))
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print(f"[WARN] region column migration skipped: {e}")
+
+    with app.app_context():
+        ensure_request_region_columns()
+
     # =========================================================
     # 유틸 데코레이터
     # =========================================================
@@ -496,6 +530,7 @@ def create_app():
     
         # 상태별 개수
         status_wait = Req.query.filter_by(status="모집중").count()
+        status_promo = Req.query.filter_by(status="홍보중").count()
         status_pre = Req.query.filter_by(status="선탑진행중").count()
         status_interview = Req.query.filter_by(status="면접예정").count()
         status_done = Req.query.filter_by(status="배차완료").count()
@@ -504,8 +539,9 @@ def create_app():
         progress_rate = round((status_done / total) * 100, 1) if total > 0 else 0
     
         # 비중
-        total2 = status_wait + status_pre + status_interview + status_done or 1
+        total2 = status_wait + status_promo + status_pre + status_interview + status_done or 1
         pct_wait = round((status_wait / total2) * 100, 1)
+        pct_promo = round((status_promo / total2) * 100, 1)
         pct_pre = round((status_pre / total2) * 100, 1)
         pct_interview = round((status_interview / total2) * 100, 1)
         pct_done = round((status_done / total2) * 100, 1)
@@ -585,11 +621,13 @@ def create_app():
             "dashboard_demo.html",
             total_cases=total,
             status_wait=status_wait,
+            status_promo=status_promo,
             status_pre=status_pre,
             status_interview=status_interview,
             status_done=status_done,
             progress_rate=progress_rate,
             pct_wait=pct_wait,
+            status_promo=status_promo,
             pct_pre=pct_pre,
             pct_interview=pct_interview,
             pct_done=pct_done,
@@ -678,25 +716,22 @@ def create_app():
         if request.method == "POST":
             form = request.form
             try:
+                region_sido = form.get("region_sido", "").strip()
+                region_sigungu = form.get("region_sigungu", "").strip()
+                region_combined = " ".join([p for p in [region_sido, region_sigungu] if p]).strip()
+
                 new_req = Req(
                     branch_id=branch.id,
-                    company=form.get("company"),
-                    branch_name=form.get("branch"),
-                    region=form.get("region"),
-                
-                    center_location=form.get("center_location"),
-                    
-                   # ✅ 여기만 바꿔주면 끝
-                    work_type=request.form.get("work_days"),
-                    
-                    headcount=int(form.get("headcount") or 0),
-                    
-                    # ✅ 숫자 필드 (HTML number)
-                    volume=int(form.get("volume") or 0),
-                
-                    
-                    etc=form.get("etc"),
-                
+                    company=form.get("company", "").strip(),
+                    branch_name=form.get("branch", "").strip(),
+                    region=region_combined or form.get("region", "").strip(),
+                    region_sido=region_sido or None,
+                    region_sigungu=region_sigungu or None,
+                    unit_price=safe_int(form.get("unit_price")),
+                    volume=safe_int(form.get("volume")),
+                    vehicle_type=form.get("vehicle_type", "").strip(),
+                    headcount=safe_int(form.get("headcount")),
+                    etc=form.get("etc", "").strip(),               
                     status="모집중",
                     created_at=datetime.utcnow(),
                 )
@@ -852,7 +887,9 @@ def create_app():
             }), 403
     
         try:
-            branch.is_admin = bool(is_admin)
+             # 문자열/불리언/숫자 모두 안전하게 처리
+            true_values = {"true", "1", "yes", "y", True, 1}
+            branch.is_admin = is_admin in true_values
             db.session.commit()
     
             return jsonify({
@@ -878,7 +915,8 @@ def create_app():
     def api_requests():
         company = request.args.get("company", "all")
         status = request.args.get("status", "all")
-    
+        region_sido = request.args.get("region_sido", "").strip()
+        region_sigungu = request.args.get("region_sigungu", "").strip()
         query = Req.query
     
         if company != "all" and company:
@@ -886,13 +924,19 @@ def create_app():
     
         if status != "all" and status:
             query = query.filter(Req.status == status)
-    
+        if region_sido:
+            query = query.filter(Req.region_sido == region_sido)
+        if region_sigungu:
+            query = query.filter(Req.region_sigungu == region_sigungu)
+
         rows = query.order_by(Req.created_at.desc()).all()
     
         results = [
             {
                 "id": r.id,
-                "region": r.region,
+                "region": r.region_full,
+                "region_sido": r.region_sido,
+                "region_sigungu": r.region_sigungu,
                 "company": r.company,
                 "branch_name": r.branch_name,
                 "work_days": r.work_type,          # ⭐ 추가
