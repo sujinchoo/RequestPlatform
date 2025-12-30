@@ -529,11 +529,12 @@ def create_app():
         total = Req.query.count()
     
         # 상태별 개수
-        status_wait = Req.query.filter_by(status="모집중").count()
-        status_promo = Req.query.filter_by(status="홍보중").count()
-        status_pre = Req.query.filter_by(status="선탑진행중").count()
-        status_interview = Req.query.filter_by(status="면접예정").count()
-        status_done = Req.query.filter_by(status="배차완료").count()
+        status_wait = Req.query.filter_by(status='모집중').count()
+        status_promo = Req.query.filter_by(status='홍보중').count()
+        status_pre = Req.query.filter_by(status='선탑 진행중').count()
+        status_interview = Req.query.filter_by(status='면접 예정').count()
+        status_done = Req.query.filter_by(status='배차 완료').count()
+
     
         # 진행률
         progress_rate = round((status_done / total) * 100, 1) if total > 0 else 0
@@ -619,22 +620,26 @@ def create_app():
         # -----------------------------------------------
         return render_template(
             "dashboard_demo.html",
-            total_cases=total,
+            total_cases=total_cases,
+
             status_wait=status_wait,
             status_promo=status_promo,
             status_pre=status_pre,
             status_interview=status_interview,
             status_done=status_done,
+
             progress_rate=progress_rate,
             pct_wait=pct_wait,
             pct_promo=pct_promo,
             pct_pre=pct_pre,
             pct_interview=pct_interview,
             pct_done=pct_done,
+
             recent=recent,
-            region_count=region_count,      # ← 라벨(숫자) 포함 + Top5 구조
-            carrier_count=carrier_count      # ⭐ 택배사별 Pie
+            region_count=region_count,
+            carrier_count=carrier_count
         )
+
 
 
     # =========================================================
