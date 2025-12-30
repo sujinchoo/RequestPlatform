@@ -36,6 +36,11 @@ class RequestItem(db.Model):
     )
 
     company = db.Column(db.String(50), nullable=False)
+     # 🔥 이 3개가 반드시 있어야 함
+    region = db.Column(db.String(100), nullable=False)
+    region_sido = db.Column(db.String(100))
+    region_sigungu = db.Column(db.String(100))
+
     region = db.Column(db.String(100), nullable=False)
     branch_name = db.Column(db.String(150), nullable=False)
 
