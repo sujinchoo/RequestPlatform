@@ -170,8 +170,10 @@
         <canvas id="carrierPieChart"></canvas>
       </div>
     </div>
-
+{#
 <h3 style="margin-top:20px;">📌 최근 요청 5건</h3>
+
+    
 {% for r in recent %}
 <div class="recent-card-compact">
   <span class="recent-status-tag tag-{{ r.status | replace(' ', '-') }}">
@@ -185,7 +187,9 @@
   </div>
 </div>
 {% endfor %}
+#}
 
+    
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
 
