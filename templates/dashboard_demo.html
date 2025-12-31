@@ -198,17 +198,23 @@ const regionRaw = {{ region_count | tojson | safe }};
 const carrierRaw = {{ carrier_count | tojson | safe }};
 
 function renderPie(id, data, colors) {
-  const labels = Object.keys(data);
-  const values = Object.values(data);
-  if (!labels.length) return;
+  // 1️⃣ 값 기준 내림차순 정렬
+  const entries = Object.entries(data)
+    .sort((a, b) => b[1] - a[1]);
+
+  if (!entries.length) return;
+
+  // 2️⃣ labels / values 동기화
+  const labels = entries.map(e => e[0]);
+  const values = entries.map(e => e[1]);
 
   new Chart(document.getElementById(id), {
     type: 'pie',
     data: {
-      labels,
+      labels: labels,
       datasets: [{
         data: values,
-        backgroundColor: colors,
+        backgroundColor: colors.slice(0, labels.length),
         borderWidth: 1
       }]
     },
@@ -229,16 +235,21 @@ function renderPie(id, data, colors) {
         },
         datalabels: {
           color: '#ffffff',
-          font: { size: 9, weight: '600' },
-          formatter: (v, ctx) => {
-            const total = ctx.dataset.data.reduce((a, b) => a + b, 0);
-            return total ? `${Math.round(v / total * 100)}%` : '';
+          font: {
+            size: 9,
+            weight: '600'
+          },
+          formatter: (value, ctx) => {
+            const total = ctx.chart.data.datasets[0].data
+              .reduce((a, b) => a + b, 0);
+            return total ? `${Math.round(value / total * 100)}%` : '';
           }
         }
       }
     }
   });
 }
+
 
 
 renderPie(
