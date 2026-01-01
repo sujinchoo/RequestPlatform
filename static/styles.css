@@ -1858,14 +1858,14 @@ body:has(.request-wrapper) .btn-danger {
   }
 }
 /* ======================================================
-   📊 TODAY REQUEST SUMMARY — HERO + STATUS CARDS (v1)
-   적용 위치: styles.css 최하단
+   📊 TODAY REQUEST SUMMARY — HERO + STATUS CARDS (v1.1 FIX)
+   충돌 제거 버전 (안정판)
    ====================================================== */
 
 /* 요약 전체 래퍼 */
 .today-summary {
   display: grid;
-  grid-template-columns: 2fr 3fr; /* 좌: 진행률 / 우: 상태카드 */
+  grid-template-columns: 2fr 3fr;
   gap: 16px;
   margin-bottom: 18px;
 }
@@ -1878,7 +1878,7 @@ body:has(.request-wrapper) .btn-danger {
 }
 
 /* ===============================
-   🔥 HERO CARD (진행률 중심)
+   🔥 HERO CARD
    =============================== */
 .summary-hero {
   background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
@@ -1912,7 +1912,7 @@ body:has(.request-wrapper) .btn-danger {
   margin-bottom: 12px;
 }
 
-/* 진행률 바 */
+/* 진행률 바 (기존 progress 클래스와 완전 분리) */
 .hero-progress {
   height: 10px;
   border-radius: 999px;
@@ -1923,7 +1923,6 @@ body:has(.request-wrapper) .btn-danger {
 .hero-progress span {
   display: block;
   height: 100%;
-  width: 14.3%; /* 🔥 서버 값 그대로 inline style로 덮어도 됨 */
   background: linear-gradient(90deg, #22c55e, #4ade80);
   border-radius: 999px;
 }
@@ -1949,6 +1948,7 @@ body:has(.request-wrapper) .btn-danger {
   border: 1px solid #e5e7eb;
   border-radius: 14px;
   padding: 14px 16px;
+  min-height: 96px;                 /* 🔥 높이 고정으로 찌그러짐 방지 */
   box-shadow: 0 4px 12px rgba(0,0,0,0.04);
 
   display: flex;
@@ -1963,26 +1963,25 @@ body:has(.request-wrapper) .btn-danger {
   box-shadow: 0 8px 18px rgba(0,0,0,0.08);
 }
 
-/* 상단 라벨 */
-.status-card .label {
+/* 🔥 전용 라벨 / 값 (기존 .label .value 충돌 제거) */
+.status-label {
   font-size: 12px;
   font-weight: 600;
   color: #6b7280;
   margin-bottom: 6px;
 }
 
-/* 숫자 */
-.status-card .value {
+.status-value {
   font-size: 24px;
   font-weight: 800;
   color: #111827;
 }
 
 /* ===============================
-   🎨 상태별 포인트 (상단 바)
+   🎨 상태별 포인트 (class 충돌 제거)
    =============================== */
-.status-card.wait    { border-top: 4px solid #3b82f6; } /* 모집중 */
-.status-card.promo   { border-top: 4px solid #8b5cf6; } /* 홍보중 */
-.status-card.progress{ border-top: 4px solid #f59e0b; } /* 선탑 */
-.status-card.interview{border-top: 4px solid #eab308; } /* 면접 */
-.status-card.done    { border-top: 4px solid #22c55e; } /* 배차완료 */
+.status-card.wait       { border-top: 4px solid #3b82f6; } /* 모집중 */
+.status-card.promo      { border-top: 4px solid #8b5cf6; } /* 홍보중 */
+.status-card.pre        { border-top: 4px solid #f59e0b; } /* 선탑진행중 */
+.status-card.interview  { border-top: 4px solid #eab308; } /* 면접예정 */
+.status-card.done       { border-top: 4px solid #22c55e; } /* 배차완료 */
