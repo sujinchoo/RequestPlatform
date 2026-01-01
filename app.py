@@ -1,4 +1,6 @@
-from datetime import datetime, date
+from datetime import datetime, date, time
+from zoneinfo import ZoneInfo  # Python 3.9+
+
 from flask import (
     Flask, render_template, request,
     redirect, url_for, session, flash, jsonify
@@ -18,6 +20,15 @@ from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 from flask import make_response
 import requests
+
+KST = ZoneInfo("Asia/Seoul")
+
+now_kst = datetime.now(KST)
+today_start_kst = datetime.combine(
+    now_kst.date(),
+    time.min,
+    tzinfo=KST
+)
 
 
 def create_app():
@@ -515,7 +526,31 @@ def create_app():
     @login_required
     @admin_required
     def dashboard_demo():
-    
+        # -----------------------------------------------
+        # ⭐ 오늘 신규 요청 (KST 기준)
+        # -----------------------------------------------
+        now_kst = datetime.now(KST)
+
+        today_start_kst = datetime.combine(
+            now_kst.date(),
+            time.min,
+            tzinfo=KST
+        )
+
+        # DB created_at 은 UTC 기준이므로 변환
+        UTC = ZoneInfo("UTC")
+        today_start_utc = today_start_kst.astimezone(UTC)
+
+
+        today_new_count = (
+            RequestItem.query
+            .filter(RequestItem.created_at >= today_start_utc)
+            .count()
+        )
+
+        
+
+        
         # -----------------------------------------------
         # 0) 지역 라벨 헬퍼 (현재 DB 구조 완전 대응)
         # -----------------------------------------------
@@ -676,6 +711,7 @@ def create_app():
             recent=recent_items,
             region_count=region_count,
             carrier_count=carrier_count,
+            today_new_count=today_new_count,
         )
 
 
