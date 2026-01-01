@@ -1857,3 +1857,132 @@ body:has(.request-wrapper) .btn-danger {
     min-width: 100px;
   }
 }
+/* ======================================================
+   📊 TODAY REQUEST SUMMARY — HERO + STATUS CARDS (v1)
+   적용 위치: styles.css 최하단
+   ====================================================== */
+
+/* 요약 전체 래퍼 */
+.today-summary {
+  display: grid;
+  grid-template-columns: 2fr 3fr; /* 좌: 진행률 / 우: 상태카드 */
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+/* 모바일: 세로 스택 */
+@media (max-width: 768px) {
+  .today-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ===============================
+   🔥 HERO CARD (진행률 중심)
+   =============================== */
+.summary-hero {
+  background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+  border: 1px solid #dbeafe;
+  border-radius: 16px;
+  padding: 20px 22px;
+  box-shadow: 0 6px 16px rgba(37,99,235,0.08);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.summary-hero .hero-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 8px;
+}
+
+.summary-hero .hero-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 6px;
+}
+
+.summary-hero .hero-sub {
+  font-size: 12px;
+  color: #475569;
+  margin-bottom: 12px;
+}
+
+/* 진행률 바 */
+.hero-progress {
+  height: 10px;
+  border-radius: 999px;
+  background: #e5e7eb;
+  overflow: hidden;
+}
+
+.hero-progress span {
+  display: block;
+  height: 100%;
+  width: 14.3%; /* 🔥 서버 값 그대로 inline style로 덮어도 됨 */
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border-radius: 999px;
+}
+
+/* ===============================
+   🔹 STATUS CARDS GRID
+   =============================== */
+.status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+@media (max-width: 640px) {
+  .status-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 개별 상태 카드 */
+.status-card {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 14px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.status-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+/* 상단 라벨 */
+.status-card .label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6b7280;
+  margin-bottom: 6px;
+}
+
+/* 숫자 */
+.status-card .value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+}
+
+/* ===============================
+   🎨 상태별 포인트 (상단 바)
+   =============================== */
+.status-card.wait    { border-top: 4px solid #3b82f6; } /* 모집중 */
+.status-card.promo   { border-top: 4px solid #8b5cf6; } /* 홍보중 */
+.status-card.progress{ border-top: 4px solid #f59e0b; } /* 선탑 */
+.status-card.interview{border-top: 4px solid #eab308; } /* 면접 */
+.status-card.done    { border-top: 4px solid #22c55e; } /* 배차완료 */
