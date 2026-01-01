@@ -1993,3 +1993,14 @@ body:has(.request-wrapper) .btn-danger {
 .status-card.pre        { border-top: 4px solid #f59e0b; } /* 선탑진행중 */
 .status-card.interview  { border-top: 4px solid #eab308; } /* 면접예정 */
 .status-card.done       { border-top: 4px solid #22c55e; } /* 배차완료 */
+/* 오늘 신규 요청 */
+.status-card.today {
+  border-top: 4px solid #6366f1;   /* indigo */
+}
+
+.status-card .status-sub {
+  margin-top: 4px;
+  font-size: 11px;
+  color: #64748b;                 /* slate */
+}
+
