@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}대시보드 요약{% endblock %}
-{% block header_title %}오늘의 요청 처리 현황{% endblock %}
+{% block header_title %}요청 등록 처리 현황{% endblock %}
 {% block logo_color %}logo-square-green{% endblock %}
 
 {% block extra_css %}
@@ -104,13 +104,13 @@
 {% block content %}
 <section class="sheet">
 
-<h2>📊 오늘의 요청 처리 현황</h2>
+<h2>📊 요청 등록 처리 현황</h2>
 
 <div class="today-summary">
 
   <!-- HERO -->
   <div class="summary-hero">
-    <div class="hero-title">오늘의 요청 처리 현황</div>
+    <div class="hero-title">요청 등록 처리 현황</div>
     <div class="hero-value">{{ progress_rate }}%</div>
     <div class="hero-sub">
       배차완료 {{ status_done }} / 전체 {{ total_cases }}
