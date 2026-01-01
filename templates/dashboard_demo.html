@@ -108,40 +108,51 @@
 
 <div class="today-summary">
 
+  <!-- HERO -->
   <div class="summary-hero">
     <div class="hero-title">오늘의 요청 처리 현황</div>
-    <div class="hero-value">14.3%</div>
-    <div class="hero-sub">배차완료 1 / 전체 7</div>
+    <div class="hero-value">{{ progress_rate }}%</div>
+    <div class="hero-sub">
+      배차완료 {{ status_done }} / 전체 {{ total_cases }}
+    </div>
 
     <div class="hero-progress">
-      <span style="width:14.3%"></span>
+      <span style="width:{{ progress_rate }}%"></span>
     </div>
   </div>
 
+  <!-- STATUS CARDS -->
   <div class="status-grid">
-    <div class="status-card wait">
-      <div class="label">모집중</div>
-      <div class="value">3</div>
-    </div>
-    <div class="status-card promo">
-      <div class="label">홍보중</div>
-      <div class="value">1</div>
-    </div>
-    <div class="status-card progress">
-      <div class="label">선탑진행중</div>
-      <div class="value">1</div>
-    </div>
-    <div class="status-card interview">
-      <div class="label">면접예정</div>
-      <div class="value">1</div>
-    </div>
-    <div class="status-card done">
-      <div class="label">배차완료</div>
-      <div class="value">1</div>
-    </div>
-  </div>
 
+    <div class="status-card wait">
+      <div class="status-label">모집중</div>
+      <div class="status-value">{{ status_wait }}</div>
+    </div>
+
+    <div class="status-card promo">
+      <div class="status-label">홍보중</div>
+      <div class="status-value">{{ status_promo }}</div>
+    </div>
+
+    <!-- 🔥 핵심 수정 포인트 -->
+    <div class="status-card pre">
+      <div class="status-label">선탑진행중</div>
+      <div class="status-value">{{ status_pre }}</div>
+    </div>
+
+    <div class="status-card interview">
+      <div class="status-label">면접예정</div>
+      <div class="status-value">{{ status_interview }}</div>
+    </div>
+
+    <div class="status-card done">
+      <div class="status-label">배차완료</div>
+      <div class="status-value">{{ status_done }}</div>
+    </div>
+
+  </div>
 </div>
+
 
 
 <div class="card">
