@@ -123,6 +123,17 @@
 
   <!-- STATUS CARDS -->
   <div class="status-grid">
+    <div class="status-card today">
+      <div class="status-label">오늘 신규 요청</div>
+      <div class="status-value">
+        {% if today_new_count > 0 %}
+          +{{ today_new_count }}
+        {% else %}
+          0
+        {% endif %}
+      </div>
+      <div class="status-sub">오늘 00시 기준</div>
+    </div>
 
     <div class="status-card wait">
       <div class="status-label">모집중</div>
