@@ -1995,7 +1995,7 @@ body:has(.request-wrapper) .btn-danger {
 .status-card.done       { border-top: 4px solid #22c55e; } /* 배차완료 */
 /* 오늘 신규 요청 */
 .status-card.today {
-  border-top: 4px solid #6366f1;   /* indigo */
+  border-top: 4px solid ##f55636;   /* red */
 }
 
 .status-card .status-sub {
