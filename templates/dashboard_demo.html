@@ -106,45 +106,43 @@
 
 <h2>📊 오늘의 요청 처리 현황</h2>
 
-<div class="summary-box">
-  <div class="card summary-card total">
-    <div class="card-title">총 요청 수</div>
-    <div class="card-value">{{ total_cases }}</div>
+<div class="today-summary">
+
+  <div class="summary-hero">
+    <div class="hero-title">오늘의 요청 처리 현황</div>
+    <div class="hero-value">14.3%</div>
+    <div class="hero-sub">배차완료 1 / 전체 7</div>
+
+    <div class="hero-progress">
+      <span style="width:14.3%"></span>
+    </div>
   </div>
 
-  <div class="card summary-card wait">
-    <div class="card-title">모집중</div>
-    <div class="card-value">{{ status_wait }}</div>
+  <div class="status-grid">
+    <div class="status-card wait">
+      <div class="label">모집중</div>
+      <div class="value">3</div>
+    </div>
+    <div class="status-card promo">
+      <div class="label">홍보중</div>
+      <div class="value">1</div>
+    </div>
+    <div class="status-card progress">
+      <div class="label">선탑진행중</div>
+      <div class="value">1</div>
+    </div>
+    <div class="status-card interview">
+      <div class="label">면접예정</div>
+      <div class="value">1</div>
+    </div>
+    <div class="status-card done">
+      <div class="label">배차완료</div>
+      <div class="value">1</div>
+    </div>
   </div>
 
-  <div class="card summary-card wait">
-    <div class="card-title">홍보중</div>
-    <div class="card-value">{{ status_promo }}</div>
-  </div>
-
-  <div class="card summary-card progress">
-    <div class="card-title">선탑진행중</div>
-    <div class="card-value">{{ status_pre }}</div>
-  </div>
-
-  <div class="card summary-card interview">
-    <div class="card-title">면접예정</div>
-    <div class="card-value">{{ status_interview }}</div>
-  </div>
-
-  <div class="card summary-card done">
-    <div class="card-title">배차완료</div>
-    <div class="card-value">{{ status_done }}</div>
-  </div>
 </div>
 
-
-<div class="progress-wrap">
-  <div>진행률 (배차완료 기준): <b>{{ progress_rate }}%</b></div>
-  <div class="progress-bar">
-    <div class="progress-fill" style="width:{{ progress_rate }}%"></div>
-  </div>
-</div>
 
 <div class="card">
   <div class="card-title">상태별 비중</div>
