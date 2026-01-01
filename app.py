@@ -214,11 +214,16 @@ def create_app():
         session["google_name"] = name
         session["branch_id"] = branch.id
         session["branch_name"] = branch.branch_name
-        session["is_admin"] = False
         session["login_provider"] = "google" # ⭐ 추가
+        session["is_admin"] = bool(branch.is_admin)
+
+        if session["is_admin"]:
+            return redirect(url_for("dashboard_demo"))
+        return redirect(url_for("request_page"))
+
 
     
-        return redirect(url_for("request_page"))
+        
 
         
     # /auth/google-token 엔드포인트 추가
@@ -301,7 +306,7 @@ def create_app():
             session["google_name"] = name
             session["branch_id"] = branch.id
             session["branch_name"] = branch.branch_name
-            session["is_admin"] = False
+            session["is_admin"] = bool(branch.is_admin)
             session["login_provider"] = "google" # ⭐ 추가
 
             # 5) JSON 응답 (중요: 쿠키는 Set-Cookie 헤더로 자동 내려감)
@@ -712,8 +717,11 @@ def create_app():
 
     @app.route("/login", methods=["GET", "POST"])
     def login():
-        if "google_user_id" in session:
+        if "google_user_id" in session or "branch_id" in session:
+            if session.get("is_admin"):
+                return redirect(url_for("dashboard_demo"))
             return redirect(url_for("request_page"))
+
     
         if request.method == "POST":
             login_id = request.form.get("login_id", "").strip()
