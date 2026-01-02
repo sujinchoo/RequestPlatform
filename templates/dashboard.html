@@ -50,6 +50,18 @@
         {% endfor %}
       </select>
     </div>
+    
+    <div class="filter-item">
+      <label>현재 상태</label>
+      <select id="filter-status" class="filter-select">
+        <option value="">전체</option>
+        <option value="모집중">모집중</option>
+        <option value="홍보중">홍보중</option>
+        <option value="선탑진행중">선탑진행중</option>
+        <option value="면접예정">면접예정</option>
+        <option value="배차완료">배차완료</option>
+      </select>
+    </div>
 
     <div class="filter-actions">
       <button
@@ -131,6 +143,9 @@ let currentId = null;
 const sidoSelect = document.getElementById("filter-sido");
 const sigunguSelect = document.getElementById("filter-sigungu");
 const companySelect = document.getElementById("filter-company");
+const statusSelect = document.getElementById("filter-status"); 
+
+  
 
 /* 테이블 렌더링 */
 function renderData(data) {
@@ -170,6 +185,7 @@ function loadDashboardData() {
   if (companySelect.value !== "all") params.set("company", companySelect.value);
   if (sidoSelect.value) params.set("region_sido", sidoSelect.value);
   if (sigunguSelect.value) params.set("region_sigungu", sigunguSelect.value);
+  if (statusSelect.value) params.set("status", statusSelect.value);
 
   fetch(`/api/requests?${params.toString()}`)
     .then(res => res.json())
@@ -244,6 +260,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sigunguSelect.innerHTML = '<option value="">전체</option>';
     sigunguSelect.disabled = true;
     companySelect.value = "all";
+    statusSelect.value = ""; 
     loadDashboardData();
   };
 });
