@@ -444,12 +444,17 @@ def create_app():
         # 🔴 닉네임은 세션에만 저장
         _set_session_for_branch(
             branch,
-            name=nickname,        # ✅ 여기서만 사용
+            name=nickname,
             email=None,
             provider_key="kakao"
         )
-    
+        
+        # 🔥 관리자 여부 분기
+        if branch.is_admin:
+            return redirect(url_for("dashboard_demo"))
+        
         return redirect(url_for("request_page"))
+
 
     # =========================================================
     # Kakao Native Login (Android 전용)
