@@ -2042,7 +2042,7 @@ body:has(.request-wrapper) .btn-danger {
   /* 3) 택배사 */
   table#request-table.table-compact th:nth-child(3),
   table#request-table.table-compact td:nth-child(3) {
-    width: 120px !important;
+    width: 150px !important;
   }
 
   /* 4) 영업소 / 대리점명 */
