@@ -2143,7 +2143,7 @@ body:has(.request-wrapper) .btn-danger {
 /* 택배사 */
 .table-fixed th:nth-child(5),
 .table-fixed td:nth-child(5) {
-  width: 130px;                 /* 쿠팡로지스틱스 */
+  width: 170px;                 /* 쿠팡로지스틱스 */
 }
 
 /* 근무 형태 */
