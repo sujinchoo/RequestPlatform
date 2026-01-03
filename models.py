@@ -36,12 +36,15 @@ class RequestItem(db.Model):
     )
 
     company = db.Column(db.String(50), nullable=False)
-     # 🔥 이 3개가 반드시 있어야 함
+
     region = db.Column(db.String(100), nullable=False)
     region_sido = db.Column(db.String(100))
     region_sigungu = db.Column(db.String(100))
 
-  
+    # ✅ 요청자 (로그인 사용자: 구글 이름 / 카카오 닉네임)
+    requester_name = db.Column(db.String(120))
+
+    # ✅ 영업소 / 대리점명 (입력값)
     branch_name = db.Column(db.String(150), nullable=False)
 
     center_location = db.Column(db.String(200))
