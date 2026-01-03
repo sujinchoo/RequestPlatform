@@ -68,8 +68,27 @@ def create_app():
                 db.session.rollback()
                 print(f"[WARN] region column migration skipped: {e}")
 
+    def ensure_requester_column():
+        insp = inspect(db.engine)
+        if "requests" not in insp.get_table_names():
+            return
+    
+        existing = {col["name"] for col in insp.get_columns("requests")}
+    
+        if "requester_name" not in existing:
+            try:
+                db.session.execute(
+                    text("ALTER TABLE requests ADD COLUMN requester_name VARCHAR(120)")
+                )
+                db.session.commit()
+                print("[MIGRATION] requester_name column added")
+            except Exception as e:
+                db.session.rollback()
+                print("[WARN] requester_name migration skipped:", e)
+
     with app.app_context():
         ensure_request_region_columns()
+        ensure_requester_column()
 
     # =========================================================
     # 유틸 데코레이터
