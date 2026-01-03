@@ -85,8 +85,10 @@
         <tr>
           <th style="width:50px;">No</th>
           <th style="width:140px;">지역</th>
-          <th style="width:120px;">택배사</th>
+          <th style="width:140px;">요청자</th>
           <th style="width:160px;">영업소 / 대리점명</th>
+          
+          <th style="width:120px;">택배사</th>
           <th style="width:160px;">근무 형태</th>
           <th style="width:120px;">월 물량</th>
           <th style="width:80px;">인원</th>
@@ -165,6 +167,11 @@ function renderData(data) {
     tr.innerHTML = `
       <td>${idx + 1}</td>
       <td>${r.region || "-"}</td>
+      <!-- ✅ 요청자 -->
+      <td>${r.requester_name || "-"}</td>
+    
+      <!-- ✅ 영업소 / 대리점명 (입력값) -->
+      <td>${r.branch_name || "-"}</td>
       <td>${r.company || "-"}</td>
       <td>${r.branch_name || "-"}</td>
       <td>${r.work_days || "-"}</td>
@@ -212,7 +219,8 @@ function setupRegionFilters() {
 function openModal(r) {
   currentId = r.id;
   document.getElementById("modal-title").innerText =
-    `${r.region} / ${r.company} / ${r.branch_name}`;
+  `${r.requester_name || "-"} / ${r.company} / ${r.branch_name}`;
+
   document.getElementById("modal-interview").value = r.interview_date || "";
   document.getElementById("modal-status").value = r.status || "모집중";
   document.getElementById("status-modal").classList.remove("hidden");
