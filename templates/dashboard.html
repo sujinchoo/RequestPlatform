@@ -167,20 +167,35 @@ function renderData(data) {
     tr.innerHTML = `
       <td>${idx + 1}</td>
       <td>${r.region || "-"}</td>
+    
       <!-- ✅ 요청자 -->
       <td>${r.requester_name || "-"}</td>
     
-      <!-- ✅ 영업소 / 대리점명 (입력값) -->
+      <!-- ✅ 영업소 / 대리점명 -->
       <td>${r.branch_name || "-"}</td>
+    
+      <!-- ✅ 택배사 -->
       <td>${r.company || "-"}</td>
-      <td>${r.branch_name || "-"}</td>
+    
+      <!-- ✅ 근무 형태 -->
       <td>${r.work_days || "-"}</td>
+    
+      <!-- ✅ 월 물량 -->
       <td>${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
+    
+      <!-- ✅ 인원 -->
       <td>${r.headcount || "-"}</td>
+    
+      <!-- ✅ 기타 사항 -->
       <td>${r.etc || "-"}</td>
+    
+      <!-- ✅ 현재 상태 -->
       <td><span class="tag-status tag-${r.status}">${r.status}</span></td>
+    
+      <!-- ✅ 면접일 -->
       <td>${r.interview_date || "-"}</td>
     `;
+
     tr.onclick = () => openModal(r);
     tbody.appendChild(tr);
   });
