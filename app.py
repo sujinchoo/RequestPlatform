@@ -349,18 +349,27 @@ def create_app():
         )
         return redirect(kakao_auth_url)
 
-    def _upsert_branch_from_kakao(kakao_id):
+    def _upsert_branch_from_kakao(kakao_id, nickname):
         branch = Branch.query.filter_by(login_id=f"kakao_{kakao_id}").first()
     
         if not branch:
             branch = Branch(
                 login_id=f"kakao_{kakao_id}",
-                password_hash=""
+                password_hash="",
+                branch_name=nickname,   # ✅ 닉네임 저장
+                company="KakaoUser",
+                region="온라인",
+                is_admin=False
             )
             db.session.add(branch)
-            db.session.commit()
+        else:
+            # 기존 값이 기본값이면 갱신
+            if not branch.branch_name or branch.branch_name == "KakaoUser":
+                branch.branch_name = nickname
     
+        db.session.commit()
         return branch
+
 
 
     # helper 함수 정의 위치 #
@@ -811,26 +820,26 @@ def create_app():
     
                 new_req = RequestItem(
                     branch_id=branch.id,
+                
+                    # ✅ 영업점 / 대리점명 (사용자 입력값)
+                    branch_name=form.get("branch_name", "").strip(),
+                
+                    # ✅ 요청자 (세션 닉네임 / 구글 이름)
+                    requester_name=session.get("branch_name"),
+                
                     company=form.get("company", "").strip(),
-    
-                    # ❗ branch_name은 form에서 받지 말고 Branch에서
-                    branch_name=branch.branch_name,
-    
                     region=region_combined,
                     region_sido=region_sido or None,
                     region_sigungu=region_sigungu or None,
-    
-                    # ❌ unit_price 완전 제거
                     volume=safe_int(form.get("volume")),
                     headcount=safe_int(form.get("headcount")),
-    
                     work_type=form.get("work_type", "").strip(),
                     center_location=form.get("center_location", "").strip(),
                     etc=form.get("etc", "").strip(),
-    
                     status="모집중",
                     created_at=datetime.utcnow(),
                 )
+
     
                 db.session.add(new_req)
                 db.session.commit()
