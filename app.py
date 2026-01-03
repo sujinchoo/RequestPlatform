@@ -349,9 +349,9 @@ def create_app():
         )
         return redirect(kakao_auth_url)
 
-    def _upsert_branch_from_kakao(kakao_id, nickname):
+    def _upsert_branch_from_kakao(kakao_id, nickname=None):
         branch = Branch.query.filter_by(login_id=f"kakao_{kakao_id}").first()
-    
+        
         if not branch:
             branch = Branch(
                 login_id=f"kakao_{kakao_id}",
@@ -366,7 +366,7 @@ def create_app():
             # 기존 값이 기본값이면 갱신
             if not branch.branch_name or branch.branch_name == "KakaoUser":
                 branch.branch_name = nickname
-    
+        
         db.session.commit()
         return branch
 
