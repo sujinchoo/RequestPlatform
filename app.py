@@ -1053,9 +1053,15 @@ def create_app():
         results = [
             {
                 "id": r.id,
-                "region": r.region,                 # ✅ 단일 region 사용
+                "region": r.region,
                 "company": r.company,
+        
+                # ✅ 추가
+                "requester_name": getattr(r, "requester_name", None),
+        
+                # ✅ 기존 (영업소 / 대리점명 = 입력값)
                 "branch_name": r.branch_name,
+        
                 "work_days": r.work_type,
                 "volume": r.volume,
                 "headcount": r.headcount,
@@ -1069,7 +1075,7 @@ def create_app():
             }
             for r in rows
         ]
-    
+
         return jsonify({
             "count": len(results),
             "data": results
