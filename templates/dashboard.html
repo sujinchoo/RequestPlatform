@@ -268,8 +268,18 @@ function saveStatus() {
       btn.innerText = "저장";
       return;
     }
-    window.location.reload();
+  
+    // ✅ 모달 닫기
+    closeModal();
+  
+    // ✅ 버튼 복구
+    btn.disabled = false;
+    btn.innerText = "저장";
+  
+    // ✅ 현재 필터 상태 유지한 채 재조회
+    loadDashboardData();
   });
+
 }
 
 /* 초기 실행 */
@@ -287,6 +297,28 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDashboardData();
   };
 });
+
+/* =========================
+   Toast helper
+   ========================= */
+function showToast(message) {
+  const toast = document.createElement("div");
+  toast.className = "toast-message";
+  toast.innerText = message;
+
+  document.body.appendChild(toast);
+
+  // 등장 애니메이션
+  setTimeout(() => toast.classList.add("show"), 10);
+
+  // 자동 제거
+  setTimeout(() => {
+    toast.classList.remove("show");
+    setTimeout(() => toast.remove(), 300);
+  }, 2000);
+}
+
+
 </script>
 
 {% endblock %}
