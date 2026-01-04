@@ -2006,25 +2006,22 @@ body:has(.request-wrapper) .btn-danger {
 
 /* =========================================================
     2026.1.4 수정.
-   ✅ DASHBOARD TABLE FINAL PATCH (PC + MOBILE)
-   - 긴 컬럼 위주 자동 분배
-   - 짧은 컬럼 과감히 축소
-   - 모바일/PC 공통 안정화
+   /* =========================================================
+   ✅ DASHBOARD TABLE FINAL PATCH v2
+   - PC: 요청자/영업소 축소, 택배사 확대
+   - PC: 월 물량 50% 축소
+   - Mobile: 택배사 "쿠팡로지스틱스" 완전 표시
    ========================================================= */
 
 /* ===============================
-   공통 테이블 기본
+   공통
    =============================== */
-.table-fixed table,
 table#request-table {
-  table-layout: fixed;       /* 🔥 핵심 */
+  table-layout: fixed;
   width: 100%;
   border-collapse: collapse;
 }
 
-/* 공통 셀 */
-.table-fixed th,
-.table-fixed td,
 table#request-table th,
 table#request-table td {
   white-space: nowrap;
@@ -2036,13 +2033,9 @@ table#request-table td {
 }
 
 /* ===============================
-   📌 PC 전용 (1024px 이상)
+   🖥 PC 전용 (1024px 이상)
    =============================== */
 @media (min-width: 1024px) {
-
-  table#request-table {
-    width: 100%;
-  }
 
   /* No */
   table#request-table th:nth-child(1),
@@ -2051,52 +2044,52 @@ table#request-table td {
     text-align: center;
   }
 
-  /* 지역 (가장 김) */
+  /* 지역 */
   table#request-table th:nth-child(2),
   table#request-table td:nth-child(2) {
-    width: 220px;
+    width: 200px;
   }
 
-  /* 요청자 */
+  /* 🔽 요청자 (약 20% 축소) */
   table#request-table th:nth-child(3),
   table#request-table td:nth-child(3) {
-    width: 130px;
+    width: 100px;
   }
 
-  /* 영업소 / 대리점명 */
+  /* 🔽 영업소 / 대리점명 (약 20% 축소) */
   table#request-table th:nth-child(4),
   table#request-table td:nth-child(4) {
-    width: 220px;
+    width: 180px;
   }
 
-  /* 택배사 */
+  /* 🔼 택배사 (확대) */
   table#request-table th:nth-child(5),
   table#request-table td:nth-child(5) {
-    width: 170px;
+    width: 220px;
   }
 
   /* 근무 형태 */
   table#request-table th:nth-child(6),
   table#request-table td:nth-child(6) {
-    width: 100px;
+    width: 95px;
     text-align: center;
   }
 
-  /* 월 물량 */
+  /* 🔽 월 물량 (50% 축소) */
   table#request-table th:nth-child(7),
   table#request-table td:nth-child(7) {
-    width: 110px;
+    width: 80px;
     text-align: right;
   }
 
-  /* ✅ 인원 — 기존 대비 약 25% 축소 */
+  /* 인원 */
   table#request-table th:nth-child(8),
   table#request-table td:nth-child(8) {
     width: 60px;
     text-align: center;
   }
 
-  /* 기타 사항 (줄바꿈 허용) */
+  /* 기타 사항 */
   table#request-table th:nth-child(9),
   table#request-table td:nth-child(9) {
     width: 260px;
@@ -2120,7 +2113,7 @@ table#request-table td {
 }
 
 /* ===============================
-   📱 모바일 전용 (Excel-style)
+   📱 모바일 전용 (1023px 이하)
    =============================== */
 @media (max-width: 1023px) {
 
@@ -2129,8 +2122,9 @@ table#request-table td {
     -webkit-overflow-scrolling: touch;
   }
 
+  /* 🔥 모바일 가로 스크롤 기준 */
   table#request-table {
-    min-width: 1050px;   /* 🔥 모바일 가로 스크롤 기준 */
+    min-width: 1120px;
   }
 
   /* No */
@@ -2158,27 +2152,27 @@ table#request-table td {
     width: 180px;
   }
 
-  /* 택배사 */
+  /* 🔼 택배사 — 쿠팡로지스틱스 완전 표시 */
   table#request-table th:nth-child(5),
   table#request-table td:nth-child(5) {
-    width: 160px;
+    width: 240px;
   }
 
   /* 근무 형태 */
   table#request-table th:nth-child(6),
   table#request-table td:nth-child(6) {
-    width: 90px;
+    width: 95px;
     text-align: center;
   }
 
   /* 월 물량 */
   table#request-table th:nth-child(7),
   table#request-table td:nth-child(7) {
-    width: 110px;
+    width: 100px;
     text-align: right;
   }
 
-  /* ✅ 인원 (모바일도 축소) */
+  /* 인원 */
   table#request-table th:nth-child(8),
   table#request-table td:nth-child(8) {
     width: 60px;
@@ -2194,14 +2188,14 @@ table#request-table td {
   /* 현재 상태 */
   table#request-table th:nth-child(10),
   table#request-table td:nth-child(10) {
-    width: 100px;
+    width: 110px;
     text-align: center;
   }
 
   /* 면접일 */
   table#request-table th:nth-child(11),
   table#request-table td:nth-child(11) {
-    width: 100px;
+    width: 110px;
     text-align: center;
   }
 }
