@@ -2005,198 +2005,227 @@ body:has(.request-wrapper) .btn-danger {
 }
 
 /* =========================================================
-   ✅ DASHBOARD TABLE PATCH (PC only)
-   - 월 물량(6) & 인원(7) 동일 폭
-   - 전체 텍스트 가운데 정렬
-   - PC에서 컬럼 폭 재분배 (모바일 유지)
+    2026.1.4 수정.
+   ✅ DASHBOARD TABLE FINAL PATCH (PC + MOBILE)
+   - 긴 컬럼 위주 자동 분배
+   - 짧은 컬럼 과감히 축소
+   - 모바일/PC 공통 안정화
    ========================================================= */
 
-@media (min-width: 1024px) {
-
-  /* 대시보드 테이블만 타겟 (id + class로 정확히) */
-  table#request-table.table-compact {
-    table-layout: fixed !important;
-    width: 100% !important;
-  }
-
-  /* ✅ 헤더/바디 전체 가운데 정렬 */
-  table#request-table.table-compact th,
-  table#request-table.table-compact td {
-    text-align: center !important;
-    vertical-align: middle !important;
-  }
-
-  /* ✅ 컬럼 폭 재설정 (dashboard.html 기준 10열) */
-  /* 1) No */
-  table#request-table.table-compact th:nth-child(1),
-  table#request-table.table-compact td:nth-child(1) {
-    width: 45px !important;
-  }
-
-  /* 2) 지역 (가장 긴 텍스트: "세종특별자치시 세종특별자치시" 고려) */
-  table#request-table.table-compact th:nth-child(2),
-  table#request-table.table-compact td:nth-child(2) {
-    width: 230px !important;
-  }
-
-  /* 3) 택배사 */
-  table#request-table.table-compact th:nth-child(3),
-  table#request-table.table-compact td:nth-child(3) {
-    width: 150px !important;
-  }
-
-  /* 4) 영업소 / 대리점명 */
-  table#request-table.table-compact th:nth-child(4),
-  table#request-table.table-compact td:nth-child(4) {
-    width: 200px !important;
-  }
-
-  /* 5) 근무 형태 */
-  table#request-table.table-compact th:nth-child(5),
-  table#request-table.table-compact td:nth-child(5) {
-    width: 120px !important;
-  }
-
-  /* 6) 월 물량 */
-  table#request-table.table-compact th:nth-child(6),
-  table#request-table.table-compact td:nth-child(6) {
-    width: 90px !important;
-  }
-
-  /* 7) 인원 — ✅ 월 물량과 동일하게 */
-  table#request-table.table-compact th:nth-child(7),
-  table#request-table.table-compact td:nth-child(7) {
-    width: 90px !important;
-  }
-
-  /* 8) 기타 사항 (줄바꿈 허용해서 가독성 확보) */
-  table#request-table.table-compact th:nth-child(8),
-  table#request-table.table-compact td:nth-child(8) {
-    width: 260px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-  }
-
-  /* 9) 현재 상태 */
-  table#request-table.table-compact th:nth-child(9),
-  table#request-table.table-compact td:nth-child(9) {
-    width: 110px !important;
-  }
-
-  /* 10) 면접일 */
-  table#request-table.table-compact th:nth-child(10),
-  table#request-table.table-compact td:nth-child(10) {
-    width: 110px !important;
-  }
-}
-/* ======================================================
-   📱 MOBILE DASHBOARD TABLE FIX (Excel-style)
-   적용 대상: dashboard / request table
-   ====================================================== */
-
-/* 테이블 전체 */
-.table-fixed table {
-  table-layout: fixed;          /* 🔥 핵심 */
+/* ===============================
+   공통 테이블 기본
+   =============================== */
+.table-fixed table,
+table#request-table {
+  table-layout: fixed;       /* 🔥 핵심 */
   width: 100%;
-  min-width: 980px;             /* 모바일 가로 스크롤 기준 */
   border-collapse: collapse;
 }
 
 /* 공통 셀 */
 .table-fixed th,
-.table-fixed td {
-  white-space: nowrap;          /* 줄바꿈 방지 */
+.table-fixed td,
+table#request-table th,
+table#request-table td {
+  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;      /* ... 처리 */
+  text-overflow: ellipsis;
   font-size: 13px;
   padding: 8px 10px;
   vertical-align: middle;
 }
 
-/* ===== 컬럼별 폭 지정 ===== */
+/* ===============================
+   📌 PC 전용 (1024px 이상)
+   =============================== */
+@media (min-width: 1024px) {
 
-/* No */
-.table-fixed th:nth-child(1),
-.table-fixed td:nth-child(1) {
-  width: 50px;
-  text-align: center;
-}
+  table#request-table {
+    width: 100%;
+  }
 
-/* 지역 (가장 김) */
-.table-fixed th:nth-child(2),
-.table-fixed td:nth-child(2) {
-  width: 180px;                 /* 세종특별자치시 기준 */
-}
+  /* No */
+  table#request-table th:nth-child(1),
+  table#request-table td:nth-child(1) {
+    width: 45px;
+    text-align: center;
+  }
 
-/* 요청자 */
-.table-fixed th:nth-child(3),
-.table-fixed td:nth-child(3) {
-  width: 120px;
-}
+  /* 지역 (가장 김) */
+  table#request-table th:nth-child(2),
+  table#request-table td:nth-child(2) {
+    width: 220px;
+  }
 
-/* 영업소 / 대리점명 */
-.table-fixed th:nth-child(4),
-.table-fixed td:nth-child(4) {
-  width: 170px;
-}
+  /* 요청자 */
+  table#request-table th:nth-child(3),
+  table#request-table td:nth-child(3) {
+    width: 130px;
+  }
 
-/* 택배사 */
-.table-fixed th:nth-child(5),
-.table-fixed td:nth-child(5) {
-  width: 170px;                 /* 쿠팡로지스틱스 */
-}
+  /* 영업소 / 대리점명 */
+  table#request-table th:nth-child(4),
+  table#request-table td:nth-child(4) {
+    width: 220px;
+  }
 
-/* 근무 형태 */
-.table-fixed th:nth-child(6),
-.table-fixed td:nth-child(6) {
-  width: 100px;
-  text-align: center;
-}
+  /* 택배사 */
+  table#request-table th:nth-child(5),
+  table#request-table td:nth-child(5) {
+    width: 170px;
+  }
 
-/* 월 물량 */
-.table-fixed th:nth-child(7),
-.table-fixed td:nth-child(7) {
-  width: 110px;
-  text-align: right;
-}
+  /* 근무 형태 */
+  table#request-table th:nth-child(6),
+  table#request-table td:nth-child(6) {
+    width: 100px;
+    text-align: center;
+  }
 
-/* 인원 */
-.table-fixed th:nth-child(8),
-.table-fixed td:nth-child(8) {
-  width: 80px;
-  text-align: center;
-}
+  /* 월 물량 */
+  table#request-table th:nth-child(7),
+  table#request-table td:nth-child(7) {
+    width: 110px;
+    text-align: right;
+  }
 
-/* 기타 사항 (유연) */
-.table-fixed th:nth-child(9),
-.table-fixed td:nth-child(9) {
-  width: 220px;
-}
+  /* ✅ 인원 — 기존 대비 약 25% 축소 */
+  table#request-table th:nth-child(8),
+  table#request-table td:nth-child(8) {
+    width: 60px;
+    text-align: center;
+  }
 
-/* 현재 상태 */
-.table-fixed th:nth-child(10),
-.table-fixed td:nth-child(10) {
-  width: 110px;
-  text-align: center;
-}
+  /* 기타 사항 (줄바꿈 허용) */
+  table#request-table th:nth-child(9),
+  table#request-table td:nth-child(9) {
+    width: 260px;
+    white-space: normal;
+    word-break: break-word;
+  }
 
-/* 면접일 */
-.table-fixed th:nth-child(11),
-.table-fixed td:nth-child(11) {
-  width: 110px;
-  text-align: center;
+  /* 현재 상태 */
+  table#request-table th:nth-child(10),
+  table#request-table td:nth-child(10) {
+    width: 110px;
+    text-align: center;
+  }
+
+  /* 면접일 */
+  table#request-table th:nth-child(11),
+  table#request-table td:nth-child(11) {
+    width: 110px;
+    text-align: center;
+  }
 }
 
 /* ===============================
-   📱 모바일 최적화
+   📱 모바일 전용 (Excel-style)
    =============================== */
-@media (max-width: 768px) {
+@media (max-width: 1023px) {
+
   .table-wrapper {
-    overflow-x: auto;            /* 🔥 가로 스크롤 */
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  .table-fixed table {
-    min-width: 1100px;           /* 모바일에서 더 여유 */
+  table#request-table {
+    min-width: 1050px;   /* 🔥 모바일 가로 스크롤 기준 */
   }
+
+  /* No */
+  table#request-table th:nth-child(1),
+  table#request-table td:nth-child(1) {
+    width: 45px;
+    text-align: center;
+  }
+
+  /* 지역 */
+  table#request-table th:nth-child(2),
+  table#request-table td:nth-child(2) {
+    width: 180px;
+  }
+
+  /* 요청자 */
+  table#request-table th:nth-child(3),
+  table#request-table td:nth-child(3) {
+    width: 120px;
+  }
+
+  /* 영업소 / 대리점명 */
+  table#request-table th:nth-child(4),
+  table#request-table td:nth-child(4) {
+    width: 180px;
+  }
+
+  /* 택배사 */
+  table#request-table th:nth-child(5),
+  table#request-table td:nth-child(5) {
+    width: 160px;
+  }
+
+  /* 근무 형태 */
+  table#request-table th:nth-child(6),
+  table#request-table td:nth-child(6) {
+    width: 90px;
+    text-align: center;
+  }
+
+  /* 월 물량 */
+  table#request-table th:nth-child(7),
+  table#request-table td:nth-child(7) {
+    width: 110px;
+    text-align: right;
+  }
+
+  /* ✅ 인원 (모바일도 축소) */
+  table#request-table th:nth-child(8),
+  table#request-table td:nth-child(8) {
+    width: 60px;
+    text-align: center;
+  }
+
+  /* 기타 사항 */
+  table#request-table th:nth-child(9),
+  table#request-table td:nth-child(9) {
+    width: 220px;
+  }
+
+  /* 현재 상태 */
+  table#request-table th:nth-child(10),
+  table#request-table td:nth-child(10) {
+    width: 100px;
+    text-align: center;
+  }
+
+  /* 면접일 */
+  table#request-table th:nth-child(11),
+  table#request-table td:nth-child(11) {
+    width: 100px;
+    text-align: center;
+  }
+}
+
+/* =========================
+  2026.1.4 추가
+   Toast Message
+   ========================= */
+.toast-message {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(17, 24, 39, 0.9);
+  color: #fff;
+  padding: 10px 16px;
+  border-radius: 999px;
+  font-size: 13px;
+  opacity: 0;
+  transition: all 0.25s ease;
+  z-index: 9999;
+}
+
+.toast-message.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
