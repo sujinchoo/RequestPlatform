@@ -55,11 +55,16 @@
               data-branch-id="{{ account.id }}"
               data-is-admin="true"
               data-email="{{ account.login_id }}"
-              data-name="{{ account.nickname or account.branch_name }}">
+              data-name="{% if account.login_id.startswith('kakao_') %}{{ account.nickname }}{% else %}{{ account.branch_name }}{% endif %}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ account.nickname or account.branch_name }}</td>
-
+            <td>
+              {% if account.login_id.startswith('kakao_') %}
+                {{ account.nickname }}
+              {% else %}
+                {{ account.branch_name }}
+              {% endif %}
+            </td>
             <td>관리자</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
@@ -93,10 +98,16 @@
               data-branch-id="{{ account.id }}"
               data-is-admin="false"
               data-email="{{ account.login_id }}"
-              data-name="{{ account.nickname or account.branch_name }}">
+              data-name="{% if account.login_id.startswith('kakao_') %}{{ account.nickname }}{% else %}{{ account.branch_name }}{% endif %}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ account.nickname or account.branch_name }}</td>
+            <td>
+              {% if account.login_id.startswith('kakao_') %}
+                {{ account.nickname }}
+              {% else %}
+                {{ account.branch_name }}
+              {% endif %}
+            </td>
             <td>일반</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
@@ -112,7 +123,7 @@
 
 </section>
 
-<!-- ✅ JS는 외부 파일만 로드 -->
+<!-- JS -->
 <script src="{{ url_for('static', filename='js/accountList.js') }}"></script>
 
 {% endblock %}
