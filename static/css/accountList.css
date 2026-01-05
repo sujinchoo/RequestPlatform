@@ -287,3 +287,11 @@
 .pumgo-btn-primary:hover {
   background: linear-gradient(135deg, #1D4ED8, #1E40AF);
 }
+/* ======================================
+ * Account 삭제 버튼 (row 높이 고정)
+ * ====================================== */
+.account-table .btn-danger.btn-sm {
+  padding: 4px 6px;     /* row 높이 유지 */
+  font-size: 11px;
+  line-height: 1.2;
+}
