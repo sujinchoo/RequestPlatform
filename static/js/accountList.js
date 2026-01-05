@@ -1,5 +1,17 @@
+/* ======================================================
+ * Account List JS
+ * - Role change (SweetAlert)
+ * - Account delete
+ * ====================================================== */
+
+/* ----------------------------------
+ * 계정 ROW 클릭 → 권한 변경
+ * ---------------------------------- */
 document.querySelectorAll(".account-row").forEach(row => {
-  row.addEventListener("click", () => {
+  row.addEventListener("click", (e) => {
+
+    // ❌ 삭제 버튼 클릭 시 row 클릭 이벤트 차단
+    if (e.target.classList.contains("btn-delete")) return;
 
     const branchId = row.dataset.branchId;
     const isAdmin = row.dataset.isAdmin === "true";
@@ -28,7 +40,6 @@ document.querySelectorAll(".account-row").forEach(row => {
             </label>
           </div>
 
-          <!-- 🔥 버튼을 감싸는 영역 (중요) -->
           <div class="account-modal-actions">
             <button type="button" class="pumgo-btn-primary">
               저장
@@ -37,8 +48,8 @@ document.querySelectorAll(".account-row").forEach(row => {
 
         </div>
       `,
-      showConfirmButton: false,          // 기본 confirm 버튼 제거
-      showCloseButton: true,             // 우측 상단 X
+      showConfirmButton: false,
+      showCloseButton: true,
       focusConfirm: false,
       customClass: {
         popup: "pumgo-popup"
@@ -58,9 +69,7 @@ document.querySelectorAll(".account-row").forEach(row => {
 
           fetch("/admin/accounts/update-role", {
             method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               branch_id: branchId,
               is_admin: newRoleIsAdmin
@@ -80,9 +89,7 @@ document.querySelectorAll(".account-row").forEach(row => {
               title: "권한이 변경되었습니다",
               showConfirmButton: false,
               timer: 1200
-            }).then(() => {
-              location.reload();
-            });
+            }).then(() => location.reload());
           })
           .catch(() => {
             Swal.fire("오류", "서버 통신 오류", "error");
@@ -90,6 +97,63 @@ document.querySelectorAll(".account-row").forEach(row => {
         });
       }
     });
+  });
+});
 
+
+/* ----------------------------------
+ * 삭제 버튼 클릭 → 계정 삭제
+ * ---------------------------------- */
+document.querySelectorAll(".btn-delete").forEach(btn => {
+  btn.addEventListener("click", (e) => {
+    e.stopPropagation(); // ⭐ row 클릭 이벤트 차단
+
+    const row = btn.closest(".account-row");
+    const branchId = row.dataset.branchId;
+    const email = row.dataset.email;
+
+    Swal.fire({
+      title: "계정 삭제",
+      html: `
+        <b>${email}</b><br>
+        해당 계정을 삭제하시겠습니까?<br><br>
+        <span style="color:#dc2626;font-weight:600">
+          삭제 후 복구할 수 없습니다.
+        </span>
+      `,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소",
+      confirmButtonColor: "#dc2626",
+      cancelButtonColor: "#6b7280"
+    }).then(result => {
+      if (!result.isConfirmed) return;
+
+      fetch("/admin/accounts/delete", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ branch_id: branchId })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) {
+          Swal.fire("오류", data.message || "삭제 실패", "error");
+          return;
+        }
+
+        Swal.fire({
+          toast: true,
+          position: "top-end",
+          icon: "success",
+          title: "계정이 삭제되었습니다",
+          showConfirmButton: false,
+          timer: 1200
+        }).then(() => location.reload());
+      })
+      .catch(() => {
+        Swal.fire("오류", "서버 통신 오류", "error");
+      });
+    });
   });
 });
