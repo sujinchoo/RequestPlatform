@@ -55,10 +55,16 @@
               data-branch-id="{{ account.id }}"
               data-is-admin="true"
               data-email="{{ account.login_id }}"
-              data-name="{{ account.branch_name }}">
+              data-name="{{ account.branch_name or account.nickname or account.login_id }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ account.branch_name }}</td>
+            <td>
+              {{ account.branch_name
+                 or account.nickname
+                 or account.login_id
+                 or '-' }}
+            </td>
+
             <td>관리자</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
@@ -92,10 +98,16 @@
               data-branch-id="{{ account.id }}"
               data-is-admin="false"
               data-email="{{ account.login_id }}"
-              data-name="{{ account.branch_name }}">
+              data-name="{{ account.branch_name or account.nickname or account.login_id }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ account.branch_name }}</td>
+            <td>
+              {{ account.branch_name
+                 or account.nickname
+                 or account.login_id
+                 or '-' }}
+            </td>
+
             <td>일반</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
