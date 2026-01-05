@@ -555,10 +555,11 @@ def create_app():
         except Exception as e:
             print("[KAKAO TOKEN LOGIN ERROR]", e)
             return jsonify({"success": False, "error": "server error"}), 500
+    
     #==========================================
-    # new id /pw creation. 신규가입. 
-    #==================================
-   @app.route("/signup", methods=["GET", "POST"])
+    # new id /pw creation. 신규가입.
+    #==========================================
+    @app.route("/signup", methods=["GET", "POST"])
     def signup():
         if request.method == "POST":
             login_id = request.form.get("login_id", "").strip()
@@ -566,35 +567,34 @@ def create_app():
             email = request.form.get("email", "").strip()
             name = request.form.get("branch_name", "").strip()
             agency = request.form.get("agency_name", "").strip()
-    
+
             if not login_id or not password or not name:
                 flash("필수 항목을 입력해주세요.", "error")
                 return redirect(url_for("signup"))
-    
+
             if Branch.query.filter_by(login_id=login_id).first():
                 flash("이미 사용 중인 ID입니다.", "error")
                 return redirect(url_for("signup"))
-    
-            # ✅ 해시는 여기서 단 한 번만 생성
+
             password_hash = generate_password_hash(password)
-    
+
             branch = Branch(
                 login_id=login_id,
-                password_hash=password_hash,   # 🔒 고정
+                password_hash=password_hash,
                 email=email or None,
                 branch_name=name,
                 agency_name=agency or None,
-                company="NativeUser",          # 🔥 구글/카카오와 명확히 구분
-                region="온라인",               # 기본값 명시 (빈값 방지)
+                company="NativeUser",
+                region="온라인",
                 is_admin=False
             )
-    
+
             db.session.add(branch)
             db.session.commit()
-    
+
             flash("회원가입이 완료되었습니다. 로그인해주세요.", "success")
             return redirect(url_for("login"))
-    
+
         return render_template("signup.html")
 
     
