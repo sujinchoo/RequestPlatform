@@ -37,7 +37,6 @@
   <!-- 관리자 계정 Sheet -->
   <!-- ============================= -->
   <div class="sheet-panel admin-sheet active" id="sheet-admin">
-
     <div class="account-table-wrapper admin-border">
       <table class="account-table">
         <thead>
@@ -52,34 +51,24 @@
         </thead>
         <tbody>
           {% for account in accounts if account.is_admin %}
-          <tr class="account-row admin-row"
-              data-branch-id="{{ account.id }}"
-              data-is-admin="true"
-              data-email="{{ account.login_id }}"
-              data-name="{{ account.branch_name }}">
-            <td class="col-id">{{ account.id }}</td>
-            <td class="col-email">{{ account.login_id }}</td>
-            <td class="col-name">{{ account.branch_name }}</td>
-            <td class="col-role">관리자</td>
-            <td class="col-date">
-              {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
-            </td>
-            <td class="col-date">
-              {{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}
-            </td>
+          <tr class="account-row admin-row">
+            <td>{{ account.id }}</td>
+            <td>{{ account.login_id }}</td>
+            <td>{{ account.branch_name }}</td>
+            <td>관리자</td>
+            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
+            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
   </div>
 
   <!-- ============================= -->
   <!-- 일반 계정 Sheet -->
   <!-- ============================= -->
   <div class="sheet-panel" id="sheet-user">
-
     <div class="account-table-wrapper">
       <table class="account-table">
         <thead>
@@ -90,37 +79,49 @@
             <th>역할</th>
             <th>생성일</th>
             <th>최근 로그인</th>
+            <th>관리</th>
           </tr>
         </thead>
         <tbody>
           {% for account in accounts if not account.is_admin %}
-          <tr class="account-row"
-              data-branch-id="{{ account.id }}"
-              data-is-admin="false"
-              data-email="{{ account.login_id }}"
-              data-name="{{ account.branch_name }}">
-            <td class="col-id">{{ account.id }}</td>
-            <td class="col-email">{{ account.login_id }}</td>
-            <td class="col-name">{{ account.branch_name }}</td>
-            <td class="col-role">일반</td>
-            <td class="col-date">
-              {{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}
-            </td>
-            <td class="col-date">
-              {{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}
+          <tr class="account-row">
+            <td>{{ account.id }}</td>
+            <td>{{ account.login_id }}</td>
+            <td>{{ account.branch_name }}</td>
+            <td>일반</td>
+            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
+            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
+            <td>
+              <button class="btn-delete"
+                      onclick="openDeleteModal({{ account.id }}, '{{ account.login_id }}')">
+                삭제
+              </button>
             </td>
           </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
   </div>
 
 </section>
 
 <!-- ============================= -->
-<!-- Sheet Switch Script -->
+<!-- 삭제 확인 모달 -->
+<!-- ============================= -->
+<div id="deleteModal" class="modal hidden">
+  <div class="modal-content">
+    <h3>계정 삭제</h3>
+    <p id="deleteText"></p>
+    <div class="modal-actions">
+      <button onclick="closeDeleteModal()">취소</button>
+      <button class="danger" onclick="confirmDelete()">삭제</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================= -->
+<!-- Scripts -->
 <!-- ============================= -->
 <script>
   function showSheet(type) {
@@ -135,8 +136,39 @@
       document.querySelectorAll('.sheet-tab')[1].classList.add('active');
     }
   }
-</script>
 
-<script src="{{ url_for('static', filename='js/accountList.js') }}"></script>
+  let deleteBranchId = null;
+
+  function openDeleteModal(branchId, loginId) {
+    deleteBranchId = branchId;
+    document.getElementById("deleteText").innerText =
+      `계정 '${loginId}' 을(를) 삭제하시겠습니까?\n삭제 후 복구할 수 없습니다.`;
+    document.getElementById("deleteModal").classList.remove("hidden");
+  }
+
+  function closeDeleteModal() {
+    deleteBranchId = null;
+    document.getElementById("deleteModal").classList.add("hidden");
+  }
+
+  function confirmDelete() {
+    if (!deleteBranchId) return;
+
+    fetch("/admin/accounts/delete", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ branch_id: deleteBranchId })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        alert("계정이 삭제되었습니다.");
+        location.reload();
+      } else {
+        alert(data.message || "삭제 실패");
+      }
+    });
+  }
+</script>
 
 {% endblock %}
