@@ -9,18 +9,14 @@ class Branch(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     login_id = db.Column(db.String(50), unique=True, nullable=False)
     password_hash = db.Column(db.String(255), nullable=False)
-
-    company = db.Column(db.String(50)
-    )
+    email = db.Column(db.String(120))              # 🔥 신규
+    company = db.Column(db.String(50))
     branch_name = db.Column(db.String(100))
+    agency_name = db.Column(db.String(150))        # 🔥 대리점명
     region = db.Column(db.String(100))
-
     is_admin = db.Column(db.Boolean, default=False)
-
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     last_login_at = db.Column(db.DateTime, nullable=True)
-
-    # ✅ 반드시 RequestItem
     requests = db.relationship("RequestItem", backref="branch", lazy=True)
 
 
@@ -41,10 +37,10 @@ class RequestItem(db.Model):
     region_sido = db.Column(db.String(100))
     region_sigungu = db.Column(db.String(100))
 
-    # ✅ 요청자 (로그인 사용자: 구글 이름 / 카카오 닉네임)
+    #  요청자 (로그인 사용자: 구글 이름 / 카카오 닉네임)
     requester_name = db.Column(db.String(120))
 
-    # ✅ 영업소 / 대리점명 (입력값)
+    #  영업소 / 대리점명 (입력값)
     branch_name = db.Column(db.String(150), nullable=False)
 
     center_location = db.Column(db.String(200))
