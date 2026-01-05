@@ -85,10 +85,32 @@ def create_app():
             except Exception as e:
                 db.session.rollback()
                 print("[WARN] requester_name migration skipped:", e)
+    # 신규가입
+    def ensure_branch_extra_columns():
+        insp = inspect(db.engine)
+        if "branches" not in insp.get_table_names():
+            return
+    
+        existing = {col["name"] for col in insp.get_columns("branches")}
+        statements = []
+    
+        if "email" not in existing:
+            statements.append("ALTER TABLE branches ADD COLUMN email VARCHAR(120)")
+        if "agency_name" not in existing:
+            statements.append("ALTER TABLE branches ADD COLUMN agency_name VARCHAR(150)")
+    
+        for stmt in statements:
+            try:
+                db.session.execute(text(stmt))
+                db.session.commit()
+            except Exception as e:
+                db.session.rollback()
+                print("[WARN] branch migration skipped:", e)
 
     with app.app_context():
         ensure_request_region_columns()
         ensure_requester_column()
+        ensure_branch_extra_columns()
 
     # =========================================================
     # 유틸 데코레이터
@@ -533,7 +555,42 @@ def create_app():
         except Exception as e:
             print("[KAKAO TOKEN LOGIN ERROR]", e)
             return jsonify({"success": False, "error": "server error"}), 500
-
+    #==========================================
+    # new id /pw creation. 신규가입. 
+    #==================================
+    @app.route("/signup", methods=["GET", "POST"])
+    def signup():
+        if request.method == "POST":
+            login_id = request.form.get("login_id", "").strip()
+            password = request.form.get("password", "")
+            email = request.form.get("email", "").strip()
+            name = request.form.get("branch_name", "").strip()
+            agency = request.form.get("agency_name", "").strip()
+    
+            if not login_id or not password or not name:
+                flash("필수 항목을 입력해주세요.", "error")
+                return redirect(url_for("signup"))
+    
+            if Branch.query.filter_by(login_id=login_id).first():
+                flash("이미 사용 중인 ID입니다.", "error")
+                return redirect(url_for("signup"))
+    
+            branch = Branch(
+                login_id=login_id,
+                password_hash=generate_password_hash(password),
+                email=email,
+                branch_name=name,
+                agency_name=agency,
+                is_admin=False
+            )
+    
+            db.session.add(branch)
+            db.session.commit()
+    
+            flash("회원가입이 완료되었습니다. 로그인해주세요.", "success")
+            return redirect(url_for("login"))
+    
+        return render_template("signup.html")
 
     
     #==========================================
