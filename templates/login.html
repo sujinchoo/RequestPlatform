@@ -113,6 +113,22 @@
       color: #111 !important;   /* 검은 글씨고정 */
       font-weight: 600;
   }
+  /* 회원가입 링크 */
+.signup-link-wrapper {
+  margin-top: 18px;
+}
+
+.signup-link {
+  font-size: 14px;
+  color: #93c5fd;        /* 연한 블루 */
+  text-decoration: none;
+}
+
+.signup-link:hover {
+  text-decoration: underline;
+  color: #bfdbfe;
+}
+
 
 
 </style>
@@ -165,7 +181,13 @@
       <span class="google-text">Google 로그인</span>
     
     </button>
-    
+    <!-- 회원가입 링크 -->
+    <div class="signup-link-wrapper">
+      <a href="{{ url_for('signup') }}" class="signup-link">
+        신규 계정 만들기
+      </a>
+    </div>
+
         
   </div>
 </div>
