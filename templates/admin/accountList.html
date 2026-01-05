@@ -25,10 +25,10 @@
   <!-- Excel Sheet Tabs -->
   <!-- ============================= -->
   <div class="sheet-tabs">
-    <button class="sheet-tab active" onclick="showSheet('admin')">
+    <button class="sheet-tab active" data-sheet="admin">
       관리자 계정 ({{ accounts | selectattr('is_admin') | list | length }})
     </button>
-    <button class="sheet-tab" onclick="showSheet('user')">
+    <button class="sheet-tab" data-sheet="user">
       일반 계정 ({{ accounts | rejectattr('is_admin') | list | length }})
     </button>
   </div>
@@ -51,7 +51,11 @@
         </thead>
         <tbody>
           {% for account in accounts if account.is_admin %}
-          <tr class="account-row admin-row">
+          <tr class="account-row admin-row"
+              data-branch-id="{{ account.id }}"
+              data-is-admin="true"
+              data-email="{{ account.login_id }}"
+              data-name="{{ account.branch_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
             <td>{{ account.branch_name }}</td>
@@ -84,7 +88,11 @@
         </thead>
         <tbody>
           {% for account in accounts if not account.is_admin %}
-          <tr class="account-row">
+          <tr class="account-row"
+              data-branch-id="{{ account.id }}"
+              data-is-admin="false"
+              data-email="{{ account.login_id }}"
+              data-name="{{ account.branch_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
             <td>{{ account.branch_name }}</td>
@@ -92,10 +100,7 @@
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
             <td>
-              <button class="btn-delete"
-                      onclick="openDeleteModal({{ account.id }}, '{{ account.login_id }}')">
-                삭제
-              </button>
+              <button class="btn-delete">삭제</button>
             </td>
           </tr>
           {% endfor %}
@@ -106,69 +111,7 @@
 
 </section>
 
-<!-- ============================= -->
-<!-- 삭제 확인 모달 -->
-<!-- ============================= -->
-<div id="deleteModal" class="modal hidden">
-  <div class="modal-content">
-    <h3>계정 삭제</h3>
-    <p id="deleteText"></p>
-    <div class="modal-actions">
-      <button onclick="closeDeleteModal()">취소</button>
-      <button class="danger" onclick="confirmDelete()">삭제</button>
-    </div>
-  </div>
-</div>
-
-<!-- ============================= -->
-<!-- Scripts -->
-<!-- ============================= -->
-<script>
-  function showSheet(type) {
-    document.querySelectorAll('.sheet-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.sheet-panel').forEach(p => p.classList.remove('active'));
-
-    if (type === 'admin') {
-      document.getElementById('sheet-admin').classList.add('active');
-      document.querySelectorAll('.sheet-tab')[0].classList.add('active');
-    } else {
-      document.getElementById('sheet-user').classList.add('active');
-      document.querySelectorAll('.sheet-tab')[1].classList.add('active');
-    }
-  }
-
-  let deleteBranchId = null;
-
-  function openDeleteModal(branchId, loginId) {
-    deleteBranchId = branchId;
-    document.getElementById("deleteText").innerText =
-      `계정 '${loginId}' 을(를) 삭제하시겠습니까?\n삭제 후 복구할 수 없습니다.`;
-    document.getElementById("deleteModal").classList.remove("hidden");
-  }
-
-  function closeDeleteModal() {
-    deleteBranchId = null;
-    document.getElementById("deleteModal").classList.add("hidden");
-  }
-
-  function confirmDelete() {
-    if (!deleteBranchId) return;
-
-    fetch("/admin/accounts/delete", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ branch_id: deleteBranchId })
-    })
-    .then(res => res.json())
-    .then(data => {
-      if (data.success) {
-        alert("계정이 삭제되었습니다.");
-        location.reload();
-      } else {
-        alert(data.message || "삭제 실패");
-      }
-    });
-  }
-</script>
+<!-- ✅ JS는 외부 파일만 로드 -->
+<script src="{{ url_for('static', filename='js/accountList.js') }}"></script>
 
 {% endblock %}
