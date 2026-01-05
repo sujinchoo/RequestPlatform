@@ -597,6 +597,58 @@ def create_app():
 
         return render_template("signup.html")
 
+    #==========================================
+    #  사용자 계정 화면에서 id /pw 삭제 기능.
+    #==================================
+    @app.route("/admin/accounts/delete", methods=["POST"])
+    @login_required
+    @admin_required
+    def admin_delete_account():
+        data = request.get_json(force=True)
+    
+        branch_id = data.get("branch_id")
+        if not branch_id:
+            return jsonify({"success": False, "message": "잘못된 요청"}), 400
+    
+        branch = Branch.query.get(branch_id)
+        if not branch:
+            return jsonify({"success": False, "message": "계정을 찾을 수 없습니다"}), 404
+    
+        # 🔒 자기 자신 삭제 방지
+        if branch.id == session.get("branch_id"):
+            return jsonify({
+                "success": False,
+                "message": "본인 계정은 삭제할 수 없습니다."
+            }), 403
+    
+        # 🔒 소셜 로그인 계정 삭제 방지
+        if branch.company in ("GoogleUser", "KakaoUser"):
+            return jsonify({
+                "success": False,
+                "message": "소셜 로그인 계정은 삭제할 수 없습니다."
+            }), 400
+    
+        try:
+            # 🔥 해당 계정의 요청 데이터 먼저 삭제
+            RequestItem.query.filter_by(branch_id=branch.id).delete()
+    
+            db.session.delete(branch)
+            db.session.commit()
+    
+            return jsonify({
+                "success": True,
+                "message": "계정이 삭제되었습니다."
+            })
+    
+        except Exception as e:
+            db.session.rollback()
+            print("[ACCOUNT DELETE ERROR]", e)
+            return jsonify({
+                "success": False,
+                "message": "계정 삭제 중 오류 발생"
+            }), 500
+    
+
     
     #==========================================
     # session check 
