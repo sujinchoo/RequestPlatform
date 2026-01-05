@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}회원가입{% endblock %}
+
+{% block content %}
+<section class="auth-card">
+
+  <h2 class="auth-title">회원가입</h2>
+  <p class="auth-sub">대리점 인력 요청 서비스를 시작해보세요.</p>
+
+  <form method="post" class="auth-form">
+
+    <input class="auth-input"
+           name="login_id"
+           placeholder="로그인 ID"
+           required>
+
+    <input class="auth-input"
+           type="password"
+           name="password"
+           placeholder="비밀번호"
+           required>
+
+    <input class="auth-input"
+           type="email"
+           name="email"
+           placeholder="이메일 (선택)">
+
+    <input class="auth-input"
+           name="branch_name"
+           placeholder="이름 (요청자명)"
+           required>
+
+    <input class="auth-input"
+           name="agency_name"
+           placeholder="영업소 / 대리점명">
+
+    <button type="submit" class="btn-primary btn-block">
+      가입하기
+    </button>
+  </form>
+
+  <div class="auth-footer">
+    이미 계정이 있으신가요?
+    <a href="/login">로그인</a>
+  </div>
+
+</section>
+{% endblock %}
