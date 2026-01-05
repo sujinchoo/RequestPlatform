@@ -51,23 +51,18 @@
         </thead>
         <tbody>
           {% for account in accounts if account.is_admin %}
+          {% set display_name = account.nickname or account.branch_name or account.login_id %}
           <tr class="account-row admin-row"
               data-branch-id="{{ account.id }}"
               data-is-admin="true"
               data-email="{{ account.login_id }}"
-              data-name="{% if account.login_id.startswith('kakao_') %}{{ account.nickname }}{% else %}{{ account.branch_name }}{% endif %}">
+              data-name="{{ display_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>
-              {% if account.login_id.startswith('kakao_') %}
-                {{ account.nickname }}
-              {% else %}
-                {{ account.branch_name }}
-              {% endif %}
-            </td>
+            <td>{{ display_name }}</td>
             <td>관리자</td>
-            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
-            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
+            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '' }}</td>
+            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '' }}</td>
           </tr>
           {% endfor %}
         </tbody>
@@ -94,23 +89,18 @@
         </thead>
         <tbody>
           {% for account in accounts if not account.is_admin %}
+          {% set display_name = account.nickname or account.branch_name or account.login_id %}
           <tr class="account-row"
               data-branch-id="{{ account.id }}"
               data-is-admin="false"
               data-email="{{ account.login_id }}"
-              data-name="{% if account.login_id.startswith('kakao_') %}{{ account.nickname }}{% else %}{{ account.branch_name }}{% endif %}">
+              data-name="{{ display_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>
-              {% if account.login_id.startswith('kakao_') %}
-                {{ account.nickname }}
-              {% else %}
-                {{ account.branch_name }}
-              {% endif %}
-            </td>
+            <td>{{ display_name }}</td>
             <td>일반</td>
-            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
-            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
+            <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '' }}</td>
+            <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '' }}</td>
             <td>
               <button class="btn btn-danger btn-sm btn-delete">삭제</button>
             </td>
