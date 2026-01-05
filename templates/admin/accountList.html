@@ -100,7 +100,7 @@
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '-' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '-' }}</td>
             <td>
-              <button class="btn-delete">삭제</button>
+              <button class="btn btn-danger btn-sm btn-delete">삭제</button>
             </td>
           </tr>
           {% endfor %}
