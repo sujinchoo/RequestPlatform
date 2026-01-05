@@ -558,7 +558,7 @@ def create_app():
     #==========================================
     # new id /pw creation. 신규가입. 
     #==================================
-    @app.route("/signup", methods=["GET", "POST"])
+   @app.route("/signup", methods=["GET", "POST"])
     def signup():
         if request.method == "POST":
             login_id = request.form.get("login_id", "").strip()
@@ -575,12 +575,17 @@ def create_app():
                 flash("이미 사용 중인 ID입니다.", "error")
                 return redirect(url_for("signup"))
     
+            # ✅ 해시는 여기서 단 한 번만 생성
+            password_hash = generate_password_hash(password)
+    
             branch = Branch(
                 login_id=login_id,
-                password_hash=generate_password_hash(password),
-                email=email,
+                password_hash=password_hash,   # 🔒 고정
+                email=email or None,
                 branch_name=name,
-                agency_name=agency,
+                agency_name=agency or None,
+                company="NativeUser",          # 🔥 구글/카카오와 명확히 구분
+                region="온라인",               # 기본값 명시 (빈값 방지)
                 is_admin=False
             )
     
