@@ -51,15 +51,14 @@
         </thead>
         <tbody>
           {% for account in accounts if account.is_admin %}
-          {% set display_name = account.nickname or account.branch_name or account.login_id %}
           <tr class="account-row admin-row"
               data-branch-id="{{ account.id }}"
               data-is-admin="true"
               data-email="{{ account.login_id }}"
-              data-name="{{ display_name }}">
+              data-name="{{ account.branch_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ display_name }}</td>
+            <td>{{ account.branch_name }}</td>
             <td>관리자</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '' }}</td>
@@ -89,15 +88,14 @@
         </thead>
         <tbody>
           {% for account in accounts if not account.is_admin %}
-          {% set display_name = account.nickname or account.branch_name or account.login_id %}
           <tr class="account-row"
               data-branch-id="{{ account.id }}"
               data-is-admin="false"
               data-email="{{ account.login_id }}"
-              data-name="{{ display_name }}">
+              data-name="{{ account.branch_name }}">
             <td>{{ account.id }}</td>
             <td>{{ account.login_id }}</td>
-            <td>{{ display_name }}</td>
+            <td>{{ account.branch_name }}</td>
             <td>일반</td>
             <td>{{ account.created_at.strftime('%Y-%m-%d') if account.created_at else '' }}</td>
             <td>{{ account.last_login_at.strftime('%Y-%m-%d %H:%M') if account.last_login_at else '' }}</td>
