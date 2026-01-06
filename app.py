@@ -390,26 +390,28 @@ def create_app():
         )
         return redirect(kakao_auth_url)
 
-    def _upsert_branch_from_kakao(kakao_id, nickname=None):
+    def _upsert_branch_from_kakao(kakao_id, nickname):
         branch = Branch.query.filter_by(login_id=f"kakao_{kakao_id}").first()
-        
+    
         if not branch:
             branch = Branch(
                 login_id=f"kakao_{kakao_id}",
                 password_hash="",
-                branch_name=nickname,   # ✅ 닉네임 저장
+                branch_name=nickname,        # ✅ 닉네임을 DB에 저장
                 company="KakaoUser",
                 region="온라인",
                 is_admin=False
             )
             db.session.add(branch)
         else:
-            # 기존 값이 기본값이면 갱신
+            # 기존 계정인데 이름이 없거나 기본값이면 보정
             if not branch.branch_name or branch.branch_name == "KakaoUser":
                 branch.branch_name = nickname
-        
+    
+        branch.last_login_at = datetime.utcnow()
         db.session.commit()
         return branch
+
 
 
 
@@ -418,7 +420,7 @@ def create_app():
     def _set_session_for_branch(branch, name=None, email=None, provider_key=None):
         session.clear()
         session["branch_id"] = branch.id
-        session["branch_name"] = name or branch.branch_name   # ✅ 핵심 수정
+        session["branch_name"] = branch.branch_name   # ✅ 핵심 수정
         session["is_admin"] = branch.is_admin
         session["login_provider"] = provider_key
     
@@ -488,7 +490,8 @@ def create_app():
     
         # 🔴 DB에는 kakao_id 기준으로만 upsert (닉네임 저장 X)
         branch = _upsert_branch_from_kakao(
-            kakao_id=kakao_id
+            kakao_id=kakao_id,
+            nickname=nickname
         )
     
         # 🔴 닉네임은 세션에만 저장
@@ -539,7 +542,10 @@ def create_app():
                 return jsonify({"success": False, "error": "invalid kakao user"}), 400
     
             # 2️⃣ Branch upsert (기존 helper 재사용)
-            branch = _upsert_branch_from_kakao(kakao_id=kakao_id)
+            branch = _upsert_branch_from_kakao(
+                kakao_id=kakao_id,
+                nickname=nickname
+            )
     
             # 3️⃣ 세션 생성 (기존 helper 재사용)
             _set_session_for_branch(
