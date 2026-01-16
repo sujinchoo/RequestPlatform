@@ -1341,7 +1341,16 @@ def create_app():
         except Exception as e:
             print("COMPANY LIST ERROR:", e)
             return []
+            
+    # =========================================================
+    # app privacy,
+    # =========================================================
+    @app.route("/privacy")
+    def privacy():
+        return render_template("privacy.html")
 
+
+    
     return app
 
 
