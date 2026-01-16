@@ -269,8 +269,17 @@
 
     {% if not hide_header %}
       <footer class="footer">
-        Truck People Request Platform – 기사천국 2026
+        <div>
+          Truck People Request Platform – 기사천국 2026
+        </div>
+        <div style="margin-top:6px;">
+          <a href="{{ url_for('privacy') }}"
+             style="color:#9CA3AF; text-decoration:underline;">
+            개인정보처리방침
+          </a>
+        </div>
       </footer>
+
     {% endif %}
   </div>
 
