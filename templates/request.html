@@ -90,7 +90,14 @@
             <option value="">선택</option>
           </select>
         </div>
-
+        <div class="request-field">
+          <label>지역3 (읍/면/동)</label>
+          <input id="region_dong" name="region_dong" type="text"
+                 class="request-input" placeholder="예: 역삼동 / 조치원읍 / 남면"
+                 list="region_dong_list" pattern=".*(읍|면|동)$"
+                 title="지역3은 읍/면/동 단위까지만 입력할 수 있습니다." required disabled>
+          <datalist id="region_dong_list"></datalist>
+        </div>
         <div class="request-field">
           <label>영업소 / 대리점명</label>
           <input type="text" name="branch_name" class="request-input"
@@ -196,20 +203,46 @@
 document.addEventListener("DOMContentLoaded", () => {
   const sido = document.querySelector("#region_sido");
   const sigungu = document.querySelector("#region_sigungu");
+  const dong = document.querySelector("#region_dong");
+  const dongList = document.querySelector("#region_dong_list");
 
-  if (!window.REGION_DATA || !sido || !sigungu) return;
+  if (!window.REGION_DATA || !sido || !sigungu || !dong || !dongList) return;
 
   const sidoList = window.REGION_SIDO_ORDER || Object.keys(REGION_DATA);
   sidoList.forEach(s => sido.add(new Option(s, s)));
+
+  function renderDong(s, g) {
+    dong.value = "";
+    dongList.innerHTML = "";
+
+    if (!s || !g) {
+      dong.disabled = true;
+      return;
+    }
+
+    const items = (window.REGION_DONG_DATA?.[s]?.[g]) || [];
+    items.forEach(name => {
+      const opt = document.createElement("option");
+      opt.value = name;
+      dongList.appendChild(opt);
+    });
+    dong.disabled = false;
+  }
 
   function renderSigungu(s) {
     sigungu.innerHTML = '<option value="">선택</option>';
     const list = REGION_DATA[s] || [];
     list.forEach(g => sigungu.add(new Option(g, g)));
     sigungu.disabled = list.length === 0;
+    renderDong("", "");
   }
 
   sido.addEventListener("change", () => renderSigungu(sido.value));
+  sigungu.addEventListener("change", () => renderDong(sido.value, sigungu.value));
+
+  dong.addEventListener("input", () => {
+    dong.setCustomValidity(/(읍|면|동)$/.test(dong.value.trim()) ? "" : "읍/면/동 단위까지만 입력할 수 있습니다.");
+  });
   renderSigungu("");
 });
 </script>
