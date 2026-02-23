@@ -45,7 +45,7 @@ def create_app():
 
     def ensure_request_region_columns():
         """
-        기존 DB에 region_sido / region_sigungu 컬럼이 없으면 자동으로 추가한다.
+        기존 DB에 region_sido / region_sigungu / region_dong 컬럼이 없으면 자동으로 추가한다.
         (Postgres / SQLite 호환 ALTER 사용, 실패 시 로깅 후 계속 진행)
         """
         insp = inspect(db.engine)
@@ -59,7 +59,9 @@ def create_app():
             statements.append("ALTER TABLE requests ADD COLUMN region_sido VARCHAR(100)")
         if "region_sigungu" not in existing:
             statements.append("ALTER TABLE requests ADD COLUMN region_sigungu VARCHAR(100)")
-
+        if "region_dong" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN region_dong VARCHAR(100)")
+            
         for stmt in statements:
             try:
                 db.session.execute(text(stmt))
@@ -958,11 +960,18 @@ def create_app():
         if request.method == "POST":
             form = request.form
             try:
-                # 지역 처리 (시/도 + 시/군/구)
+                 # 지역 처리 (시/도 + 시/군/구 + 읍/면/동)
                 region_sido = form.get("region_sido", "").strip()
                 region_sigungu = form.get("region_sigungu", "").strip()
+                 region_dong = form.get("region_dong", "").strip()
+
+                # 지역3은 읍/면/동 단위만 허용
+                if region_dong and not region_dong.endswith(("읍", "면", "동")):
+                    flash("지역3은 읍/면/동 단위까지만 입력할 수 있습니다.", "error")
+                    return redirect(url_for("request_page"))
+
                 region_combined = " ".join(
-                    [p for p in [region_sido, region_sigungu] if p]
+                    [p for p in [region_sido, region_sigungu, region_dong] if p]
                 ).strip()
     
                 new_req = RequestItem(
@@ -980,6 +989,7 @@ def create_app():
                     region=region_combined,
                     region_sido=region_sido or None,
                     region_sigungu=region_sigungu or None,
+                    region_dong=region_dong or None,
                     volume=safe_int(form.get("volume")),
                     delivery_unit_price=safe_int(form.get("delivery_unit_price")),
                     headcount=safe_int(form.get("headcount")),
