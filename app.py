@@ -74,17 +74,24 @@ def create_app():
             return
     
         existing = {col["name"] for col in insp.get_columns("requests")}
-    
+        statements = []
+
         if "requester_name" not in existing:
+                statements.append("ALTER TABLE requests ADD COLUMN requester_name VARCHAR(120)")
+        if "requester_full_name" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN requester_full_name VARCHAR(120)")
+        if "requester_contact" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN requester_contact VARCHAR(50)")
+        if "delivery_unit_price" not in existing:
+            statements.append("ALTER TABLE requests ADD COLUMN delivery_unit_price INTEGER")
+
+        for stmt in statements:
             try:
-                db.session.execute(
-                    text("ALTER TABLE requests ADD COLUMN requester_name VARCHAR(120)")
-                )
+                db.session.execute(text(stmt))               
                 db.session.commit()
-                print("[MIGRATION] requester_name column added")
             except Exception as e:
                 db.session.rollback()
-                print("[WARN] requester_name migration skipped:", e)
+                print("[WARN] requester migration skipped:", e)
     # 신규가입
     def ensure_branch_extra_columns():
         insp = inspect(db.engine)
@@ -772,6 +779,7 @@ def create_app():
                 "headcount": r.headcount,
                 "unit_price": getattr(r, "unit_price", None),
                 "volume": r.volume,
+                "delivery_unit_price": getattr(r, "delivery_unit_price", None),
                 "etc": r.etc,
                 "status": r.status,
                 "interview_date": (
@@ -967,10 +975,13 @@ def create_app():
                     requester_name=session.get("branch_name"),
                 
                     company=form.get("company", "").strip(),
+                    requester_full_name=form.get("requester_full_name", "").strip() or None,
+                    requester_contact=form.get("requester_contact", "").strip() or None,
                     region=region_combined,
                     region_sido=region_sido or None,
                     region_sigungu=region_sigungu or None,
                     volume=safe_int(form.get("volume")),
+                    delivery_unit_price=safe_int(form.get("delivery_unit_price")),
                     headcount=safe_int(form.get("headcount")),
                     work_type=form.get("work_type", "").strip(),
                     center_location=form.get("center_location", "").strip(),
@@ -1197,12 +1208,15 @@ def create_app():
         
                 # ✅ 추가
                 "requester_name": getattr(r, "requester_name", None),
+                "requester_full_name": getattr(r, "requester_full_name", None),
+                "requester_contact": getattr(r, "requester_contact", None),
         
                 # ✅ 기존 (영업소 / 대리점명 = 입력값)
                 "branch_name": r.branch_name,
         
                 "work_days": r.work_type,
                 "volume": r.volume,
+                "delivery_unit_price": getattr(r, "delivery_unit_price", None),
                 "headcount": r.headcount,
                 "etc": r.etc,
                 "status": r.status,
