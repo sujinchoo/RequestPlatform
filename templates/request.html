@@ -53,6 +53,18 @@
       <div class="request-grid request-form-row">
 
         <div class="request-field">
+          <label>성함</label>
+          <input name="requester_full_name" type="text"
+                 class="request-input" placeholder="예: 홍길동" required>
+        </div>
+
+        <div class="request-field">
+          <label>연락처</label>
+          <input name="requester_contact" type="text"
+                 class="request-input" placeholder="예: 010-1234-5678" required>
+        </div>
+
+        <div class="request-field">
           <label>택배사</label>
           <select name="company" class="request-select" required>
             <option value="">선택하세요</option>
@@ -109,6 +121,13 @@
           <input name="volume" type="number"
                  class="request-input"
                  placeholder="예: 3000" required>
+        </div>
+        
+        <div class="request-field">
+          <label>배송단가 (원)</label>
+          <input name="delivery_unit_price" type="number"
+                 class="request-input"
+                 placeholder="예: 1200" required>
         </div>
       </div>
 
