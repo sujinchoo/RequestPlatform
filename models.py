@@ -32,6 +32,8 @@ class RequestItem(db.Model):
     )
 
     company = db.Column(db.String(50), nullable=False)
+    requester_full_name = db.Column(db.String(120))
+    requester_contact = db.Column(db.String(50))
 
     region = db.Column(db.String(100), nullable=False)
     region_sido = db.Column(db.String(100))
@@ -48,6 +50,7 @@ class RequestItem(db.Model):
 
     headcount = db.Column(db.Integer, nullable=False)
     volume = db.Column(db.Integer, nullable=False)
+    delivery_unit_price = db.Column(db.Integer)
 
     etc = db.Column(db.Text)
 
