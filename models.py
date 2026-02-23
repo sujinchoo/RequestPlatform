@@ -38,6 +38,7 @@ class RequestItem(db.Model):
     region = db.Column(db.String(100), nullable=False)
     region_sido = db.Column(db.String(100))
     region_sigungu = db.Column(db.String(100))
+    region_dong = db.Column(db.String(100))
 
     #  요청자 (로그인 사용자: 구글 이름 / 카카오 닉네임)
     requester_name = db.Column(db.String(120))
