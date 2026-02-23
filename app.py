@@ -963,7 +963,7 @@ def create_app():
                  # 지역 처리 (시/도 + 시/군/구 + 읍/면/동)
                 region_sido = form.get("region_sido", "").strip()
                 region_sigungu = form.get("region_sigungu", "").strip()
-                 region_dong = form.get("region_dong", "").strip()
+                region_dong = form.get("region_dong", "").strip()
 
                 # 지역3은 읍/면/동 단위만 허용
                 if region_dong and not region_dong.endswith(("읍", "면", "동")):
