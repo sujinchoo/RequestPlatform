@@ -14,6 +14,7 @@ from models import db, Branch, RequestItem
 from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text, extract, func, inspect
 import os
+from urllib.parse import quote
 
 # Google oauth2 for android mobile 
 from google.oauth2 import id_token as google_id_token
@@ -43,9 +44,41 @@ def create_app():
         except (TypeError, ValueError):
             return 0
 
-    def ensure_request_region_columns():
+    def build_map_address(region_sido=None, region_sigungu=None, region_dong=None, fallback_region=None):
+        parts = [
+            (region_sido or "").strip(),
+            (region_sigungu or "").strip(),
+            (region_dong or "").strip(),
+        ]
+        composed = " ".join([p for p in parts if p]).strip()
+        if composed:
+            return composed
+        return (fallback_region or "").strip()
+
+    def build_naver_map_link(address):
+        if not address:
+            return ""
+        return f"https://map.naver.com/p/search/{quote(address)}"
+
+    def enrich_request_map_fields(row):
+        address = build_map_address(
+            getattr(row, "region_sido", None),
+            getattr(row, "region_sigungu", None),
+            getattr(row, "region_dong", None),
+            getattr(row, "region", None),
+        )
+        row.map_address = address
+        row.map_label = address or "지역 정보 없음"
+        row.display_region = address or (getattr(row, "region", "") or "-")
+        row.has_map_address = bool(address)
+        row.map_open_url = build_naver_map_link(address)
+        return row
+
+    NAVER_MAP_CLIENT_ID = os.getenv("NAVER_MAP_CLIENT_ID", "")
+
+    def ensure_request_columns():
         """
-        기존 DB에 region_sido / region_sigungu / region_dong 컬럼이 없으면 자동으로 추가한다.
+        requests 테이블의 누락 컬럼을 한 번에 점검/추가한다.
         (Postgres / SQLite 호환 ALTER 사용, 실패 시 로깅 후 계속 진행)
         """
         insp = inspect(db.engine)
@@ -53,47 +86,27 @@ def create_app():
             return
 
         existing = {col["name"] for col in insp.get_columns("requests")}
-        statements = []
+        required_columns = {
+            "region_sido": "VARCHAR(100)",
+            "region_sigungu": "VARCHAR(100)",
+            "region_dong": "VARCHAR(100)",
+            "requester_name": "VARCHAR(120)",
+            "requester_full_name": "VARCHAR(120)",
+            "requester_contact": "VARCHAR(50)",
+            "delivery_unit_price": "INTEGER",
+        }
 
-        if "region_sido" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN region_sido VARCHAR(100)")
-        if "region_sigungu" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN region_sigungu VARCHAR(100)")
-        if "region_dong" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN region_dong VARCHAR(100)")
-            
-        for stmt in statements:
+        for column_name, column_type in required_columns.items():
+            if column_name in existing:
+                continue
+
+            stmt = f"ALTER TABLE requests ADD COLUMN {column_name} {column_type}"
             try:
                 db.session.execute(text(stmt))
                 db.session.commit()
             except Exception as e:
                 db.session.rollback()
-                print(f"[WARN] region column migration skipped: {e}")
-
-    def ensure_requester_column():
-        insp = inspect(db.engine)
-        if "requests" not in insp.get_table_names():
-            return
-    
-        existing = {col["name"] for col in insp.get_columns("requests")}
-        statements = []
-
-        if "requester_name" not in existing:
-                statements.append("ALTER TABLE requests ADD COLUMN requester_name VARCHAR(120)")
-        if "requester_full_name" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN requester_full_name VARCHAR(120)")
-        if "requester_contact" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN requester_contact VARCHAR(50)")
-        if "delivery_unit_price" not in existing:
-            statements.append("ALTER TABLE requests ADD COLUMN delivery_unit_price INTEGER")
-
-        for stmt in statements:
-            try:
-                db.session.execute(text(stmt))               
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
-                print("[WARN] requester migration skipped:", e)
+                print(f"[WARN] request column migration skipped ({column_name}): {e}")
     # 신규가입
     def ensure_branch_extra_columns():
         insp = inspect(db.engine)
@@ -117,8 +130,7 @@ def create_app():
                 print("[WARN] branch migration skipped:", e)
 
     with app.app_context():
-        ensure_request_region_columns()
-        ensure_requester_column()
+        ensure_request_columns()
         ensure_branch_extra_columns()
 
     # =========================================================
@@ -1022,10 +1034,13 @@ def create_app():
                 .all()
             )
     
+        branch_requests = [enrich_request_map_fields(r) for r in branch_requests]
+
         return render_template(
             "request.html",
             branch=branch,
-            branch_requests=branch_requests
+            branch_requests=branch_requests,
+            NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID
         )
 
 
@@ -1082,7 +1097,8 @@ def create_app():
                                total_cases=total,
                                active_cases=active,
                                completed_cases=completed,
-                               company_list=get_company_list())
+                               company_list=get_company_list(),
+                               NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID)
 
     @app.route("/dashboard_v2")
     @login_required
@@ -1209,11 +1225,29 @@ def create_app():
             query = query.filter(RequestItem.region.contains(region_sigungu))
     
         rows = query.order_by(RequestItem.created_at.desc()).all()
+        rows = [enrich_request_map_fields(r) for r in rows]
     
-        results = [
-            {
+        results = []
+        for r in rows:
+            map_address = build_map_address(
+                getattr(r, "region_sido", None),
+                getattr(r, "region_sigungu", None),
+                getattr(r, "region_dong", None),
+                getattr(r, "region", None),
+            )
+            map_label = map_address or "지역 정보 없음"
+            display_region = map_address or (getattr(r, "region", "") or "-")
+            has_map_address = bool(map_address)
+            map_open_url = build_naver_map_link(map_address)
+
+            results.append({
                 "id": r.id,
                 "region": r.region,
+                "map_address": map_address,
+                "map_label": map_label,
+                "display_region": display_region,
+                "has_map_address": has_map_address,
+                "map_open_url": map_open_url,
                 "company": r.company,
         
                 # ✅ 추가
@@ -1235,9 +1269,7 @@ def create_app():
                     if r.interview_date else ""
                 ),
                 "created_at": r.created_at.strftime("%Y-%m-%d"),
-            }
-            for r in rows
-        ]
+            })
 
         return jsonify({
             "count": len(results),

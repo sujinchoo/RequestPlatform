@@ -79,24 +79,24 @@
 
         <div class="request-field">
           <label>지역1 (시/도)</label>
-          <select id="region_sido" name="region_sido" class="request-select" required>
+          <select id="regionSido" name="region_sido" class="request-select" required>
             <option value="">선택</option>
           </select>
         </div>
 
         <div class="request-field">
           <label>지역2 (시/군/구)</label>
-          <select id="region_sigungu" name="region_sigungu" class="request-select" required disabled>
+          <select id="regionSigungu" name="region_sigungu" class="request-select" required disabled>
             <option value="">선택</option>
           </select>
         </div>
         <div class="request-field">
           <label>지역3 (읍/면/동)</label>
-          <input id="region_dong" name="region_dong" type="text"
+          <input id="regionDong" name="region_dong" type="text"
                  class="request-input" placeholder="예: 역삼동 / 조치원읍 / 남면"
-                 list="region_dong_list" pattern=".*(읍|면|동)$"
+                 list="regionDongList" pattern=".*(읍|면|동)$"
                  title="지역3은 읍/면/동 단위까지만 입력할 수 있습니다." required disabled>
-          <datalist id="region_dong_list"></datalist>
+          <datalist id="regionDongList"></datalist>
         </div>
         <div class="request-field">
           <label>영업소 / 대리점명</label>
@@ -137,6 +137,18 @@
                  placeholder="예: 1200" required>
         </div>
       </div>
+
+
+      <section id="requestMapPreview" class="request-map-card">
+        <div class="request-map-header">
+          <h3>지역 미리보기</h3>
+        </div>
+        <p class="selected-address">선택된 지역: <span id="requestSelectedAddress">선택 전</span></p>
+        <div class="map-canvas-wrap">
+          <div id="requestMapCanvas"></div>
+        </div>
+        <p id="requestMapStatus" class="map-status">시/도와 시/군/구를 선택하면 지도가 표시됩니다.</p>
+      </section>
 
       <div class="request-field">
         <label>기타 사항</label>
@@ -195,21 +207,41 @@
   </div>
 </div>
 
+
+{% if NAVER_MAP_CLIENT_ID %}
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ NAVER_MAP_CLIENT_ID }}&submodules=geocoder"></script>
+{% endif %}
+
 <!-- ============================= -->
 <!-- 🔵 JS -->
 <!-- ============================= -->
 <script src="{{ url_for('static', filename='region-data.js') }}"></script>
 <script>
 document.addEventListener("DOMContentLoaded", () => {
-  const sido = document.querySelector("#region_sido");
-  const sigungu = document.querySelector("#region_sigungu");
-  const dong = document.querySelector("#region_dong");
-  const dongList = document.querySelector("#region_dong_list");
+  const sido = document.querySelector("#regionSido");
+  const sigungu = document.querySelector("#regionSigungu");
+  const dong = document.querySelector("#regionDong");
+  const dongList = document.querySelector("#regionDongList");
+
+  const selectedAddressEl = document.getElementById("requestSelectedAddress");
+  const mapStatusEl = document.getElementById("requestMapStatus");
+  const mapCanvas = document.getElementById("requestMapCanvas");
 
   if (!window.REGION_DATA || !sido || !sigungu || !dong || !dongList) return;
 
+  const geocodeCache = new Map();
+  let requestMap = null;
+  let requestMarker = null;
+  let debounceTimer = null;
+
   const sidoList = window.REGION_SIDO_ORDER || Object.keys(REGION_DATA);
   sidoList.forEach(s => sido.add(new Option(s, s)));
+
+  function buildRequestAddress() {
+    return [sido.value.trim(), sigungu.value.trim(), dong.value.trim()]
+      .filter(Boolean)
+      .join(" ");
+  }
 
   function renderDong(s, g) {
     dong.value = "";
@@ -237,12 +269,78 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDong("", "");
   }
 
-  sido.addEventListener("change", () => renderSigungu(sido.value));
-  sigungu.addEventListener("change", () => renderDong(sido.value, sigungu.value));
+  function geocodeAddress(address) {
+    return new Promise((resolve, reject) => {
+      if (!address) return reject(new Error("주소 없음"));
+      if (!window.naver?.maps?.Service) return reject(new Error("지도 API 미설정"));
+      if (geocodeCache.has(address)) return resolve(geocodeCache.get(address));
+
+      naver.maps.Service.geocode({ query: address }, function(status, response) {
+        if (status !== naver.maps.Service.Status.OK) return reject(new Error("지오코딩 실패"));
+
+        const addresses = response.v2.addresses || [];
+        if (!addresses.length) return reject(new Error("검색 결과 없음"));
+
+        const first = addresses[0];
+        const result = {
+          lat: parseFloat(first.y),
+          lng: parseFloat(first.x),
+        };
+        geocodeCache.set(address, result);
+        resolve(result);
+      });
+    });
+  }
+
+  function updateRequestMap() {
+    const sidoValue = sido.value.trim();
+    const sigunguValue = sigungu.value.trim();
+    const address = buildRequestAddress();
+    selectedAddressEl.textContent = address || "선택 전";
+
+    if (!sidoValue || !sigunguValue) {
+      mapStatusEl.textContent = "시/도와 시/군/구를 먼저 선택해 주세요";
+      return;
+    }
+
+    geocodeAddress(address)
+      .then((point) => {
+        mapStatusEl.textContent = "";
+        const center = new naver.maps.LatLng(point.lat, point.lng);
+        if (!requestMap) {
+          requestMap = new naver.maps.Map("requestMapCanvas", { center, zoom: 14 });
+          requestMarker = new naver.maps.Marker({ position: center, map: requestMap });
+          return;
+        }
+        requestMap.setCenter(center);
+        requestMarker.setPosition(center);
+      })
+      .catch((error) => {
+        mapStatusEl.textContent = error.message === "검색 결과 없음"
+          ? "지도 검색 결과가 없습니다"
+          : "지도를 불러오지 못했습니다";
+      });
+  }
+
+  function queueMapUpdate() {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(updateRequestMap, 350);
+  }
+
+  sido.addEventListener("change", () => {
+    renderSigungu(sido.value);
+    queueMapUpdate();
+  });
+  sigungu.addEventListener("change", () => {
+    renderDong(sido.value, sigungu.value);
+    queueMapUpdate();
+  });
 
   dong.addEventListener("input", () => {
     dong.setCustomValidity(/(읍|면|동)$/.test(dong.value.trim()) ? "" : "읍/면/동 단위까지만 입력할 수 있습니다.");
+    queueMapUpdate();
   });
+
   renderSigungu("");
 });
 </script>
