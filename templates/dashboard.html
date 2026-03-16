@@ -257,6 +257,11 @@ function closeMapPanel() {
   selectedRegionCell = null;
 }
 
+function scrollToMapPanel() {
+  const panel = document.getElementById("dashboardMapPanel");
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function toggleDashboardMap(address, label, rowEl) {
   const panel = document.getElementById("dashboardMapPanel");
   const title = document.getElementById("dashboardMapTitle");
@@ -266,6 +271,7 @@ function toggleDashboardMap(address, label, rowEl) {
     panel.classList.remove("hidden");
     title.textContent = label;
     status.textContent = "지도를 표시할 주소가 없습니다";
+    scrollToMapPanel();
     return;
   }
 
@@ -281,6 +287,7 @@ function toggleDashboardMap(address, label, rowEl) {
   title.textContent = label;
   status.textContent = address;
   panel.classList.remove("hidden");
+  scrollToMapPanel();
 
   geocodeAddress(address)
     .then((point) => {
