@@ -2223,3 +2223,67 @@ table#request-table td {
   opacity: 1;
   transform: translateX(-50%) translateY(0);
 }
+
+/* ===== map shared ===== */
+.map-panel {
+  margin-top: 14px;
+  border: 1px solid #d8dbe3;
+  border-radius: 12px;
+  background: #fff;
+  padding: 12px;
+}
+.map-panel.hidden {
+  display: none;
+}
+.map-panel-body {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+.map-info {
+  color: #2d3748;
+}
+.map-canvas-wrap {
+  border: 1px solid #e6e8ef;
+  border-radius: 10px;
+  overflow: hidden;
+  min-height: 220px;
+}
+#dashboardMapCanvas,
+#requestMapCanvas {
+  width: 100%;
+  min-height: 220px;
+}
+.map-status {
+  margin: 6px 0 0;
+  color: #6b7280;
+  font-size: 13px;
+}
+.region-link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: #1b5cff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.request-map-card {
+  margin-bottom: 16px;
+  border: 1px solid #d8dbe3;
+  border-radius: 12px;
+  padding: 12px;
+  background: #f9fbff;
+}
+.request-map-header h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+}
+.is-selected-row {
+  background: #f1f6ff !important;
+}
+@media (max-width: 860px) {
+  .map-panel-body {
+    grid-template-columns: 1fr;
+  }
+}
