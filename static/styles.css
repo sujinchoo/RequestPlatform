@@ -2232,6 +2232,10 @@ table#request-table td {
   background: #fff;
   padding: 12px;
 }
+#dashboardMapPanel {
+  width: 100%;
+  max-width: 100%;
+}
 .map-panel.hidden {
   display: none;
 }
@@ -2255,6 +2259,9 @@ table#request-table td {
 #requestMapCanvas {
   width: 100%;
   min-height: 220px;
+}
+#dashboardMapCanvas {
+  max-width: 100%;
 }
 .map-status {
   margin: 6px 0 0;
@@ -2286,5 +2293,8 @@ table#request-table td {
 @media (max-width: 860px) {
   .map-panel-body {
     grid-template-columns: 1fr;
+  }
+  #dashboardMapPanel {
+    width: 100%;
   }
 }
