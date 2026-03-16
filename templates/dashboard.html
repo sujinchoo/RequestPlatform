@@ -257,6 +257,18 @@ function closeMapPanel() {
   selectedRegionCell = null;
 }
 
+function scrollToMapPanel() {
+  const panel = document.getElementById("dashboardMapPanel");
+  const scrollBox = panel.closest(".sheet-scroll");
+
+  if (scrollBox) {
+    const targetTop = panel.offsetTop - scrollBox.offsetTop - 8;
+    scrollBox.scrollTo({ top: targetTop, behavior: "smooth" });
+  }
+
+  panel.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
 function toggleDashboardMap(address, label, rowEl) {
   const panel = document.getElementById("dashboardMapPanel");
   const title = document.getElementById("dashboardMapTitle");
@@ -266,6 +278,7 @@ function toggleDashboardMap(address, label, rowEl) {
     panel.classList.remove("hidden");
     title.textContent = label;
     status.textContent = "지도를 표시할 주소가 없습니다";
+    scrollToMapPanel();
     return;
   }
 
@@ -281,6 +294,7 @@ function toggleDashboardMap(address, label, rowEl) {
   title.textContent = label;
   status.textContent = address;
   panel.classList.remove("hidden");
+  scrollToMapPanel();
 
   geocodeAddress(address)
     .then((point) => {
@@ -288,10 +302,15 @@ function toggleDashboardMap(address, label, rowEl) {
       if (!dashboardMap) {
         dashboardMap = new naver.maps.Map("dashboardMapCanvas", { center, zoom: 13 });
         dashboardMarker = new naver.maps.Marker({ position: center, map: dashboardMap });
-        return;
+      } else {
+        dashboardMap.setCenter(center);
+        dashboardMarker.setPosition(center);
       }
-      dashboardMap.setCenter(center);
-      dashboardMarker.setPosition(center);
+
+      setTimeout(() => {
+        naver.maps.Event.trigger(dashboardMap, "resize");
+        dashboardMap.setCenter(center);
+      }, 0);
     })
     .catch((error) => {
       status.textContent = error.message === "검색 결과 없음" ? "지도 검색 결과가 없습니다" : "지도를 불러오지 못했습니다";
