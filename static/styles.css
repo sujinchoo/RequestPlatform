@@ -2237,7 +2237,7 @@ table#request-table td {
 }
 .map-panel-body {
   display: grid;
-  grid-template-columns: 280px 1fr;
+  grid-template-columns: 1fr;
   gap: 12px;
   align-items: start;
 }
@@ -2249,6 +2249,7 @@ table#request-table td {
   border-radius: 10px;
   overflow: hidden;
   min-height: 220px;
+  width: 100%;
 }
 #dashboardMapCanvas,
 #requestMapCanvas {
