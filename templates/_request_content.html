@@ -8,9 +8,7 @@
         <div class="profile-name">{{ branch_display_name }}</div>
 
         <div class="profile-email">
-          {% if demo_mode %}
-            데모 모드
-          {% elif session.get("login_provider") == "kakao" %}
+          {% if session.get("login_provider") == "kakao" %}
             카카오톡 로그인
           {% elif session.get("google_email") %}
             {{ session.get("google_email") }}
@@ -23,11 +21,7 @@
       <div class="profile-buttons">
         <button class="btn-nav" onclick="scrollToSection('register')">요청 등록</button>
         <button class="btn-nav" onclick="scrollToSection('status')">내 요청 현황</button>
-        {% if demo_mode %}
-          <button class="btn-nav" onclick="location.href='/request'">실서비스 보기</button>
-        {% else %}
-          <button class="btn-nav danger" onclick="location.href='/logout'">로그아웃</button>
-        {% endif %}
+        <button class="btn-nav danger" onclick="location.href='/logout'">로그아웃</button>
       </div>
     </div>
   </div>
@@ -118,13 +112,12 @@
       <section id="requestMapPreview" class="request-map-card">
         <div class="request-map-header">
           <h3>지역 미리보기</h3>
-          <span class="request-map-badge">{{ map_mode_label }}</span>
         </div>
         <p class="selected-address">선택된 지역: <span id="requestSelectedAddress">선택 전</span></p>
-        <div class="map-canvas-wrap polygon-map-wrap">
-          <div id="requestMapCanvas" class="request-polygon-map" aria-label="선택 지역 폴리곤 지도"></div>
+        <div class="map-canvas-wrap">
+          <div id="requestMapCanvas"></div>
         </div>
-        <p id="requestMapStatus" class="map-status">시/도와 시/군/구를 선택하면 폴리곤 지도가 표시됩니다.</p>
+        <p id="requestMapStatus" class="map-status">시/도와 시/군/구를 선택하면 지도가 표시됩니다.</p>
       </section>
 
       <div class="request-field">
@@ -132,7 +125,7 @@
         <textarea name="etc" class="request-textarea" placeholder="예: 담당자 연락처, 초보 가능, 동승 교육 있음"></textarea>
       </div>
 
-      <button type="submit" class="request-btn-main">{% if demo_mode %}데모 요청 확인하기{% else %}요청 등록하기{% endif %}</button>
+      <button type="submit" class="request-btn-main">요청 등록하기</button>
     </form>
   </div>
 
@@ -152,7 +145,7 @@
               <th>지역</th>
               <th>인원</th>
               <th>월물량</th>
-              <th>{% if demo_mode %}상태{% else %}삭제{% endif %}</th>
+              <th>삭제</th>
             </tr>
           </thead>
           <tbody>
@@ -165,13 +158,9 @@
               <td>{{ r.headcount }}</td>
               <td>{{ r.volume }}</td>
               <td>
-                {% if demo_mode %}
-                  <span class="request-demo-chip">미리보기</span>
-                {% else %}
-                  <form method="post" action="{{ url_for('delete_request', req_id=r.id) }}" class="delete-form">
-                    <button class="btn btn-danger btn-sm">삭제</button>
-                  </form>
-                {% endif %}
+                <form method="post" action="{{ url_for('delete_request', req_id=r.id) }}" class="delete-form">
+                  <button class="btn btn-danger btn-sm">삭제</button>
+                </form>
               </td>
             </tr>
             {% endfor %}
@@ -182,17 +171,11 @@
   </div>
 </div>
 
+{% if NAVER_MAP_CLIENT_ID %}
+<script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ NAVER_MAP_CLIENT_ID }}&submodules=geocoder"></script>
+{% endif %}
 <script src="{{ url_for('static', filename='region-data.js') }}"></script>
-<script src="{{ url_for('static', filename='polygon-map-data.js') }}"></script>
-<script>
-window.REQUEST_PAGE_CONFIG = {
-  mapMode: 'polygon',
-  demoMode: {{ 'true' if demo_mode else 'false' }}
-};
-</script>
 <script src="{{ url_for('static', filename='js/request-page.js') }}"></script>
-
-{% if not demo_mode %}
 <script>
 document.querySelectorAll(".delete-form").forEach(form => {
   form.addEventListener("submit", e => {
@@ -208,7 +191,6 @@ document.querySelectorAll(".delete-form").forEach(form => {
   });
 });
 </script>
-{% endif %}
 
 <script>
 function scrollToSection(id) {
