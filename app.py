@@ -964,6 +964,51 @@ def create_app():
     # =========================================================
     # 요청 입력 페이지
     # =========================================================
+    @app.route("/request_demo", methods=["GET", "POST"])
+    def request_demo_page():
+        from types import SimpleNamespace
+
+        sample_requests = [
+            SimpleNamespace(
+                id=101,
+                created_at=datetime.utcnow(),
+                company="CJ대한통운",
+                region="서울특별시 강남구 역삼동",
+                region_sido="서울특별시",
+                region_sigungu="강남구",
+                region_dong="역삼동",
+                headcount=2,
+                volume=2800,
+            ),
+            SimpleNamespace(
+                id=102,
+                created_at=datetime.utcnow(),
+                company="쿠팡로지스틱스",
+                region="경기도 화성시 향남읍",
+                region_sido="경기도",
+                region_sigungu="화성시",
+                region_dong="향남읍",
+                headcount=4,
+                volume=4200,
+            ),
+        ]
+
+        sample_requests = [enrich_request_map_fields(r) for r in sample_requests]
+
+        if request.method == "POST":
+            flash("데모 페이지에서는 저장 없이 폴리곤 지도 동작만 확인할 수 있습니다.", "info")
+            return redirect(url_for("request_demo_page"))
+
+        return render_template(
+            "request_demo.html",
+            branch=None,
+            branch_display_name="테스트 대리점 데모",
+            branch_requests=sample_requests,
+            demo_mode=True,
+            map_mode_label="로컬 폴리곤 · API 최소화",
+            NAVER_MAP_CLIENT_ID="",
+        )
+
     @app.route("/request", methods=["GET", "POST"])
     @login_required
     def request_page():
@@ -1039,7 +1084,10 @@ def create_app():
         return render_template(
             "request.html",
             branch=branch,
+            branch_display_name=session.get("branch_name") or getattr(branch, "branch_name", "대리점"),
             branch_requests=branch_requests,
+            demo_mode=False,
+            map_mode_label="로컬 폴리곤 · API 최소화",
             NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID
         )
 
