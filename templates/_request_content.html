@@ -1,0 +1,217 @@
+<div class="request-wrapper">
+
+  <div class="request-card mb-4">
+    <div class="request-card-title">대리점 정보</div>
+
+    <div class="profile-box">
+      <div class="profile-left">
+        <div class="profile-name">{{ branch_display_name }}</div>
+
+        <div class="profile-email">
+          {% if demo_mode %}
+            데모 모드
+          {% elif session.get("login_provider") == "kakao" %}
+            카카오톡 로그인
+          {% elif session.get("google_email") %}
+            {{ session.get("google_email") }}
+          {% else %}
+            일반 로그인
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="profile-buttons">
+        <button class="btn-nav" onclick="scrollToSection('register')">요청 등록</button>
+        <button class="btn-nav" onclick="scrollToSection('status')">내 요청 현황</button>
+        {% if demo_mode %}
+          <button class="btn-nav" onclick="location.href='/request'">실서비스 보기</button>
+        {% else %}
+          <button class="btn-nav danger" onclick="location.href='/logout'">로그아웃</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="request-title">인력 요청 등록</div>
+  <div class="request-sub">대리점 기준으로 신규 인력 요청을 등록합니다.</div>
+
+  <div class="request-card" id="register">
+    <div class="request-card-title">요청 정보 입력</div>
+
+    <form method="post" id="req-form">
+      <div class="request-grid request-form-row">
+
+        <div class="request-field">
+          <label>성함</label>
+          <input name="requester_full_name" type="text" class="request-input" placeholder="예: 홍길동" required>
+        </div>
+
+        <div class="request-field">
+          <label>연락처</label>
+          <input name="requester_contact" type="text" class="request-input" placeholder="예: 010-1234-5678" required>
+        </div>
+
+        <div class="request-field">
+          <label>택배사</label>
+          <select name="company" class="request-select" required>
+            <option value="">선택하세요</option>
+            <option value="CJ대한통운">CJ대한통운</option>
+            <option value="롯데택배">롯데택배</option>
+            <option value="한진택배">한진택배</option>
+            <option value="로젠택배">로젠택배</option>
+            <option value="쿠팡로지스틱스">쿠팡로지스틱스</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+
+        <div class="request-field">
+          <label>지역1 (시/도)</label>
+          <select id="regionSido" name="region_sido" class="request-select" required>
+            <option value="">선택</option>
+          </select>
+        </div>
+
+        <div class="request-field">
+          <label>지역2 (시/군/구)</label>
+          <select id="regionSigungu" name="region_sigungu" class="request-select" required disabled>
+            <option value="">선택</option>
+          </select>
+        </div>
+
+        <div class="request-field">
+          <label>지역3 (읍/면/동)</label>
+          <input id="regionDong" name="region_dong" type="text" class="request-input" placeholder="예: 역삼동 / 조치원읍 / 남면" list="regionDongList" pattern=".*(읍|면|동)$" title="지역3은 읍/면/동 단위까지만 입력할 수 있습니다." required disabled>
+          <datalist id="regionDongList"></datalist>
+        </div>
+
+        <div class="request-field">
+          <label>영업소 / 대리점명</label>
+          <input type="text" name="branch_name" class="request-input" placeholder="시/군/구 선택 후 입력" required>
+        </div>
+
+        <div class="request-field">
+          <label>센터 / 터미널 / 위치</label>
+          <input name="center_location" type="text" class="request-input" placeholder="예: 인천 서브터미널" required>
+        </div>
+
+        <div class="request-field">
+          <label>필요 인원 (명)</label>
+          <input name="headcount" type="number" class="request-input" placeholder="예: 3" required>
+        </div>
+
+        <div class="request-field">
+          <label>근무요일 / 근무형태</label>
+          <input name="work_type" type="text" class="request-input" placeholder="예: 주5일 / 주간 / 야간" required>
+        </div>
+
+        <div class="request-field">
+          <label>월 물량 (건)</label>
+          <input name="volume" type="number" class="request-input" placeholder="예: 3000" required>
+        </div>
+
+        <div class="request-field">
+          <label>배송단가 (원)</label>
+          <input name="delivery_unit_price" type="number" class="request-input" placeholder="예: 1200" required>
+        </div>
+      </div>
+
+      <section id="requestMapPreview" class="request-map-card">
+        <div class="request-map-header">
+          <h3>지역 미리보기</h3>
+          <span class="request-map-badge">{{ map_mode_label }}</span>
+        </div>
+        <p class="selected-address">선택된 지역: <span id="requestSelectedAddress">선택 전</span></p>
+        <div class="map-canvas-wrap polygon-map-wrap">
+          <div id="requestMapCanvas" class="request-polygon-map" aria-label="선택 지역 폴리곤 지도"></div>
+        </div>
+        <p id="requestMapStatus" class="map-status">시/도와 시/군/구를 선택하면 폴리곤 지도가 표시됩니다.</p>
+      </section>
+
+      <div class="request-field">
+        <label>기타 사항</label>
+        <textarea name="etc" class="request-textarea" placeholder="예: 담당자 연락처, 초보 가능, 동승 교육 있음"></textarea>
+      </div>
+
+      <button type="submit" class="request-btn-main">{% if demo_mode %}데모 요청 확인하기{% else %}요청 등록하기{% endif %}</button>
+    </form>
+  </div>
+
+  <div class="request-card mt-4" id="status">
+    <div class="request-card-title">등록한 요청 목록</div>
+
+    {% if branch_requests|length == 0 %}
+      <p class="request-empty">아직 등록된 요청이 없습니다.</p>
+    {% else %}
+      <div class="excel-sheet">
+        <table class="excel-table">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>등록일</th>
+              <th>택배사</th>
+              <th>지역</th>
+              <th>인원</th>
+              <th>월물량</th>
+              <th>{% if demo_mode %}상태{% else %}삭제{% endif %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for r in branch_requests %}
+            <tr>
+              <td>{{ r.id }}</td>
+              <td>{{ r.created_at.strftime('%Y-%m-%d') }}</td>
+              <td>{{ r.company }}</td>
+              <td>{{ r.display_region or r.region }}</td>
+              <td>{{ r.headcount }}</td>
+              <td>{{ r.volume }}</td>
+              <td>
+                {% if demo_mode %}
+                  <span class="request-demo-chip">미리보기</span>
+                {% else %}
+                  <form method="post" action="{{ url_for('delete_request', req_id=r.id) }}" class="delete-form">
+                    <button class="btn btn-danger btn-sm">삭제</button>
+                  </form>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='region-data.js') }}"></script>
+<script src="{{ url_for('static', filename='polygon-map-data.js') }}"></script>
+<script>
+window.REQUEST_PAGE_CONFIG = {
+  mapMode: 'polygon',
+  demoMode: {{ 'true' if demo_mode else 'false' }}
+};
+</script>
+<script src="{{ url_for('static', filename='js/request-page.js') }}"></script>
+
+{% if not demo_mode %}
+<script>
+document.querySelectorAll(".delete-form").forEach(form => {
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    Swal.fire({
+      title: "삭제하시겠습니까?",
+      text: "삭제 후에는 되돌릴 수 없습니다.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "삭제",
+      cancelButtonText: "취소"
+    }).then(r => r.isConfirmed && form.submit());
+  });
+});
+</script>
+{% endif %}
+
+<script>
+function scrollToSection(id) {
+  document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+}
+</script>
