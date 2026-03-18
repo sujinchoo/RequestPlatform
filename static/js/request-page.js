@@ -9,9 +9,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!window.REGION_DATA || !sido || !sigungu || !dong || !dongList || !mapCanvas) return;
 
-  const polygonData = window.REQUEST_POLYGON_MAP || { regions: {}, viewBox: "0 0 720 860" };
-  const regionShapes = new Map();
-  let activeShape = null;
+  const geocodeCache = new Map();
+  let requestMap = null;
+  let requestMarker = null;
+  let debounceTimer = null;
 
   const sidoList = window.REGION_SIDO_ORDER || Object.keys(window.REGION_DATA);
   sidoList.forEach((name) => sido.add(new Option(name, name)));
@@ -49,110 +50,60 @@ document.addEventListener("DOMContentLoaded", () => {
     renderDong("", "");
   }
 
-  function buildPolygonMap() {
-    const ns = "http://www.w3.org/2000/svg";
-    const svg = document.createElementNS(ns, "svg");
-    svg.setAttribute("viewBox", polygonData.viewBox);
-    svg.setAttribute("class", "request-polygon-svg");
+  function geocodeAddress(address) {
+    return new Promise((resolve, reject) => {
+      if (!address) return reject(new Error("주소 없음"));
+      if (!window.naver?.maps?.Service) return reject(new Error("지도 API 미설정"));
+      if (geocodeCache.has(address)) return resolve(geocodeCache.get(address));
 
-    Object.entries(polygonData.regions).forEach(([regionName, config]) => {
-      const group = document.createElementNS(ns, "g");
-      group.setAttribute("data-region", regionName);
-      group.setAttribute("class", "request-polygon-group");
+      naver.maps.Service.geocode({ query: address }, (status, response) => {
+        if (status !== naver.maps.Service.Status.OK) return reject(new Error("지오코딩 실패"));
 
-      const polygon = document.createElementNS(ns, "polygon");
-      polygon.setAttribute("points", config.points);
-      polygon.setAttribute("class", "request-polygon-shape");
-      polygon.setAttribute("tabindex", "0");
-      polygon.setAttribute("role", "button");
-      polygon.setAttribute("aria-label", `${regionName} 폴리곤`);
+        const addresses = response.v2.addresses || [];
+        if (!addresses.length) return reject(new Error("검색 결과 없음"));
 
-      const centroid = config.points.split(' ').reduce((acc, pair) => {
-        const [x, y] = pair.split(',').map(Number);
-        acc.x += x;
-        acc.y += y;
-        acc.count += 1;
-        return acc;
-      }, { x: 0, y: 0, count: 0 });
-
-      const text = document.createElementNS(ns, "text");
-      text.setAttribute("x", String(centroid.count ? centroid.x / centroid.count : 0));
-      text.setAttribute("y", String(centroid.count ? centroid.y / centroid.count : 0));
-      text.setAttribute("class", "request-polygon-label");
-      text.textContent = config.label || regionName;
-
-      group.appendChild(polygon);
-      group.appendChild(text);
-      svg.appendChild(group);
-      regionShapes.set(regionName, group);
-
-      polygon.addEventListener("click", () => focusRegion(regionName));
-      polygon.addEventListener("keydown", (event) => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          focusRegion(regionName);
-        }
+        const first = addresses[0];
+        const result = { lat: parseFloat(first.y), lng: parseFloat(first.x) };
+        geocodeCache.set(address, result);
+        resolve(result);
       });
     });
-
-    mapCanvas.innerHTML = "";
-    mapCanvas.appendChild(svg);
-  }
-
-  function focusRegion(regionName) {
-    if (sido.value !== regionName) {
-      sido.value = regionName;
-      renderSigungu(regionName);
-      queueMapUpdate();
-    }
-  }
-
-  function setActivePolygon(regionName) {
-    if (activeShape) {
-      activeShape.classList.remove("is-active");
-    }
-
-    const nextShape = regionShapes.get(regionName);
-    if (!nextShape) {
-      activeShape = null;
-      return;
-    }
-
-    nextShape.classList.add("is-active");
-    activeShape = nextShape;
   }
 
   function updateRequestMap() {
     const sidoValue = sido.value.trim();
     const sigunguValue = sigungu.value.trim();
-    const dongValue = dong.value.trim();
     const address = buildRequestAddress();
-
     selectedAddressEl.textContent = address || "선택 전";
-    setActivePolygon(sidoValue);
 
-    if (!sidoValue) {
-      mapStatusEl.textContent = "시/도를 선택하거나 지도에서 권역을 눌러주세요.";
+    if (!sidoValue || !sigunguValue) {
+      mapStatusEl.textContent = "시/도와 시/군/구를 먼저 선택해 주세요";
       return;
     }
 
-    if (!sigunguValue) {
-      mapStatusEl.textContent = `${sidoValue} 권역이 선택되었습니다. 시/군/구를 고르면 상세 위치 문구가 갱신됩니다.`;
-      return;
-    }
-
-    mapStatusEl.textContent = dongValue
-      ? `${sidoValue} ${sigunguValue} ${dongValue} 권역을 폴리곤 기반으로 미리보고 있습니다.`
-      : `${sidoValue} ${sigunguValue} 권역을 폴리곤 기반으로 미리보고 있습니다.`;
+    geocodeAddress(address)
+      .then((point) => {
+        mapStatusEl.textContent = "";
+        const center = new naver.maps.LatLng(point.lat, point.lng);
+        if (!requestMap) {
+          requestMap = new naver.maps.Map("requestMapCanvas", { center, zoom: 14 });
+          requestMarker = new naver.maps.Marker({ position: center, map: requestMap });
+          return;
+        }
+        requestMap.setCenter(center);
+        requestMarker.setPosition(center);
+      })
+      .catch((error) => {
+        mapStatusEl.textContent = error.message === "검색 결과 없음"
+          ? "지도 검색 결과가 없습니다"
+          : "지도를 불러오지 못했습니다";
+      });
   }
 
-  let debounceTimer = null;
   function queueMapUpdate() {
     clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(updateRequestMap, 120);
+    debounceTimer = setTimeout(updateRequestMap, 350);
   }
-
-  buildPolygonMap();
 
   sido.addEventListener("change", () => {
     renderSigungu(sido.value);
@@ -170,5 +121,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   renderSigungu("");
-  updateRequestMap();
 });
