@@ -896,6 +896,35 @@ table tbody tr:hover {
   color: #374151;
 }
 
+.modal-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.modal-info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f8fafc;
+}
+
+.modal-info-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.modal-info-value {
+  font-size: 14px;
+  color: #111827;
+  word-break: break-word;
+}
+
 .modal-input {
   padding: 8px 10px;
   border-radius: 6px;

@@ -125,6 +125,29 @@
     </div>
 
     <div class="modal-body">
+      <div class="modal-info-grid">
+        <div class="modal-info-item">
+          <span class="modal-info-label">성함</span>
+          <strong id="modal-requester-full-name" class="modal-info-value">-</strong>
+        </div>
+        <div class="modal-info-item">
+          <span class="modal-info-label">연락처</span>
+          <strong id="modal-requester-contact" class="modal-info-value">-</strong>
+        </div>
+        <div class="modal-info-item">
+          <span class="modal-info-label">필요인원</span>
+          <strong id="modal-headcount" class="modal-info-value">-</strong>
+        </div>
+        <div class="modal-info-item">
+          <span class="modal-info-label">월 물량</span>
+          <strong id="modal-volume" class="modal-info-value">-</strong>
+        </div>
+        <div class="modal-info-item">
+          <span class="modal-info-label">배송단가</span>
+          <strong id="modal-delivery-unit-price" class="modal-info-value">-</strong>
+        </div>
+      </div>
+
       <label>면접일</label>
       <input type="date" id="modal-interview" class="modal-input" />
 
@@ -347,10 +370,23 @@ function setupRegionFilters() {
 }
 
 /* Modal */
+function formatNumberValue(value, suffix = "") {
+  if (value === null || value === undefined || value === "") return "-";
+  const numericValue = Number(value);
+  if (Number.isNaN(numericValue)) return `${value}${suffix}`;
+  return `${numericValue.toLocaleString()}${suffix}`;
+}
+
 function openModal(r) {
   currentId = r.id;
   document.getElementById("modal-title").innerText =
   `${r.requester_name || "-"} / ${r.company} / ${r.branch_name}`;
+
+  document.getElementById("modal-requester-full-name").innerText = r.requester_full_name || r.requester_name || "-";
+  document.getElementById("modal-requester-contact").innerText = r.requester_contact || "-";
+  document.getElementById("modal-headcount").innerText = formatNumberValue(r.headcount, "명");
+  document.getElementById("modal-volume").innerText = formatNumberValue(r.volume, "건");
+  document.getElementById("modal-delivery-unit-price").innerText = formatNumberValue(r.delivery_unit_price, "원");
 
   document.getElementById("modal-interview").value = r.interview_date || "";
   document.getElementById("modal-status").value = r.status || "모집중";
