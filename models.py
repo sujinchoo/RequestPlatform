@@ -57,4 +57,6 @@ class RequestItem(db.Model):
 
     status = db.Column(db.String(20), default="모집중")
     interview_date = db.Column(db.Date)
+    telegram_alert_sent_at = db.Column(db.DateTime, nullable=True)
+    telegram_alert_error = db.Column(db.Text, nullable=True)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
