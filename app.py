@@ -1,9 +1,9 @@
-from datetime import datetime, date, time
+from datetime import datetime, date, time, timedelta
 from zoneinfo import ZoneInfo  # Python 3.9+
 
 from flask import (
     Flask, render_template, request,
-    redirect, url_for, session, flash, jsonify
+    redirect, url_for, session, flash, jsonify, render_template_string
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -22,6 +22,52 @@ from google.auth.transport import requests as google_requests
 from flask import make_response
 import requests
 
+
+
+TELEGRAM_TEST_FORM_TEMPLATE = """
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Telegram Alert Test</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 32px; background: #f6f7fb; }
+    .card { max-width: 760px; margin: 0 auto; background: white; padding: 24px; border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.08); }
+    label { display:block; font-weight: 700; margin: 14px 0 6px; }
+    input, textarea { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #d0d7e2; }
+    textarea { min-height: 160px; resize: vertical; }
+    button { margin-top: 18px; border: 0; background: #2f6fed; color: white; padding: 12px 18px; border-radius: 10px; cursor: pointer; }
+    .muted { color: #556070; font-size: 14px; }
+    ul { padding-left: 20px; }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>텔레그램 알람 테스트</h1>
+    <p class="muted">Render 환경변수 <code>TELEGRAM_BOT_TOKEN</code>, <code>TELEGRAM_CHAT_ID</code>가 설정되어 있으면 바로 전송할 수 있습니다.</p>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <ul>
+          {% for category, message in messages %}
+            <li><strong>{{ category }}</strong> — {{ message }}</li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+    {% endwith %}
+    <form method="post">
+      <label for="title">제목</label>
+      <input id="title" name="title" type="text" placeholder="예: 신규 요청 알람 테스트">
+
+      <label for="message">메시지</label>
+      <textarea id="message" name="message" placeholder="텔레그램으로 보낼 내용을 입력하세요." required></textarea>
+
+      <button type="submit">텔레그램 전송</button>
+    </form>
+  </div>
+</body>
+</html>
+"""
 KST = ZoneInfo("Asia/Seoul")
 
 now_kst = datetime.now(KST)
@@ -75,6 +121,102 @@ def create_app():
         return row
 
     NAVER_MAP_CLIENT_ID = os.getenv("NAVER_MAP_CLIENT_ID", "")
+    TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+    TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+    TELEGRAM_ALERTS_ENABLED = os.getenv("TELEGRAM_ALERTS_ENABLED", "true").strip().lower() not in {"0", "false", "no", "off"}
+
+    def telegram_is_configured():
+        return bool(TELEGRAM_ALERTS_ENABLED and TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
+
+    def build_request_telegram_message(row, source_label="신규 요청 등록"):
+        created_at = getattr(row, "created_at", None)
+        if created_at is None:
+            created_text = datetime.now(KST).strftime("%Y-%m-%d %H:%M:%S KST")
+        else:
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=ZoneInfo("UTC"))
+            created_text = created_at.astimezone(KST).strftime("%Y-%m-%d %H:%M:%S KST")
+
+        lines = [
+            "📢 TPR 알람",
+            f"구분: {source_label}",
+            f"등록시각: {created_text}",
+            f"회사: {getattr(row, 'company', '-') or '-'}",
+            f"대리점/영업점: {getattr(row, 'branch_name', '-') or '-'}",
+            f"요청자: {getattr(row, 'requester_full_name', None) or getattr(row, 'requester_name', '-') or '-'}",
+            f"연락처: {getattr(row, 'requester_contact', '-') or '-'}",
+            f"지역: {build_map_address(getattr(row, 'region_sido', None), getattr(row, 'region_sigungu', None), getattr(row, 'region_dong', None), getattr(row, 'region', None)) or '-'}",
+            f"센터 위치: {getattr(row, 'center_location', '-') or '-'}",
+            f"근무 형태: {getattr(row, 'work_type', '-') or '-'}",
+            f"모집 인원: {getattr(row, 'headcount', 0) or 0}명",
+            f"물량: {getattr(row, 'volume', 0) or 0}",
+            f"단가: {getattr(row, 'delivery_unit_price', 0) or 0}",
+            f"상태: {getattr(row, 'status', '-') or '-'}",
+        ]
+        extra = (getattr(row, 'etc', None) or '').strip()
+        if extra:
+            lines.append(f"비고: {extra}")
+        row_id = getattr(row, 'id', None)
+        if row_id:
+            lines.append(f"요청 ID: {row_id}")
+        return "\n".join(lines)
+
+    def send_telegram_message(text_message):
+        if not telegram_is_configured():
+            return False, "Telegram env vars are not configured."
+
+        api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+        try:
+            resp = requests.post(
+                api_url,
+                json={
+                    "chat_id": TELEGRAM_CHAT_ID,
+                    "text": text_message,
+                    "disable_web_page_preview": True,
+                },
+                timeout=10,
+            )
+            if resp.ok:
+                return True, None
+            return False, f"Telegram API error {resp.status_code}: {resp.text[:300]}"
+        except Exception as exc:
+            return False, str(exc)
+
+    def mark_request_alert_result(row, success, error_message=None):
+        if not hasattr(row, 'telegram_alert_sent_at'):
+            return
+        row.telegram_alert_sent_at = datetime.utcnow() if success else None
+        row.telegram_alert_error = None if success else (error_message or 'Unknown telegram delivery error')[:1000]
+
+    def send_request_telegram_alert(row, source_label="신규 요청 등록", commit=True):
+        message = build_request_telegram_message(row, source_label=source_label)
+        ok, error_message = send_telegram_message(message)
+        mark_request_alert_result(row, ok, error_message)
+        if commit:
+            try:
+                db.session.commit()
+            except Exception:
+                db.session.rollback()
+                return ok, error_message
+        return ok, error_message
+
+    def retry_unsent_request_alerts(limit=20, lookback_hours=24):
+        query = RequestItem.query.filter(RequestItem.telegram_alert_sent_at.is_(None))
+        if lookback_hours and lookback_hours > 0:
+            threshold = datetime.utcnow() - timedelta(hours=lookback_hours)
+            query = query.filter(RequestItem.created_at >= threshold)
+
+        rows = query.order_by(RequestItem.created_at.asc()).limit(limit).all()
+        sent_count = 0
+        errors = []
+        for row in rows:
+            ok, error_message = send_request_telegram_alert(row, source_label="재전송 요청", commit=False)
+            if ok:
+                sent_count += 1
+            else:
+                errors.append({"id": row.id, "error": error_message})
+        db.session.commit()
+        return rows, sent_count, errors
 
     def ensure_request_columns():
         """
@@ -94,6 +236,8 @@ def create_app():
             "requester_full_name": "VARCHAR(120)",
             "requester_contact": "VARCHAR(50)",
             "delivery_unit_price": "INTEGER",
+            "telegram_alert_sent_at": "TIMESTAMP",
+            "telegram_alert_error": "TEXT",
         }
 
         for column_name, column_type in required_columns.items():
@@ -1015,7 +1159,15 @@ def create_app():
     
                 db.session.add(new_req)
                 db.session.commit()
-                flash("요청이 저장되었습니다.", "success")
+
+                telegram_ok, telegram_error = send_request_telegram_alert(new_req, source_label="신규 요청 등록")
+                if telegram_ok:
+                    flash("요청이 저장되었고 텔레그램 알람도 전송되었습니다.", "success")
+                elif telegram_is_configured():
+                    flash("요청은 저장되었지만 텔레그램 알람 전송에 실패했습니다. 재전송 라우트에서 다시 보낼 수 있습니다.", "warning")
+                    print("[WARN] Telegram alert send failed:", telegram_error)
+                else:
+                    flash("요청이 저장되었습니다. 텔레그램 환경변수가 없어 알람은 전송하지 않았습니다.", "warning")
     
             except Exception as e:
                 db.session.rollback()
@@ -1044,6 +1196,44 @@ def create_app():
             NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID
         )
 
+
+
+
+    @app.route("/telegram/test-form", methods=["GET", "POST"])
+    @login_required
+    def telegram_test_form():
+        if request.method == "POST":
+            title = request.form.get("title", "").strip()
+            message = request.form.get("message", "").strip()
+            payload = f"📨 {title}\n\n{message}".strip() if title else message
+
+            ok, error_message = send_telegram_message(payload)
+            if ok:
+                flash("텔레그램 테스트 메시지를 전송했습니다.", "success")
+            else:
+                flash(f"텔레그램 테스트 전송 실패: {error_message}", "error")
+            return redirect(url_for("telegram_test_form"))
+
+        return render_template_string(TELEGRAM_TEST_FORM_TEMPLATE)
+
+
+    @app.route("/api/telegram/retry-pending", methods=["POST"])
+    @login_required
+    def retry_pending_telegram_alerts():
+        if not session.get("is_admin"):
+            return jsonify({"success": False, "error": "Admin only"}), 403
+
+        data = request.get_json(silent=True) or {}
+        limit = min(max(safe_int(data.get("limit") or 20), 1), 100)
+        lookback_hours = min(max(safe_int(data.get("lookback_hours") or 24), 1), 24 * 30)
+
+        rows, sent_count, errors = retry_unsent_request_alerts(limit=limit, lookback_hours=lookback_hours)
+        return jsonify({
+            "success": True,
+            "checked": len(rows),
+            "sent": sent_count,
+            "errors": errors,
+        })
 
     # =========================================================
     # 요청 삭제 (본인 지점 데이터만 삭제)
