@@ -202,10 +202,8 @@ def create_app():
         return ok, error_message
 
     def dispatch_request_telegram_alert_async(request_id, source_label="신규 요청 등록"):
-        app_obj = app._get_current_object()
-
         def _task():
-            with app_obj.app_context():
+            with app.app_context():
                 try:
                     row = db.session.get(RequestItem, request_id)
                     if not row:
@@ -1183,7 +1181,10 @@ def create_app():
 
                 db.session.add(new_req)
                 db.session.commit()
-                dispatch_request_telegram_alert_async(new_req.id, source_label="신규 요청 등록")
+                try:
+                    dispatch_request_telegram_alert_async(new_req.id, source_label="신규 요청 등록")
+                except Exception as async_exc:
+                    print(f"[WARN] Telegram async dispatch start failed for request {new_req.id}: {async_exc}")
                 flash("접수가 완료 되었습니다.", "success")
     
             except Exception as e:
