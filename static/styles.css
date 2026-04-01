@@ -2467,9 +2467,10 @@ table#request-table td {
 
 .request-ui-v2 .request-submit-sticky {
   position: sticky;
-  bottom: 0;
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
   z-index: 20;
-  padding-top: 14px;
+  padding-top: 12px;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
   margin-top: 4px;
   background: linear-gradient(to top, rgba(245, 247, 251, 0.95), rgba(245, 247, 251, 0));
 }
@@ -2581,6 +2582,10 @@ table#request-table td {
   .request-ui-v2 .profile-buttons .btn-nav {
     flex: 1 1 auto;
     min-height: 42px;
+  }
+
+  .request-ui-v2 #req-form {
+    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
   }
 
   .request-ui-v2 .request-history-desktop {
