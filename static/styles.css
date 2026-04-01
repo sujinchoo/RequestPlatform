@@ -2460,6 +2460,17 @@ table#request-table td {
   margin-bottom: 0;
 }
 
+.request-ui-v2 {
+  --rq-safe-bottom: env(safe-area-inset-bottom, 0px);
+  --rq-cta-base-gap: 16px;
+  --rq-cta-bottom-clearance: calc(var(--rq-safe-bottom) + var(--rq-cta-base-gap));
+  --rq-cta-overlay-buffer: 84px;
+}
+
+.request-ui-v2 #req-form {
+  padding-bottom: calc(var(--rq-cta-bottom-clearance) + var(--rq-cta-overlay-buffer));
+}
+
 .request-ui-v2 .selected-address {
   font-size: 13px;
   color: #374151;
@@ -2467,10 +2478,10 @@ table#request-table td {
 
 .request-ui-v2 .request-submit-sticky {
   position: sticky;
-  bottom: calc(env(safe-area-inset-bottom, 0px) + 14px);
+  bottom: var(--rq-cta-bottom-clearance);
   z-index: 20;
   padding-top: 12px;
-  padding-bottom: env(safe-area-inset-bottom, 0px);
+  padding-bottom: max(var(--rq-safe-bottom), 6px);
   margin-top: 4px;
   background: linear-gradient(to top, rgba(245, 247, 251, 0.95), rgba(245, 247, 251, 0));
 }
@@ -2584,8 +2595,13 @@ table#request-table td {
     min-height: 42px;
   }
 
-  .request-ui-v2 #req-form {
-    padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 20px);
+  .request-ui-v2 {
+    --rq-cta-base-gap: 20px;
+    --rq-cta-overlay-buffer: 88px;
+  }
+
+  .request-ui-v2 .request-submit-sticky {
+    padding-top: 10px;
   }
 
   .request-ui-v2 .request-history-desktop {
@@ -2595,4 +2611,9 @@ table#request-table td {
   .request-ui-v2 .request-history-mobile {
     display: block;
   }
+}
+
+.request-ui-v2.is-android-webview {
+  --rq-cta-base-gap: 38px;
+  --rq-cta-overlay-buffer: 104px;
 }

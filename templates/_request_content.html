@@ -256,3 +256,19 @@ function scrollToSection(id) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 </script>
+
+<script>
+(() => {
+  const requestRoot = document.querySelector(".request-ui-v2");
+  if (!requestRoot) return;
+
+  const ua = navigator.userAgent || "";
+  const isAndroid = /Android/i.test(ua);
+  const isWebView = /\bwv\b|; wv\)|Version\/[\d.]+.*Chrome\/[\d.]+/i.test(ua);
+
+  if (isAndroid && isWebView) {
+    document.body.classList.add("is-android-webview");
+    requestRoot.classList.add("is-android-webview");
+  }
+})();
+</script>
