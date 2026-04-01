@@ -14,6 +14,7 @@ from models import db, Branch, RequestItem
 from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text, extract, func, inspect
 import os
+import threading
 from urllib.parse import quote
 
 # Google oauth2 for android mobile 
@@ -199,6 +200,29 @@ def create_app():
                 db.session.rollback()
                 return ok, error_message
         return ok, error_message
+
+    def dispatch_request_telegram_alert_async(request_id, source_label="신규 요청 등록"):
+        app_obj = app._get_current_object()
+
+        def _task():
+            with app_obj.app_context():
+                try:
+                    row = db.session.get(RequestItem, request_id)
+                    if not row:
+                        print(f"[WARN] Telegram async dispatch skipped: request {request_id} not found.")
+                        return
+                    ok, error_message = send_request_telegram_alert(row, source_label=source_label, commit=True)
+                    if not ok:
+                        print(f"[WARN] Telegram alert send failed for request {request_id}: {error_message}")
+                except Exception as exc:
+                    db.session.rollback()
+                    print(f"[ERROR] Telegram async dispatch error for request {request_id}: {exc}")
+
+        threading.Thread(
+            target=_task,
+            name=f"telegram-alert-{request_id}",
+            daemon=True,
+        ).start()
 
     def retry_unsent_request_alerts(limit=20, lookback_hours=24):
         query = RequestItem.query.filter(RequestItem.telegram_alert_sent_at.is_(None))
@@ -1156,18 +1180,11 @@ def create_app():
                     created_at=datetime.utcnow(),
                 )
 
-    
+
                 db.session.add(new_req)
                 db.session.commit()
-
-                telegram_ok, telegram_error = send_request_telegram_alert(new_req, source_label="신규 요청 등록")
-                if telegram_ok:
-                    flash("요청이 저장되었고 텔레그램 알람도 전송되었습니다.", "success")
-                elif telegram_is_configured():
-                    flash("요청은 저장되었지만 텔레그램 알람 전송에 실패했습니다. 재전송 라우트에서 다시 보낼 수 있습니다.", "warning")
-                    print("[WARN] Telegram alert send failed:", telegram_error)
-                else:
-                    flash("요청이 저장되었습니다. 텔레그램 환경변수가 없어 알람은 전송하지 않았습니다.", "warning")
+                dispatch_request_telegram_alert_async(new_req.id, source_label="신규 요청 등록")
+                flash("접수가 완료 되었습니다.", "success")
     
             except Exception as e:
                 db.session.rollback()
