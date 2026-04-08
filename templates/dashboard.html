@@ -289,11 +289,20 @@
     position: fixed;
     inset: 0;
     background: rgba(0, 0, 0, 0.3);
-    display: flex;
+    display: none;
     align-items: center;
     justify-content: center;
     z-index: 1200;
     padding: 16px;
+  }
+
+  /* ROOT CAUSE:
+     #delete-confirm-modal had class="hidden", but this template did not define
+     a .hidden rule for the delete overlay. Because .delete-confirm-overlay set
+     display:flex by default, the modal rendered immediately on page load.
+     Fix: keep overlay hidden by default and only show it with an explicit class. */
+  .delete-confirm-overlay.is-open {
+    display: flex;
   }
 
   .delete-confirm-card {
@@ -653,6 +662,7 @@ function updateDeleteButtonState() {
 function openDeleteConfirmModal() {
   const deleteModal = document.getElementById("delete-confirm-modal");
   if (deleteModal) {
+    deleteModal.classList.add("is-open");
     deleteModal.classList.remove("hidden");
   }
 }
@@ -660,6 +670,7 @@ function openDeleteConfirmModal() {
 function closeDeleteConfirmModal() {
   const deleteModal = document.getElementById("delete-confirm-modal");
   if (deleteModal) {
+    deleteModal.classList.remove("is-open");
     deleteModal.classList.add("hidden");
   }
 }
@@ -697,19 +708,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
 
   if (!deleteButton || !deleteModal || !deleteCancelBtn || !deleteConfirmBtn) return;
+  closeDeleteConfirmModal();
 
-  deleteButton.addEventListener("click", () => {
-    if (!getSelectedRequestIds().length) return;
+  deleteButton.addEventListener("click", (event) => {
+    if (!event.isTrusted) return;
+    const selectedIds = getSelectedRequestIds();
+    console.log("Delete button clicked");
+    console.log("Selected rows:", selectedIds);
+    if (selectedIds.length === 0) return;
+    console.log("Opening delete modal");
     openDeleteConfirmModal();
   });
 
-  deleteCancelBtn.addEventListener("click", closeDeleteConfirmModal);
+  deleteCancelBtn.addEventListener("click", (event) => {
+    if (!event.isTrusted) return;
+    closeDeleteConfirmModal();
+  });
   deleteModal.addEventListener("click", (event) => {
     if (event.target === deleteModal) closeDeleteConfirmModal();
   });
 
-  deleteConfirmBtn.addEventListener("click", () => {
+  deleteConfirmBtn.addEventListener("click", (event) => {
+    if (!event.isTrusted) return;
     const selectedIds = getSelectedRequestIds();
+    console.log("Selected rows:", selectedIds);
     if (!selectedIds.length) {
       closeDeleteConfirmModal();
       updateDeleteButtonState();
