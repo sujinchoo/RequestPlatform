@@ -124,10 +124,15 @@ def create_app():
     NAVER_MAP_CLIENT_ID = os.getenv("NAVER_MAP_CLIENT_ID", "")
     TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
     TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "").strip()
+    TELEGRAM_CHAT_ID2 = os.getenv("TELEGRAM_CHAT_ID2", "").strip()
     TELEGRAM_ALERTS_ENABLED = os.getenv("TELEGRAM_ALERTS_ENABLED", "true").strip().lower() not in {"0", "false", "no", "off"}
 
     def telegram_is_configured():
-        return bool(TELEGRAM_ALERTS_ENABLED and TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)
+        return bool(
+            TELEGRAM_ALERTS_ENABLED
+            and TELEGRAM_BOT_TOKEN
+            and (TELEGRAM_CHAT_ID or TELEGRAM_CHAT_ID2)
+        )
 
     def build_request_telegram_message(row, source_label="신규 요청 등록"):
         created_at = getattr(row, "created_at", None)
@@ -165,21 +170,41 @@ def create_app():
     def send_telegram_message(text_message):
         if not telegram_is_configured():
             return False, "Telegram env vars are not configured."
-
+    
         api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
+    
         try:
-            resp = requests.post(
-                api_url,
-                json={
-                    "chat_id": TELEGRAM_CHAT_ID,
-                    "text": text_message,
-                    "disable_web_page_preview": True,
-                },
-                timeout=10,
-            )
-            if resp.ok:
+            success = False
+    
+            if TELEGRAM_CHAT_ID:
+                resp = requests.post(
+                    api_url,
+                    json={
+                        "chat_id": TELEGRAM_CHAT_ID,
+                        "text": text_message,
+                        "disable_web_page_preview": True,
+                    },
+                    timeout=10,
+                )
+                success = resp.ok
+    
+            if TELEGRAM_CHAT_ID2:
+                resp2 = requests.post(
+                    api_url,
+                    json={
+                        "chat_id": TELEGRAM_CHAT_ID2,
+                        "text": text_message,
+                        "disable_web_page_preview": True,
+                    },
+                    timeout=10,
+                )
+                success = success or resp2.ok
+    
+            if success:
                 return True, None
-            return False, f"Telegram API error {resp.status_code}: {resp.text[:300]}"
+    
+            return False, "Telegram send failed"
+    
         except Exception as exc:
             return False, str(exc)
 
