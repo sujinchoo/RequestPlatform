@@ -3,7 +3,7 @@ from zoneinfo import ZoneInfo  # Python 3.9+
 
 from flask import (
     Flask, render_template, request,
-    redirect, url_for, session, flash, jsonify, render_template_string
+    redirect, url_for, session, flash, jsonify, render_template_string, send_file
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -14,6 +14,7 @@ from models import db, Branch, RequestItem
 from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text, extract, func, inspect
 import os
+import io
 import threading
 from typing import Optional, Tuple
 from urllib.parse import quote
@@ -23,6 +24,7 @@ from google.oauth2 import id_token as google_id_token
 from google.auth.transport import requests as google_requests
 from flask import make_response
 import requests
+from openpyxl import Workbook
 
 
 
@@ -359,6 +361,79 @@ def create_app():
                 return redirect(url_for("request_page"))
             return view(*args, **kwargs)
         return wrapped
+
+    def get_current_branch():
+        branch_id = session.get("branch_id")
+        if not branch_id:
+            return None
+        return Branch.query.get(branch_id)
+
+    def is_super_admin_user():
+        branch = get_current_branch()
+        if not branch:
+            return False
+        return (branch.login_id or "").strip().lower() == "admin"
+
+    def build_export_rows(rows):
+        export_rows = []
+        for r in rows:
+            export_rows.append({
+                "id": r.id,
+                "branch_id": r.branch_id,
+                "company": r.company,
+                "requester_full_name": r.requester_full_name,
+                "requester_contact": r.requester_contact,
+                "requester_name": r.requester_name,
+                "branch_name": r.branch_name,
+                "region": r.region,
+                "region_sido": r.region_sido,
+                "region_sigungu": r.region_sigungu,
+                "region_dong": r.region_dong,
+                "center_location": r.center_location,
+                "work_type": r.work_type,
+                "headcount": r.headcount,
+                "volume": r.volume,
+                "delivery_unit_price": r.delivery_unit_price,
+                "etc": r.etc,
+                "status": r.status,
+                "interview_date": r.interview_date.isoformat() if r.interview_date else "",
+                "telegram_alert_sent_at": r.telegram_alert_sent_at.isoformat() if r.telegram_alert_sent_at else "",
+                "telegram_alert_error": r.telegram_alert_error,
+                "created_at": r.created_at.strftime("%Y-%m-%d %H:%M:%S") if r.created_at else "",
+            })
+        return export_rows
+
+    def build_excel_response(rows, filename_prefix):
+        if not rows:
+            return None
+
+        data_rows = build_export_rows(rows)
+        workbook = Workbook()
+        worksheet = workbook.active
+        worksheet.title = "requests"
+
+        worksheet.cell(row=1, column=1, value=f"Export Time: {datetime.now(KST).strftime('%Y-%m-%d %H:%M KST')}")
+        worksheet.cell(row=2, column=1, value=f"Total Rows: {len(data_rows)}")
+
+        headers = list(data_rows[0].keys())
+        for col_idx, header in enumerate(headers, start=1):
+            worksheet.cell(row=4, column=col_idx, value=header)
+
+        for row_idx, data in enumerate(data_rows, start=5):
+            for col_idx, header in enumerate(headers, start=1):
+                worksheet.cell(row=row_idx, column=col_idx, value=data.get(header))
+
+        output = io.BytesIO()
+        workbook.save(output)
+        output.seek(0)
+
+        filename = f"{filename_prefix}_{datetime.now(KST).strftime('%Y%m%d_%H%M')}.xlsx"
+        return send_file(
+            output,
+            as_attachment=True,
+            download_name=filename,
+            mimetype="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        )
 
 
     
@@ -1345,7 +1420,8 @@ def create_app():
                                active_cases=active,
                                completed_cases=completed,
                                company_list=get_company_list(),
-                               NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID)
+                               NAVER_MAP_CLIENT_ID=NAVER_MAP_CLIENT_ID,
+                               is_super_admin=is_super_admin_user())
 
     @app.route("/dashboard_v2")
     @login_required
@@ -1555,6 +1631,82 @@ def create_app():
         db.session.commit()
 
         return jsonify({"success": True})
+
+    @app.route("/export/all")
+    @login_required
+    @admin_required
+    def export_all_requests():
+        rows = RequestItem.query.order_by(RequestItem.created_at.desc()).all()
+        response = build_excel_response(rows, "TPR_requests_full")
+        if response is not None:
+            return response
+        flash("No data available for export.", "error")
+        return redirect(url_for("dashboard"))
+
+    @app.route("/export/date-range")
+    @login_required
+    @admin_required
+    def export_date_range_requests():
+        start_date = (request.args.get("start_date") or "").strip()
+        end_date = (request.args.get("end_date") or "").strip()
+
+        if not start_date or not end_date:
+            flash("시작일과 종료일을 모두 선택해 주세요.", "error")
+            return redirect(url_for("dashboard"))
+
+        try:
+            start_dt = datetime.strptime(start_date, "%Y-%m-%d")
+            end_dt = datetime.strptime(end_date, "%Y-%m-%d")
+        except ValueError:
+            flash("날짜 형식이 올바르지 않습니다.", "error")
+            return redirect(url_for("dashboard"))
+
+        if start_dt > end_dt:
+            flash("시작일은 종료일보다 늦을 수 없습니다.", "error")
+            return redirect(url_for("dashboard"))
+
+        end_dt_inclusive = end_dt + timedelta(days=1)
+        rows = (
+            RequestItem.query
+            .filter(RequestItem.created_at >= start_dt, RequestItem.created_at < end_dt_inclusive)
+            .order_by(RequestItem.created_at.desc())
+            .all()
+        )
+        response = build_excel_response(rows, "TPR_requests_full")
+        if response is not None:
+            return response
+        flash("No data available for export.", "error")
+        return redirect(url_for("dashboard"))
+
+    @app.route("/admin/delete-requests", methods=["POST"])
+    @login_required
+    @admin_required
+    def admin_delete_requests():
+        if not is_super_admin_user():
+            return jsonify({"success": False, "message": "Forbidden"}), 403
+
+        data = request.get_json(silent=True) or {}
+        request_ids = data.get("request_ids") or []
+        if not isinstance(request_ids, list) or not request_ids:
+            return jsonify({"success": False, "message": "삭제할 요청이 없습니다."}), 400
+
+        valid_ids = []
+        for raw_id in request_ids:
+            try:
+                valid_ids.append(int(raw_id))
+            except (TypeError, ValueError):
+                continue
+        if not valid_ids:
+            return jsonify({"success": False, "message": "유효한 요청 ID가 없습니다."}), 400
+
+        try:
+            deleted_count = RequestItem.query.filter(RequestItem.id.in_(valid_ids)).delete(synchronize_session=False)
+            db.session.commit()
+            return jsonify({"success": True, "deleted": deleted_count})
+        except Exception as e:
+            db.session.rollback()
+            print("[DELETE REQUESTS ERROR]", e)
+            return jsonify({"success": False, "message": "삭제 중 오류가 발생했습니다."}), 500
 
     # =========================================================
     # DB TEST PAGE
