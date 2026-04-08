@@ -76,6 +76,27 @@
         class="btn-filter btn-filter-secondary">초기화
       </button>
     </div>
+  </div>
+
+  <div class="sheet-filters" style="margin-top: 4px;">
+    <div class="filter-actions" style="margin-left: 0;">
+      <a href="{{ url_for('export_all_requests') }}" class="btn-filter btn-filter-primary">Download Full Data (Excel)</a>
+    </div>
+
+    <form method="get" action="{{ url_for('export_date_range_requests') }}" class="filter-actions" style="margin-left: 0; gap: 10px;">
+      <div class="filter-item">
+        <label for="export-start-date">Start Date</label>
+        <input id="export-start-date" name="start_date" type="date" class="filter-select" required>
+      </div>
+      <div class="filter-item">
+        <label for="export-end-date">End Date</label>
+        <input id="export-end-date" name="end_date" type="date" class="filter-select" required>
+      </div>
+      <div class="filter-actions" style="margin-left: 0;">
+        <button type="submit" class="btn-filter btn-filter-secondary">Download Selected Dates</button>
+      </div>
+    </form>
+  </div>
 
 
   <!-- 테이블 -->
@@ -83,6 +104,9 @@
     <table id="request-table" class="table-compact">
       <thead>
         <tr>
+          {% if is_super_admin %}
+          <th style="width:70px;">Select</th>
+          {% endif %}
           <th style="width:50px;">No</th>
           <th style="width:140px;">지역</th>
           <th style="width:140px;">요청자</th>
@@ -100,6 +124,11 @@
       <tbody></tbody>
     </table>
   </div>
+  {% if is_super_admin %}
+  <div class="filter-actions" style="justify-content: flex-end; margin-top: 10px;">
+    <button id="delete-selected-btn" type="button" class="btn-filter btn-filter-secondary" disabled>Delete Selected</button>
+  </div>
+  {% endif %}
   <section id="dashboardMapPanel" class="map-panel hidden">
     <div class="map-panel-body">
       <div class="map-info">
@@ -185,6 +214,7 @@ let selectedRegionCell = null;
 const geocodeCache = new Map();
 let dashboardMap = null;
 let dashboardMarker = null;
+const isSuperAdmin = {{ 'true' if is_super_admin else 'false' }};
 
 const sidoSelect = document.getElementById("filter-sido");
 const sigunguSelect = document.getElementById("filter-sigungu");
@@ -201,7 +231,7 @@ function renderData(data) {
   if (!data || data.length === 0) {
     tbody.innerHTML = `
       <tr>
-        <td colspan="10" style="text-align:center;">등록된 요청이 없습니다.</td>
+        <td colspan="${isSuperAdmin ? 12 : 11}" style="text-align:center;">등록된 요청이 없습니다.</td>
       </tr>`;
     return;
   }
@@ -209,6 +239,7 @@ function renderData(data) {
   data.forEach((r, idx) => {
     const tr = document.createElement("tr");
     tr.innerHTML = `
+      ${isSuperAdmin ? `<td><input type="checkbox" class="row-select-checkbox" value="${r.id}" aria-label="select row ${r.id}" /></td>` : ""}
       <td>${idx + 1}</td>
       <td><button type="button" class="region-link" data-map-address="${r.map_address || ""}" data-map-label="${r.display_region || r.region || "-"}">${r.display_region || r.region || "-"}</button></td>
     
@@ -242,6 +273,13 @@ function renderData(data) {
 
     tr.onclick = () => openModal(r);
     tbody.appendChild(tr);
+    if (isSuperAdmin) {
+      const checkbox = tr.querySelector(".row-select-checkbox");
+      if (checkbox) {
+        checkbox.addEventListener("click", (e) => e.stopPropagation());
+        checkbox.addEventListener("change", updateDeleteButtonState);
+      }
+    }
 
     const regionBtn = tr.querySelector(".region-link");
     if (regionBtn) {
@@ -350,7 +388,10 @@ function loadDashboardData() {
 
   fetch(`/api/requests?${params.toString()}`)
     .then(res => res.json())
-    .then(json => renderData(json.data || []))
+    .then(json => {
+      renderData(json.data || []);
+      updateDeleteButtonState();
+    })
     .catch(err => console.error("데이터 로딩 실패:", err));
 }
 
@@ -448,7 +489,53 @@ document.addEventListener("DOMContentLoaded", () => {
     statusSelect.value = ""; 
     loadDashboardData();
   };
+
+  const deleteButton = document.getElementById("delete-selected-btn");
+  if (deleteButton) {
+    deleteButton.addEventListener("click", deleteSelectedRows);
+  }
 });
+
+function getSelectedRequestIds() {
+  return Array.from(document.querySelectorAll(".row-select-checkbox:checked")).map((checkbox) => checkbox.value);
+}
+
+function updateDeleteButtonState() {
+  const deleteButton = document.getElementById("delete-selected-btn");
+  if (!deleteButton) return;
+  deleteButton.disabled = getSelectedRequestIds().length === 0;
+}
+
+function deleteSelectedRows() {
+  const selectedIds = getSelectedRequestIds();
+  if (!selectedIds.length) return;
+
+  const confirmed = window.confirm("Are you sure you want to delete the selected records?");
+  if (!confirmed) return;
+
+  fetch("/admin/delete-requests", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ request_ids: selectedIds })
+  })
+  .then(res => {
+    if (res.status === 403) {
+      throw new Error("삭제 권한이 없습니다.");
+    }
+    return res.json();
+  })
+  .then(json => {
+    if (!json.success) {
+      alert(json.message || "삭제 중 오류가 발생했습니다.");
+      return;
+    }
+    showToast("선택한 요청이 삭제되었습니다.");
+    loadDashboardData();
+  })
+  .catch((error) => {
+    alert(error.message || "삭제 중 오류가 발생했습니다.");
+  });
+}
 
 /* =========================
    Toast helper
