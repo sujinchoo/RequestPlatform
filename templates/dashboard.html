@@ -19,10 +19,13 @@
   </div>
 
   <!-- 통계 -->
-  <div class="stats-box">
-    <span class="stat total">전체: {{ total_cases }}개</span>
-    <span class="stat active">진행중: {{ active_cases }}개</span>
-    <span class="stat done">배차완료: {{ completed_cases }}개</span>
+  <div class="stats-box stats-box-layout">
+    <div class="stats-summary">
+      <span class="stat total">전체: {{ total_cases }}개</span>
+      <span class="stat active">진행중: {{ active_cases }}개</span>
+      <span class="stat done">배차완료: {{ completed_cases }}개</span>
+    </div>
+    <a href="{{ url_for('export_all_requests') }}" class="btn-filter btn-filter-primary">Download Full Data (Excel)</a>
   </div>
 
   <!-- 필터 -->
@@ -78,12 +81,8 @@
     </div>
   </div>
 
-  <div class="sheet-filters" style="margin-top: 4px;">
-    <div class="filter-actions" style="margin-left: 0;">
-      <a href="{{ url_for('export_all_requests') }}" class="btn-filter btn-filter-primary">Download Full Data (Excel)</a>
-    </div>
-
-    <form method="get" action="{{ url_for('export_date_range_requests') }}" class="filter-actions" style="margin-left: 0; gap: 10px;">
+  <div class="sheet-filters sheet-filters-export" style="margin-top: 4px;">
+    <form method="get" action="{{ url_for('export_date_range_requests') }}" class="filter-actions filter-actions-export" style="margin-left: 0;">
       <div class="filter-item">
         <label for="export-start-date">Start Date</label>
         <input id="export-start-date" name="start_date" type="date" class="filter-select" required>
@@ -92,10 +91,14 @@
         <label for="export-end-date">End Date</label>
         <input id="export-end-date" name="end_date" type="date" class="filter-select" required>
       </div>
-      <div class="filter-actions" style="margin-left: 0;">
-        <button type="submit" class="btn-filter btn-filter-secondary">Download Selected Dates</button>
-      </div>
+      <button type="submit" class="btn-filter btn-filter-secondary">선택날짜 다운로드</button>
     </form>
+
+    {% if is_super_admin %}
+    <div class="filter-actions filter-actions-delete-top" style="margin-left: 0;">
+      <button id="delete-selected-btn" type="button" class="btn-filter btn-filter-secondary" disabled>선택 삭제</button>
+    </div>
+    {% endif %}
   </div>
 
 
@@ -124,11 +127,6 @@
       <tbody></tbody>
     </table>
   </div>
-  {% if is_super_admin %}
-  <div class="filter-actions" style="justify-content: flex-end; margin-top: 10px;">
-    <button id="delete-selected-btn" type="button" class="btn-filter btn-filter-secondary" disabled>Delete Selected</button>
-  </div>
-  {% endif %}
   <section id="dashboardMapPanel" class="map-panel hidden">
     <div class="map-panel-body">
       <div class="map-info">
@@ -194,6 +192,52 @@
   </div>
 </div>
 
+
+
+<style>
+  .stats-box-layout {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .stats-summary {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .sheet-filters-export {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-actions-export {
+    display: flex;
+    align-items: flex-end;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .filter-actions-export .filter-item {
+    margin-bottom: 0;
+  }
+
+  .filter-actions-export .btn-filter {
+    margin-bottom: 0;
+  }
+
+  .filter-actions-delete-top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+</style>
 
 {% if NAVER_MAP_CLIENT_ID %}
 <script src="https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId={{ NAVER_MAP_CLIENT_ID }}&submodules=geocoder"></script>
