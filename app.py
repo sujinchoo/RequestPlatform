@@ -178,6 +178,7 @@ def create_app():
             for chat_id in [
                 os.getenv("TELEGRAM_CHAT_ID", "").strip(),
                 "6405170886",
+                "8718464901",
             ]
             if chat_id
         ]
