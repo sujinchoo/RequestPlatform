@@ -203,10 +203,13 @@ def create_app():
                     timeout=10,
                 )
                 print(f"[INFO] Telegram response status chat_id={chat_id} status={response.status_code}")
+                print(f"[INFO] Telegram response body chat_id={chat_id} body={response.text}")
                 if response.ok:
+                    print(f"[INFO] Telegram send success chat_id={chat_id}")
                     success = True
                 else:
-                    errors.append(f"{chat_id}: HTTP {response.status_code}")
+                    print(f"[WARN] Telegram send failed chat_id={chat_id}")
+                    errors.append(f"{chat_id}: HTTP {response.status_code} body={response.text}")
             except Exception as exc:
                 print(f"[ERROR] Telegram send exception chat_id={chat_id}: {exc}")
                 errors.append(f"{chat_id}: {exc}")
