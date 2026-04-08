@@ -111,13 +111,13 @@
           <th style="width:70px;">Select</th>
           {% endif %}
           <th style="width:50px;">No</th>
-          <th style="width:140px;">지역</th>
-          <th style="width:140px;">요청자</th>
+          <th class="col-region" style="width:154px;">지역</th>
+          <th class="col-requester" style="width:98px;">요청자</th>
           <th style="width:160px;">영업소 / 대리점명</th>
           
-          <th style="width:120px;">택배사</th>
-          <th style="width:160px;">근무 형태</th>
-          <th style="width:120px;">월 물량</th>
+          <th class="col-courier" style="width:132px;">택배사</th>
+          <th class="col-worktype" style="width:176px;">근무 형태</th>
+          <th class="col-monthly" style="width:60px;">월 물량</th>
           <th style="width:80px;">인원</th>
           <th style="width:250px;">기타 사항</th>
           <th style="width:120px;">현재 상태</th>
@@ -192,6 +192,19 @@
   </div>
 </div>
 
+<div id="delete-confirm-modal" class="delete-confirm-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="delete-confirm-title">
+  <div class="delete-confirm-card">
+    <h3 id="delete-confirm-title" class="delete-confirm-title">선택한 항목을 삭제하시겠습니까?</h3>
+    <p class="delete-confirm-text">
+      선택한 요청 데이터가 영구적으로 삭제됩니다.<br>
+      이 작업은 되돌릴 수 없습니다.
+    </p>
+    <div class="delete-confirm-actions">
+      <button id="delete-cancel-btn" type="button" class="delete-confirm-btn delete-confirm-cancel">취소</button>
+      <button id="delete-confirm-btn" type="button" class="delete-confirm-btn delete-confirm-danger">삭제</button>
+    </div>
+  </div>
+</div>
 
 
 <style>
@@ -236,6 +249,97 @@
     display: flex;
     align-items: center;
     gap: 10px;
+  }
+
+  #request-table th.col-region,
+  #request-table td.col-region,
+  #request-table th.col-courier,
+  #request-table td.col-courier,
+  #request-table th.col-worktype,
+  #request-table td.col-worktype {
+    white-space: nowrap;
+  }
+
+  #request-table th.col-region,
+  #request-table td.col-region {
+    width: 154px;
+  }
+
+  #request-table th.col-courier,
+  #request-table td.col-courier {
+    width: 132px;
+  }
+
+  #request-table th.col-worktype,
+  #request-table td.col-worktype {
+    width: 176px;
+  }
+
+  #request-table th.col-requester,
+  #request-table td.col-requester {
+    width: 98px;
+  }
+
+  #request-table th.col-monthly,
+  #request-table td.col-monthly {
+    width: 60px;
+  }
+
+  .delete-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1200;
+    padding: 16px;
+  }
+
+  .delete-confirm-card {
+    width: 100%;
+    max-width: 420px;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 16px 42px rgba(15, 23, 42, 0.22);
+  }
+
+  .delete-confirm-title {
+    margin: 0 0 10px 0;
+    font-size: 20px;
+    color: #111827;
+  }
+
+  .delete-confirm-text {
+    margin: 0;
+    color: #4b5563;
+    line-height: 1.5;
+  }
+
+  .delete-confirm-actions {
+    margin-top: 18px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+  }
+
+  .delete-confirm-btn {
+    border: 0;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .delete-confirm-cancel {
+    background: #e5e7eb;
+    color: #374151;
+  }
+
+  .delete-confirm-danger {
+    background: #dc2626;
+    color: #ffffff;
   }
 </style>
 
@@ -285,22 +389,22 @@ function renderData(data) {
     tr.innerHTML = `
       ${isSuperAdmin ? `<td><input type="checkbox" class="row-select-checkbox" value="${r.id}" aria-label="select row ${r.id}" /></td>` : ""}
       <td>${idx + 1}</td>
-      <td><button type="button" class="region-link" data-map-address="${r.map_address || ""}" data-map-label="${r.display_region || r.region || "-"}">${r.display_region || r.region || "-"}</button></td>
+      <td class="col-region"><button type="button" class="region-link" data-map-address="${r.map_address || ""}" data-map-label="${r.display_region || r.region || "-"}">${r.display_region || r.region || "-"}</button></td>
     
       <!-- ✅ 요청자 -->
-      <td>${r.requester_name || "-"}</td>
+      <td class="col-requester">${r.requester_name || "-"}</td>
     
       <!-- ✅ 영업소 / 대리점명 -->
       <td>${r.branch_name || "-"}</td>
     
       <!-- ✅ 택배사 -->
-      <td>${r.company || "-"}</td>
+      <td class="col-courier">${r.company || "-"}</td>
     
       <!-- ✅ 근무 형태 -->
-      <td>${r.work_days || "-"}</td>
+      <td class="col-worktype">${r.work_days || "-"}</td>
     
       <!-- ✅ 월 물량 -->
-      <td>${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
+      <td class="col-monthly">${r.volume ? Number(r.volume).toLocaleString() : "-"}</td>
     
       <!-- ✅ 인원 -->
       <td>${r.headcount || "-"}</td>
@@ -534,10 +638,6 @@ document.addEventListener("DOMContentLoaded", () => {
     loadDashboardData();
   };
 
-  const deleteButton = document.getElementById("delete-selected-btn");
-  if (deleteButton) {
-    deleteButton.addEventListener("click", deleteSelectedRows);
-  }
 });
 
 function getSelectedRequestIds() {
@@ -550,13 +650,21 @@ function updateDeleteButtonState() {
   deleteButton.disabled = getSelectedRequestIds().length === 0;
 }
 
-function deleteSelectedRows() {
-  const selectedIds = getSelectedRequestIds();
-  if (!selectedIds.length) return;
+function openDeleteConfirmModal() {
+  const deleteModal = document.getElementById("delete-confirm-modal");
+  if (deleteModal) {
+    deleteModal.classList.remove("hidden");
+  }
+}
 
-  const confirmed = window.confirm("Are you sure you want to delete the selected records?");
-  if (!confirmed) return;
+function closeDeleteConfirmModal() {
+  const deleteModal = document.getElementById("delete-confirm-modal");
+  if (deleteModal) {
+    deleteModal.classList.add("hidden");
+  }
+}
 
+function deleteSelectedRows(selectedIds) {
   fetch("/admin/delete-requests", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -574,12 +682,42 @@ function deleteSelectedRows() {
       return;
     }
     showToast("선택한 요청이 삭제되었습니다.");
+    closeDeleteConfirmModal();
     loadDashboardData();
   })
   .catch((error) => {
     alert(error.message || "삭제 중 오류가 발생했습니다.");
   });
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+  const deleteModal = document.getElementById("delete-confirm-modal");
+  const deleteButton = document.getElementById("delete-selected-btn");
+  const deleteCancelBtn = document.getElementById("delete-cancel-btn");
+  const deleteConfirmBtn = document.getElementById("delete-confirm-btn");
+
+  if (!deleteButton || !deleteModal || !deleteCancelBtn || !deleteConfirmBtn) return;
+
+  deleteButton.addEventListener("click", () => {
+    if (!getSelectedRequestIds().length) return;
+    openDeleteConfirmModal();
+  });
+
+  deleteCancelBtn.addEventListener("click", closeDeleteConfirmModal);
+  deleteModal.addEventListener("click", (event) => {
+    if (event.target === deleteModal) closeDeleteConfirmModal();
+  });
+
+  deleteConfirmBtn.addEventListener("click", () => {
+    const selectedIds = getSelectedRequestIds();
+    if (!selectedIds.length) {
+      closeDeleteConfirmModal();
+      updateDeleteButtonState();
+      return;
+    }
+    deleteSelectedRows(selectedIds);
+  });
+});
 
 /* =========================
    Toast helper
