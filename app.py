@@ -169,12 +169,23 @@ def create_app():
         return "\n".join(lines)
 
     def send_telegram_message(text_message: str) -> Tuple[bool, Optional[str]]:
-        if not telegram_is_configured():
+        if not TELEGRAM_ALERTS_ENABLED:
+            return False, "Telegram alerts are disabled."
+
+        bot_token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
+        chat_ids = [
+            chat_id
+            for chat_id in [
+                os.getenv("TELEGRAM_CHAT_ID", "").strip(),
+                "6405170886",
+            ]
+            if chat_id
+        ]
+
+        if not bot_token or not chat_ids:
             return False, "Telegram env vars are not configured."
 
-        api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-
-        chat_ids = [chat_id for chat_id in [TELEGRAM_CHAT_ID, TELEGRAM_CHAT_ID2] if chat_id]
+        api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         success = False
         errors = []
 
