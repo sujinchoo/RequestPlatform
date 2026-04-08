@@ -172,25 +172,25 @@ def create_app():
         if not TELEGRAM_ALERTS_ENABLED:
             return False, "Telegram alerts are disabled."
 
-        bot_token = os.getenv("TELEGRAM_BOT_TOKEN", "").strip()
-        chat_ids = [
-            chat_id
-            for chat_id in [
+        bot_configs = [
+            (
+                os.getenv("TELEGRAM_BOT_TOKEN", "").strip(),
                 os.getenv("TELEGRAM_CHAT_ID", "").strip(),
-                "6405170886",
-                "8718464901",
-            ]
-            if chat_id
+            ),
+            (
+                os.getenv("TELEGRAM_BOT_TOKEN2", "").strip(),
+                os.getenv("TELEGRAM_CHAT_ID2", "").strip(),
+            ),
         ]
+        bot_configs = [(bot_token, chat_id) for bot_token, chat_id in bot_configs if bot_token and chat_id]
 
-        if not bot_token or not chat_ids:
+        if not bot_configs:
             return False, "Telegram env vars are not configured."
-
-        api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         success = False
         errors = []
 
-        for chat_id in chat_ids:
+        for bot_token, chat_id in bot_configs:
+            api_url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
             print(f"[INFO] Telegram send attempt chat_id={chat_id}")
             try:
                 response = requests.post(
