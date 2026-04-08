@@ -15,6 +15,7 @@ from flask_dance.contrib.google import make_google_blueprint, google
 from sqlalchemy import text, extract, func, inspect
 import os
 import threading
+from typing import Optional, Tuple
 from urllib.parse import quote
 
 # Google oauth2 for android mobile 
@@ -167,46 +168,43 @@ def create_app():
             lines.append(f"요청 ID: {row_id}")
         return "\n".join(lines)
 
-    def send_telegram_message(text_message):
+    def send_telegram_message(text_message: str) -> Tuple[bool, Optional[str]]:
         if not telegram_is_configured():
             return False, "Telegram env vars are not configured."
-    
+
         api_url = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
-    
-        try:
-            success = False
-    
-            if TELEGRAM_CHAT_ID:
-                resp = requests.post(
+
+        chat_ids = [chat_id for chat_id in [TELEGRAM_CHAT_ID, TELEGRAM_CHAT_ID2] if chat_id]
+        success = False
+        errors = []
+
+        for chat_id in chat_ids:
+            print(f"[INFO] Telegram send attempt chat_id={chat_id}")
+            try:
+                response = requests.post(
                     api_url,
                     json={
-                        "chat_id": TELEGRAM_CHAT_ID,
+                        "chat_id": chat_id,
                         "text": text_message,
                         "disable_web_page_preview": True,
                     },
                     timeout=10,
                 )
-                success = resp.ok
-    
-            if TELEGRAM_CHAT_ID2:
-                resp2 = requests.post(
-                    api_url,
-                    json={
-                        "chat_id": TELEGRAM_CHAT_ID2,
-                        "text": text_message,
-                        "disable_web_page_preview": True,
-                    },
-                    timeout=10,
-                )
-                success = success or resp2.ok
-    
-            if success:
-                return True, None
-    
-            return False, "Telegram send failed"
-    
-        except Exception as exc:
-            return False, str(exc)
+                print(f"[INFO] Telegram response status chat_id={chat_id} status={response.status_code}")
+                if response.ok:
+                    success = True
+                else:
+                    errors.append(f"{chat_id}: HTTP {response.status_code}")
+            except Exception as exc:
+                print(f"[ERROR] Telegram send exception chat_id={chat_id}: {exc}")
+                errors.append(f"{chat_id}: {exc}")
+
+        if success:
+            return True, None
+
+        if errors:
+            return False, "; ".join(errors)
+        return False, "Telegram send failed"
 
     def mark_request_alert_result(row, success, error_message=None):
         if not hasattr(row, 'telegram_alert_sent_at'):
