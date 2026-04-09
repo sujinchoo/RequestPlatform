@@ -140,7 +140,7 @@ document.addEventListener("DOMContentLoaded", () => {
         title: "계정 삭제",
         html: `
           <b>${email}</b><br>
-          해당 계정을 삭제하시겠습니까?<br><br>
+          이 계정을 삭제하시겠습니까?<br><br>
           <span style="color:#dc2626;font-weight:600">
             삭제 후 복구할 수 없습니다.
           </span>
@@ -159,8 +159,20 @@ document.addEventListener("DOMContentLoaded", () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ branch_id: branchId })
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(async res => {
+          const data = await res.json();
+          return { ok: res.ok, status: res.status, data };
+        })
+        .then(({ ok, status, data }) => {
+          if (!ok) {
+            if (status === 403) {
+              Swal.fire("권한 없음", data.message || "삭제 권한이 없습니다.", "error");
+              return;
+            }
+            Swal.fire("오류", data.message || "삭제 실패", "error");
+            return;
+          }
+          
           if (!data.success) {
             Swal.fire("오류", data.message || "삭제 실패", "error");
             return;

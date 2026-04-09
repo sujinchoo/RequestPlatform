@@ -908,8 +908,15 @@ def create_app():
     #==================================
     @app.route("/admin/accounts/delete", methods=["POST"])
     @login_required
-    @admin_required
     def admin_delete_account():
+        if not session.get("is_admin"):
+            app.logger.warning("Non-admin attempted account delete: session_branch_id=%s", session.get("branch_id"))
+            return jsonify({"success": False, "message": "Forbidden"}), 403
+
+        if not is_super_admin_user():
+            app.logger.warning("Non-super-admin attempted account delete: session_branch_id=%s", session.get("branch_id"))
+            return jsonify({"success": False, "message": "Forbidden"}), 403
+
         data = request.get_json(force=True)
     
         branch_id = data.get("branch_id")
@@ -926,20 +933,29 @@ def create_app():
                 "success": False,
                 "message": "본인 계정은 삭제할 수 없습니다."
             }), 403
-    
-        # 🔒 소셜 로그인 계정 삭제 방지
-        if branch.company in ("GoogleUser", "KakaoUser"):
-            return jsonify({
-                "success": False,
-                "message": "소셜 로그인 계정은 삭제할 수 없습니다."
-            }), 400
-    
+
         try:
-            # 🔥 해당 계정의 요청 데이터 먼저 삭제
-            RequestItem.query.filter_by(branch_id=branch.id).delete()
-    
             db.session.delete(branch)
             db.session.commit()
+
+            app.logger.info("ADMIN deleted user id=%s", branch.id)
+
+            remaining_rows = db.session.execute(text("SELECT COUNT(*) FROM branches")).scalar() or 0
+            admin_rows = db.session.execute(
+                text("SELECT COUNT(*) FROM branches WHERE lower(trim(login_id)) = 'admin'")
+            ).scalar() or 0
+            if remaining_rows == 0 or (remaining_rows == 1 and admin_rows == 1):
+                users_seq = db.session.execute(text("SELECT pg_get_serial_sequence('branches', 'id')")).scalar()
+                if users_seq:
+                    db.session.execute(text("SELECT setval(:seq_name, 1, false)"), {"seq_name": users_seq})
+                    db.session.commit()
+                    app.logger.info("ADMIN reset user sequence")
+            else:
+                app.logger.info(
+                    "ADMIN skipped user sequence reset (table not empty for reset rule): remaining=%s admin_rows=%s",
+                    remaining_rows,
+                    admin_rows
+                )
     
             return jsonify({
                 "success": True,
@@ -1467,7 +1483,8 @@ def create_app():
     
         return render_template(
             "admin/accountList.html",
-            accounts=accounts
+            accounts=accounts,
+            is_super_admin=is_super_admin_user()
         )
     
     # =========================================================
@@ -1702,6 +1719,17 @@ def create_app():
         try:
             deleted_count = RequestItem.query.filter(RequestItem.id.in_(valid_ids)).delete(synchronize_session=False)
             db.session.commit()
+
+            request_count = db.session.execute(text("SELECT COUNT(*) FROM requests")).scalar() or 0
+            if request_count == 0:
+                request_seq = db.session.execute(text("SELECT pg_get_serial_sequence('requests', 'id')")).scalar()
+                if request_seq:
+                    db.session.execute(text("SELECT setval(:seq_name, 1, false)"), {"seq_name": request_seq})
+                    db.session.commit()
+                    app.logger.info("ADMIN reset requestitem sequence")
+            else:
+                app.logger.info("ADMIN skipped sequence reset (table not empty): requests=%s", request_count)
+
             return jsonify({"success": True, "deleted": deleted_count})
         except Exception as e:
             db.session.rollback()
