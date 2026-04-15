@@ -368,9 +368,7 @@
 let currentId = null;
 let selectedAddress = "";
 let selectedRegionCell = null;
-const geocodeCache = new Map();
 let dashboardMap = null;
-let dashboardMarker = null;
 const isSuperAdmin = {{ 'true' if is_super_admin else 'false' }};
 
 const sidoSelect = document.getElementById("filter-sido");
@@ -449,25 +447,6 @@ function renderData(data) {
 }
 
 
-function geocodeAddress(address) {
-  return new Promise((resolve, reject) => {
-    if (!address) return reject(new Error("주소 없음"));
-    if (!window.naver?.maps?.Service) return reject(new Error("지도 API 미설정"));
-    if (geocodeCache.has(address)) return resolve(geocodeCache.get(address));
-
-    naver.maps.Service.geocode({ query: address }, function(status, response) {
-      if (status !== naver.maps.Service.Status.OK) return reject(new Error("지오코딩 실패"));
-      const addresses = response.v2.addresses || [];
-      if (!addresses.length) return reject(new Error("검색 결과 없음"));
-
-      const first = addresses[0];
-      const result = { lat: parseFloat(first.y), lng: parseFloat(first.x) };
-      geocodeCache.set(address, result);
-      resolve(result);
-    });
-  });
-}
-
 function closeMapPanel() {
   document.getElementById("dashboardMapPanel").classList.add("hidden");
   if (selectedRegionCell) selectedRegionCell.classList.remove("is-selected-row");
@@ -510,28 +489,46 @@ function toggleDashboardMap(address, label, rowEl) {
   selectedRegionCell.classList.add("is-selected-row");
   selectedAddress = address;
   title.textContent = label;
-  status.textContent = address;
+  status.textContent = "지도 데이터 불러오는 중...";
   panel.classList.remove("hidden");
   scrollToMapPanel();
 
-  geocodeAddress(address)
-    .then((point) => {
-      const center = new naver.maps.LatLng(point.lat, point.lng);
-      if (!dashboardMap) {
-        dashboardMap = new naver.maps.Map("dashboardMapCanvas", { center, zoom: 13 });
-        dashboardMarker = new naver.maps.Marker({ position: center, map: dashboardMap });
-      } else {
-        dashboardMap.setCenter(center);
-        dashboardMarker.setPosition(center);
+  if (!dashboardMap) {
+    dashboardMap = new naver.maps.Map("dashboardMapCanvas", {
+      center: new naver.maps.LatLng(36.5, 127.5),
+      zoom: 6
+    });
+    dashboardMap.data.setStyle({
+      fillColor: '#007EEA',
+      fillOpacity: 0.4,
+      strokeColor: '#005CE6',
+      strokeWeight: 2
+    });
+  }
+
+  dashboardMap.data.forEach(function(f) { dashboardMap.data.removeFeature(f); });
+
+  fetch(`/api/get_polygon_local?dong_name=${encodeURIComponent(address)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.features || data.features.length === 0) {
+        status.textContent = "해당 지역의 세부 폴리곤 데이터가 없습니다.";
+        return;
       }
 
-      setTimeout(() => {
-        naver.maps.Event.trigger(dashboardMap, "resize");
-        dashboardMap.setCenter(center);
-      }, 0);
+      status.textContent = address;
+      dashboardMap.data.addGeoJson(data);
+
+      let bounds = null;
+      dashboardMap.data.forEach(function(f) {
+        let b = f.getBounds();
+        if (b) bounds = bounds ? bounds.union(b) : b;
+      });
+      if (bounds) dashboardMap.fitBounds(bounds, { margin: 50 });
     })
-    .catch((error) => {
-      status.textContent = error.message === "검색 결과 없음" ? "지도 검색 결과가 없습니다" : "지도를 불러오지 못했습니다";
+    .catch(err => {
+      console.error(err);
+      status.textContent = "지도를 불러오지 못했습니다.";
     });
 }
 

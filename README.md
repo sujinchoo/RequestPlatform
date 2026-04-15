@@ -255,3 +255,20 @@ private / internal use only.
 ✔ 협력업체에게 보여줘도 충분  
 ✔ 새 개발자가 들어와도 구조 이해 쉬움  
 ✔ 추후 확장 기능 설명도 포함
+
+
+## 🗺️ 지역 폴리곤 지도(최신)
+
+기존 주소 지오코딩(마커 표시) 방식 대신, 행정동 GeoJSON 기반 **폴리곤 렌더링** 방식으로 변경되었습니다.
+
+### 변경 요약
+- `polygonmap.py`가 `hangjeongdong.json`을 앱 시작 시 1회 메모리 캐싱합니다.
+- `app.py`는 `/api/get_polygon_local` API를 통해 프론트엔드에 GeoJSON FeatureCollection을 제공합니다.
+- `templates/dashboard.html`은 대시보드 하단 지도에서 폴리곤을 표시합니다.
+- `templates/_request_content.html`은 요청 폼 입력(시/도, 시/군/구, 읍/면/동) 변화 시 실시간 폴리곤 미리보기를 제공합니다.
+
+### API
+- `GET /api/get_polygon_local?dong_name=<주소 문자열>`
+- 인증 필요(`@login_required`)
+- 응답: GeoJSON FeatureCollection
+

@@ -25,8 +25,10 @@ from google.auth.transport import requests as google_requests
 from flask import make_response
 import requests
 from openpyxl import Workbook
+import polygonmap
 
-
+# 앱 시작 시 JSON 데이터를 1회만 메모리에 캐싱
+polygonmap.init_geo_data("hangjeongdong.json")
 
 TELEGRAM_TEST_FORM_TEMPLATE = """
 <!doctype html>
@@ -1735,6 +1737,16 @@ def create_app():
             db.session.rollback()
             print("[DELETE REQUESTS ERROR]", e)
             return jsonify({"success": False, "message": "삭제 중 오류가 발생했습니다."}), 500
+
+    # =========================================================
+    # 폴리곤 맵 데이터 API 엔드포인트
+    # =========================================================
+    @app.route('/api/get_polygon_local')
+    @login_required
+    def api_get_polygon_local():
+        query = request.args.get('dong_name', '')
+        result = polygonmap.get_polygon_result(query)
+        return jsonify(result)
 
     # =========================================================
     # DB TEST PAGE
